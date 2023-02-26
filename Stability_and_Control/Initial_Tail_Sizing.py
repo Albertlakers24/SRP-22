@@ -7,20 +7,20 @@ import numpy as np
 Design = 1
 
 # Inputs: Constants from other files
-D_outer = 2.8 + 0.21*2              # Outer diameter        [m]
-D_inner = 2.8                       # Inner diameter        [m]
-cw = 2.2                            # Wing chord ?location  [m]
-bw = 24                             # Wing span             [m]
-Sw = 53                             # Wing surface area     [m^2]
-l_f = 14                            # Fuselage lenght       [m]
-xcg_aft = 11.28                     # Aft cg location       [m]
+D_inner = 3.0                       # Inner diameter        [m]
+thickness = 0.21                    # Fuselage thickness    [m]
+D_outer = D_inner+ thickness*2      # Outer diameter        [m]
+bw = 26.8                           # Wing span             [m]
+Sw = 59.9                           # Wing surface area     [m^2]
+l_f = 23.9                          # Fuselage lenght       [m]
+c_mac = 2.3                         # MAC wing              [m]
+xcg_aft = 12.7                      # Aft cg location       [m]
 l_ultimate = 19.755                 # Ultimate location     [m]     TECHNICAL DRAWING INPUT
-c_mac = 3                           # MAC wing              [m]
 
 if Design ==1:
     # Inputs: Variables
-    x_h = 22.3                      # Location horizontal tail  [m]
-    x_v = 20.9                      # Location vertical tail    [m]
+    x_h = 23.3                      # Location horizontal tail  [m]
+    x_v = 21.9                      # Location vertical tail    [m]
     Vh = 0.86                       # Horizontal tail volume    [m^3]   -> 0.68113 (propeller)
     Vv = 0.08                       # Vertical tail volume      [m^3]   -> 0.08 (expected for propeller)
     Av = 1.3                        # VT aspect ratio           [-]     -> 1-2
@@ -45,7 +45,7 @@ Type =1
 #abs((Sh-Sh_stability)/Sh)*100 < 10:
 
 if Type ==1:
-    Sh = Vh * (Sw * cw) / l_h               # HT surface area           [m^2]
+    Sh = Vh * (Sw * c_mac) / l_h               # HT surface area           [m^2]
     if switch ==1:
 
         # Determine Horizontal Tail Geometry
@@ -57,15 +57,15 @@ if Type ==1:
         y_mach_h = 0.5 * (1 / 3) * (1 + 2 * taperh) / (1 + taperh) * bh             # Spanwise location of MAC  [m]
 
         # PRINT STATEMENT HORIZONTAL TAIL INITIAL GEOMETRY
-        # print("-----------Horizontal Tail Sizing------------")
-        # print("Sh =", Sh, "m^2")
-        # print("bh =", bh, "m")
-        # print("cr_h =", c_rh, "m")
-        # print("ct_h =",c_th, "m")
-        # print("c_mach =", c_mach_h)
-        # print("y_machh =", y_mach_h)
-        # print("ratio wing areas =", Sh/Sw)
-        # print("tail_arm_h=", x_h - xcg_aft)
+        print("-----------Horizontal Tail Sizing------------")
+        print("Sh =", Sh, "m^2")
+        print("bh =", bh, "m")
+        print("cr_h =", c_rh, "m")
+        print("ct_h =",c_th, "m")
+        print("c_mach =", c_mach_h)
+        print("y_machh =", y_mach_h)
+        print("ratio wing areas =", Sh/Sw)
+        print("tail_arm_h=", x_h - xcg_aft)
 
         Sv = Vv * (Sw * bw) / l_v           # VT surface area           [m^2]
         bv = np.sqrt(Av*Sv)                 # VT wing span              [m]
