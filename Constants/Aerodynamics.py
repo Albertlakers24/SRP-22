@@ -1,4 +1,3 @@
-
 CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
 CD0_15 = 0.04030446169943226        # CD0 Flap deflection 15 deg [-]
 CD0_40 = 0.07520760765686323        # CD0 Flap deflection 40 def [-]
