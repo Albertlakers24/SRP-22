@@ -2,11 +2,10 @@ import numpy as np
 #from Initial_Aircraft_Sizing.Wing_planform import Sw, c_mac,specific_gas_constant, gamma, M_cross,b
 #from Initial_Aircraft_Sizing.Fuselage import l_f
 
-
-##Design 1; Fuel Cell
+# Design 1; Fuel Cell
 Design = 1
 
-# Inputs: Constants from other files
+# Inputs: Imported Variables
 D_inner = 3.0                       # Inner diameter        [m]
 thickness = 0.21                    # Fuselage thickness    [m]
 D_outer = D_inner+ thickness*2      # Outer diameter        [m]
@@ -18,7 +17,7 @@ xcg_aft = 12.7                      # Aft cg location       [m]
 l_ultimate = 19.755                 # Ultimate location     [m]     TECHNICAL DRAWING INPUT
 
 if Design ==1:
-    # Inputs: Variables
+    # Inputs: Esimated Variables
     x_h = 23.3                      # Location horizontal tail  [m]
     x_v = 21.9                      # Location vertical tail    [m]
     Vh = 0.86                       # Horizontal tail volume    [m^3]   -> 0.68113 (propeller)
