@@ -1,4 +1,4 @@
-# AERODYNAMICS OUTPUTS --> MEGHA
+# AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 27/2/22
 
 CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
 CD0_15 = 0.04030446169943226        # CD0 Flap deflection 15 deg [-]
