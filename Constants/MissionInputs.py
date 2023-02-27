@@ -45,28 +45,36 @@ R_norm = 1000 * nmi_m               #Design Range
 R_div = 100 * nmi_m                 #Divergence Range
 t_loiter = 30 * min_s               #Loiter Endurance
 f_con = 5/100                       #Contingency fuel percentage
-#Efficiency Constants
-eta_prop = 0.85                     #Propeller efficiency
-eta_EM = 0.95                       #Electric motor efficiency
-eta_wire = 0.97                     #Wire efficiency
-eta_inverter = 0.995                #Inverter efficiency
-eta_fuelcell = 0.60                 #Fuel cell efficiency
-fc_power_density = 3                #kW/kg
-inverter_power_density = 30         #kW/kg
-em_power_density = 8                #kW/kg
-#Aerodynamic Constants
 A = 12                            #Aspect Ratio (ONLY VALUE THAT COULD BE ITERATED)
-Psi = 0.0075                        #Parasite drag dependent on the lift coefficient (value based on Roelof reader p.46)
-phi = 0.97                          #span efficiency factor (value based on Roelof reader p.46)
-Cfe = 0.0030                        #equivalent skin friction coefficient -> depending on aircraft from empirical estimation
-Swet_S = 6.1                        #(6.0-6.2) wetted area ratios -> depending on airframe structure
-CL_max_takeoff = 2.4                 # -
-CL_max_cruise = 1.5                 # -
-CL_max_landing = 2.4                # -
-CL_max_loiter = 1.5                 # -
+
+''' THESE ARE IN PROPULSION SYSTEMS '''
+#Efficiency Constants
+# eta_prop = 0.85                     #Propeller efficiency
+# eta_EM = 0.95                       #Electric motor efficiency
+# eta_wire = 0.97                     #Wire efficiency
+# eta_inverter = 0.995                #Inverter efficiency
+# eta_fuelcell = 0.60                 #Fuel cell efficiency
+# fc_power_density = 3                #kW/kg
+# inverter_power_density = 30         #kW/kg
+# em_power_density = 8                #kW/kg
+# H2_power_density = 120              #MJ/kg
+
+#Aerodynamic Constants
+''' PLS ADD THE NEXT FEW COMMENTED TO WEIGHT ESTIMATION FILES SEPARATELY --- THESE ARE NOT MISSION INPUTS 
+                    AND ARE ONLY USED THERE AS FAR AS I (MEGHA) KNOW  '''
+# Psi = 0.0075                        #Parasite drag dependent on the lift coefficient (value based on Roelof reader p.46)
+# phi = 0.97                          #span efficiency factor (value based on Roelof reader p.46)
+# Cfe = 0.0030                        #equivalent skin friction coefficient -> depending on aircraft from empirical estimation
+# Swet_S = 6.1                        #(6.0-6.2) wetted area ratios -> depending on airframe structure
+
+''' THESE ARE IN AERODYNAMICS '''
+# CL_max_takeoff = 2.4                 # -
+# CL_max_cruise = 1.5                 # -
+# CL_max_landing = 2.4                # -
+# CL_max_loiter = 1.5                 # -
+''' THESE ARE IN MASSES_LOCATIONS '''
 #Calculation Constants
-OEW_cg = 11.3                       #m
-H2_power_density = 120              #MJ/kg
+# OEW_cg = 11.3                       #m
 
 #General Functions
 def ISA_calculator(h,dt):

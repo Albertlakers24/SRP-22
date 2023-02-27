@@ -12,11 +12,19 @@ CL_CD_DesCruise = 20.06022946             # CL/CD Design Cruise [-]
 Alpha_DesCruise = 4                       # Angle of attack Cruise [deg]
 CL_Max_Clean =  1.3499704142011835        # CL max wing clean configuration [-]
 
-'''Take-off and Landing data --> same flap deflection'''
+'''Take-off data --> 40 deg flap deflection'''
+CL_DesTakeOff = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
+CD_DesTakeOff = 0.17010717                # CD at 40 deg flap deflection [-]
+CL_CD_TakeOff = 12.45115767               # CL/CD at 40 deg flap deflection [-]
+Alpha_DesTakeOff = 11.0923                # Alpha at 40 deg flap deflection [-]
+CL_MaxTakeOff = 2.4                       # CL max wing at flap deflection 40 deg
+
+''' Landing data --> 40 deg flap deflection'''
 CL_DesLand = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
 CD_DesLand = 0.17010717                # CD at 40 deg flap deflection [-]
 CL_CD_Land = 12.45115767               # CL/CD at 40 deg flap deflection [-]
 Alpha_DesLand = 11.0923                # Alpha at 40 deg flap deflection [-]
+CL_MaxLand = 2.4                       # CL max wing at flap deflection 40 deg
 
 ''' Slopes '''
 CL_Alpha_Wing = 5.63403713             # Lift slope wing [1/rad]

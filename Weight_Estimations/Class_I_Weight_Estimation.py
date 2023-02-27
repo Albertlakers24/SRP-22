@@ -1,4 +1,4 @@
-from Constants import *
+from Constants.MissionInputs import *
 #Constants
 f_con = 5/100                   #-
 m_res = 0.30                    #-
