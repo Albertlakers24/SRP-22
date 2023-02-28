@@ -1,5 +1,7 @@
 import numpy as np
 import math as m
+from Constants.AircraftGeometry import l_f, D_outer, Aw, Sw, bw, taperw, Sweep_quarterchordw, c_mac_w, t_over_c_vtail
+from Constants.Aircraft_Geometry_Drawing import zv, y_T, Zw, S_BS, center_S_BS
 
 """
 VT design checks:
@@ -30,6 +32,7 @@ Cr_Cv = 0.22                    # Rudder-to-VT chord                [-]         
 V_mincont = 0.8 * 58.8/1.05     # Min controllable speed            [m/s]       -> See FAR regulations (estimate 80% of stall speed)
 delta_r_max = 30                # Rudder : max allowable deflection [deg]
 Cdy = 0.65                      # Aircraft side drag coefficient    [-]         (0.5-0.8)
+y_i_rudder = 0                  # Rudder : Inboard location         [m]
 
 # Initial Geometry Calculations for VT
 def VT_Geometry():
@@ -40,29 +43,15 @@ def VT_Geometry():
     c_tv = taperv * c_rv                    # VT : Tip chord         [m]
     return bv, c_mac_v, c_rv, c_tv, Sv
 
-# Imported Variables : Aircraft Geometry
-l_f = 23.9                  # Fuselage : length                     [m]
-D_outer = 3.0               # Fuselage : outer diameter             [m]
+# Variables with new names
 h1 = D_outer                # Fuselage : height at h1               [m]
 h2 = D_outer                # Fuselage : height at h2               [m]
-Sw = 59.9                   # Wing : surface area                   [m^2]
-bw = 26.8                   # Wing : span                           [m]
-taperw = 1                  # Wing : taper ratio                    [-]
-Sweep_quarterchord = 0      # Wing : sweep at c/4                   [rad]
-c_mac = 2.3                 # Wing : MAC                            [m]
-ARw = 14                    # Wing : aspect ratio                   [-]
 c_mac_v = VT_Geometry()[1]  # VT :  MAC                             [m]
 Cvroot = VT_Geometry()[2]   # VT : root chord                       [m]
 Cvtip = VT_Geometry()[3]    # VT : tip chord                        [m]
 bv = VT_Geometry()[0]       # VT : span                             [m]
 Sv = VT_Geometry()[4]       # VT : surface area                     [m^2]
-t_over_c_vtail = 0.15       # VT : Thickness over chord ratio       [-]
-y_i_rudder = 0              # Rudder : Inboard location             [m]
-S_BS = 63.89                # Body side area                        [m^2]       TODO: determine
-center_S_BS = 11            # Center location Side area aircraft    [m]         TODO: determine
-zv = 3.3026                 # Vertical distance body axis to ac VT  [m]         TODO: determine and add page number
-y_T = 4                     # Distance center line fuselage-engine  [m]
-Zw = -1.84                  # Distance center line fuselage-wing    [m]         -> Negative for high wing   (p. 416)
+
 
 # Imported Variables :  Aerodynamics
 R_lfus = 115629986.920      # Fuselage Reynolds number              [-]
@@ -87,7 +76,7 @@ V_approach = 60             # Approach speed                        [m/s]
 
 # Intermediate calculations
 y_o_rudder = br_bv*bv       # Rudder: Outboard location             [m]
-Sidewash_grad = 0.724 +3.06 *((Sv/Sw)/(1+np.cos(Sweep_quarterchord)))+0.4*(Zw/D_outer)+0.009*ARw    # Sidewash gradient   [-]
+Sidewash_grad = 0.724 +3.06 *((Sv/Sw)/(1+np.cos(Sweep_quarterchord)))+0.4*(Zw/D_outer)+0.009*Aw    # Sidewash gradient   [-]
 
 print('----------------- NEEDED TO CALCULATE CN BETA -----------------')
 print("xm/l_f =", x_cgaft/l_f)
@@ -98,9 +87,9 @@ print("Rfus *10^6", R_lfus*10**(-6))
 
 print('----------------- NEEDED TO CALCULATE Cr -----------------')
 print("taper ratio = ", taperw)
-print("Sweep c/4 = ", Sweep_quarterchord*180/np.pi, "deg")
-print("xbar/c_mac =", (xac -x_cgaft)/c_mac)
-print("AR_wing =", ARw)
+print("Sweep c/4 = ", Sweep_quarterchordw*180/np.pi, "deg")
+print("xbar/c_mac =", (xac -x_cgaft)/c_mac_w)
+print("AR_wing =", Aw)
 
 print("----Needed to calculate the Rudder derivatives ----")
 print("Clalpha/Clalpha_theory = ", Cl_alpha_vtail/(2*np.pi))
@@ -316,3 +305,21 @@ print("SWEEP", sweep)
 
 print(l_v)
 """
+
+
+# Imported Variables : Aircraft Geometry
+# l_f = 23.9                  # Fuselage : length                     [m]
+# D_outer = 3.0               # Fuselage : outer diameter             [m]
+# Sw = 59.9                   # Wing : surface area                   [m^2]
+# bw = 26.8                   # Wing : span                           [m]
+# taperw = 1                  # Wing : taper ratio                    [-]
+# Sweep_quarterchordw = 0     # Wing : sweep at c/4                   [rad]
+# c_mac_w = 2.3               # Wing : MAC                            [m]
+# Aw = 14                     # Wing : aspect ratio                   [-]
+# t_over_c_vtail = 0.15       # VT : Thickness over chord ratio       [-]
+# Imported Variables : Aircraft Geometry Drawing
+# zv = 3.3026                 # Vertical distance body axis to ac VT  [m]
+# y_T = 4                     # Distance center line fuselage-engine  [m]
+# Zw = -1.84                  # Distance center line fuselage-wing    [m]         -> Negative for high wing   (p. 416)
+# S_BS = 63.89                # Body side area                        [m^2]
+# center_S_BS = 11            # Center location Side area aircraft    [m]

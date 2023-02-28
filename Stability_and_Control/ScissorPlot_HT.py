@@ -1,14 +1,14 @@
 import numpy as np
 import math as m
 import matplotlib.pyplot as plt
-# from Constants import *
-# from Class_I_Weight_Estimation.Wing_Loading_Diagram import V_approach_stall, beta_s_land_fc
-# from Class_I_Weight_Estimation.Class_I_fuel_cell import m_MTOW
-# from Initial_Aircraft_Sizing.Empennage_Design import l_h, Ah, bv, Sh, c_mach_h, x_h
-# from Initial_Aircraft_Sizing.Wing_planform import c_mac, M_cruise, Sw, A, b, c_r, taper
-# from Initial_Aircraft_Sizing.Fuselage import D_outer, l_f
-# from Aerodynamic_characteristics.AeroData import Cm0_AF, CL0_wing_CR, CL_Des_CR, CL_alpha
-# from Aerodynamic_characteristics.HLD_design_decision import DCl, c_prime_over_c_land, ld, lm, SwfS, cf_over_cprime
+from Constants import *
+from Class_I_Weight_Estimation.Wing_Loading_Diagram import V_approach_stall, beta_s_land_fc
+from Class_I_Weight_Estimation.Class_I_fuel_cell import m_MTOW
+from Initial_Aircraft_Sizing.Empennage_Design import l_h, Ah, bv, Sh, c_mach_h, x_h
+from Initial_Aircraft_Sizing.Wing_planform import c_mac, M_cruise, Sw, A, b, c_r, taper
+from Initial_Aircraft_Sizing.Fuselage import D_outer, l_f
+from Aerodynamic_characteristics.AeroData import Cm0_AF, CL0_wing_CR, CL_Des_CR, CL_alpha
+from Aerodynamic_characteristics.HLD_design_decision import DCl, c_prime_over_c_land, ld, lm, SwfS, cf_over_cprime
 
 #TODO:  revisit xac location ? TOTAL
 
@@ -25,20 +25,17 @@ lh = 12                         # HT : Tail arm                     [m]
 lambdahalf_h = 2.05*np.pi/180   # HT : Half sweep                   [rad]
 bf = 3                          # Fuselage : Width                  [m]
 hf = bf                         # fuselage : Height                 [m]
-ln1 = 1.983                     # Big engine distance of front nacelle to c/4    [m]
-ln2 = 1.34                      # Small engine distance of front nacelle to c/4  [m]
-bn1 = 0.766                     # Big engine width of nacelle       [m]
-bn2 = 0.596                     # Small engine width of nacelle     [m]
-l_fn = 10.24                    # Length nose to LE wing            [m]
+l_fn = 10.24                    # Length nose to LE wing            [m] TODO: = LEMAC
 Swf_over_S = SwfS               # Wing area by flaps                [-]
 c_accent_c = c_prime_over_c_land # cprime over c                    [-]
 b_flap = ld-lm                  # span flaps                        [m]
 
-
 # Imported Variables :  Aircraft Geometry Drawings
 v_t_w = 4.166                   # Vertical distance HT and wing     [m]
-
-
+ln1 = 1.983                     # Big engine distance of front nacelle to c/4    [m]
+ln2 = 1.34                      # Small engine distance of front nacelle to c/4  [m]
+bn1 = 0.766                     # Big engine width of nacelle       [m]
+bn2 = 0.596                     # Small engine width of nacelle     [m]
 
 # Imported Variables : Flight Performance
 M = M_cruise                    # Mach number at cruise             [-]

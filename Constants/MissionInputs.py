@@ -45,7 +45,7 @@ R_norm = 1000 * nmi_m               #Design Range
 R_div = 100 * nmi_m                 #Divergence Range
 t_loiter = 30 * min_s               #Loiter Endurance
 f_con = 5/100                       #Contingency fuel percentage
-A = 12                            #Aspect Ratio (ONLY VALUE THAT COULD BE ITERATED)
+Aw = 12                            #Aspect Ratio (ONLY VALUE THAT COULD BE ITERATED)
 
 ''' THESE ARE IN PROPULSION SYSTEMS '''
 #Efficiency Constants

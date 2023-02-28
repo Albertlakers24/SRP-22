@@ -24,18 +24,28 @@ These are listed in the following order
 * Rudder, delta_r                       Rudder()
 """
 
+# Aileron - Imported Variables :
+aileron_dA_upper = 1
+aileron_dA_lower = 1
+CL_Des_CR = 1
+aileron_l1 = 1
+aileron_lm=1
+M_cruise = 1
+aileron_Ca_c = 1
 
+# Aileron Estimated Variables
 Cf_C = 0.38
+
 # Aileron derivatives
 delta_a_left = -aileron_dA_upper*np.pi/180          # Left deflection aileron       [rad]  -- CHECKED    ALBERTO
 delta_a_right = aileron_dA_lower*np.pi/180          # Right deflection aileron      [rad]  -- CHECKED    ALBERTO
 CLw = CL_Des_CR                                     # CL                            [-]    -- CHECKED    MEGHA
 Sweep_quarter_chord = 0                             # Quarterchord sweep wing       [rad]  -- CHECKED    GABRIEL
 t_c_new = 0.21                                      # thickness of chord airfoil    [-]    -- CHECKED    MEGHA
-Cl_alpha_M = 5.990013                            # Airfoil lift curve at any Moment [rad^-1]         -- CHECKED
-Cl_alpha_a = 5.990013                            # Airfoil lift curve covered by ailerons [rad^-1]   -- CHECKED
-y_outboard_aileron = aileron_l1                             # Outboard aileron position     [m]    -- CHECKED    ALBERTO
-y_inboard_aileron = aileron_lm                              # Inboard aileron position      [m]    -- CHECKED    ALBERTO
+Cl_alpha_M = 5.990013                               # Airfoil lift curve at any Moment [rad^-1]         -- CHECKED
+Cl_alpha_a = 5.990013                               # Airfoil lift curve covered by ailerons [rad^-1]   -- CHECKED
+y_outboard_aileron = aileron_l1                     # Outboard aileron position     [m]    -- CHECKED    ALBERTO
+y_inboard_aileron = aileron_lm                      # Inboard aileron position      [m]    -- CHECKED    ALBERTO
 beta = (1-M_cruise**2)**(1/2)                       # Compressibility factor        [-]    -- CHECKED
 k_factor = Cl_alpha_M*(beta/(2*np.pi))              # eq. 10.54 (p. 419)            [-]    -- CHECKED
 cf_over_c =aileron_Ca_c                             # cf/c, for ailerons           [-]     -- CHECKED
@@ -50,7 +60,8 @@ print("t/c=", t_c_new)
 print("ca/c=", aileron_Ca_c)
 print("Aw=", A)
 print("Clalpha/Clalpha_theory=", Cl_alpha_AF/(2*np.pi))
-# Graph Values
+
+# Graph Values TODO: find graph outputs
 beta_Cl_accent_delta_k = 0.6                                      # Rolling moment effectiveness parameter    [rad^-1]    Graph 10.46 (p. 444) -- CHECKED
 Cl_delta_CL_deltatheory = 1                                       # Correction factor for plain flap lift     [-]         Graph 8.15 (p. 230)  -- CHECKED
 Cl_deltatheory = 5.2                                              # Lift effectiveness of a plain flap        [rad^-1]    Graph 8.14 (p. 228)  -- CHECKED
