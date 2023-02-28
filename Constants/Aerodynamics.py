@@ -30,3 +30,6 @@ CL_MaxLand = 2.4                       # CL max wing at flap deflection 40 deg
 CL_Alpha_Wing = 5.63403713             # Lift slope wing [1/rad]
 Cl_Alpha_WingAirfoil =  5.99001331     # Airfoil lift slope [1/rad]
 Cl_Alpha_TailAirfoil =  5.7295779513   # Tail Airfoil lift slope [1/rad]
+
+''' HLD Design '''
+
