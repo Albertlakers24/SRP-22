@@ -19,7 +19,7 @@ Molar_mass_air = 0.0289644          #N m kmol⁻¹ K⁻¹
 specific_gas_constant = 287.052     #J·kg⁻¹·K⁻¹
 universal_gas_constant = 8.31432    #N m kmol⁻¹ K⁻¹
 gamma = 1.4                         #Specific heat ratio of gas
-e_lh2 = 120*10**6                   #J/kg Specific Energy Liquid Hydrogen
+# e_lh2 = 120*10**6                   #J/kg Specific Energy Liquid Hydrogen
 #Requirment Constants
 V_cruise = 275 * kts_m_s            #Cruise Velocity Requirement
 h_cruise = 280 * FL_ft * ft_m       #Cruise height Requirement

@@ -21,3 +21,4 @@ fc_power_density = 3                #kW/kg - fuel cell power density
 inverter_power_density = 30         #kW/kg - inverter power density
 em_power_density = 8                #kW/kg - electric motor power density
 H2_power_density = 120              #MJ/kg
+e_lh2 = 120*10**6                   #J/kg Specific Energy Liquid Hydrogen
