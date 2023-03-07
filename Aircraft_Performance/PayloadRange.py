@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from Constants.FlightPerformance_Propulsion import eta_prop, eta_EM, eta_wire, eta_fuelcell, eta_inverter, e_lh2
 from Constants.MissionInputs import h_cruise, t_loiter, V_cruise, f_con, g, R_div, R_norm
 from Constants.Aerodynamics import CL_CD_DesCruise
-from Constants.Masses_Locations import m_f, m_oe, m_mto, m_pldes, reserve_fuel, trip_fuel
+from Constants.Masses_Locations import m_f, m_oem, m_mto, m_pldes, reserve_fuel, trip_fuel
 # Propulsion charecteristics
 
 #LD_crs = 16.787 #CL_CD_Des_CR
@@ -13,16 +13,16 @@ eta_eng = eta_fuelcell * eta_wire * eta_inverter * eta_EM
 pl_increase = 1.04
 m_plmax = m_pldes * pl_increase
 
-def max_payload_mass(m_pldes, pl_increase, m_mto, m_oe):
-    m_plmax = min(m_pldes * pl_increase, m_mto - m_oe)
+def max_payload_mass(m_pldes, pl_increase, m_mto, m_oem):
+    m_plmax = min(m_pldes * pl_increase, m_mto - m_oem)
     return m_plmax
 
-def fuelmass_maxpl(m_mto, m_oe, m_plmax):
-    m_fB = max(0, m_mto - m_oe - m_plmax)
+def fuelmass_maxpl(m_mto, m_oem, m_plmax):
+    m_fB = max(0, m_mto - m_oem - m_plmax)
     return m_fB
 
 def R_cruise(m_pl, m_fuel):
-    r_tot =  eta_eng * eta_prop * (CL_CD_DesCruise) * (e_lh2/g) * np.log((m_oe + m_pl + m_fuel)/(m_oe + m_pl))
+    r_tot =  eta_eng * eta_prop * (CL_CD_DesCruise) * (e_lh2/g) * np.log((m_oem + m_pl + m_fuel)/(m_oem + m_pl))
     return r_tot
 
 def R_tot(R_norm, R_cruise, R_div, t_loiter):
@@ -54,8 +54,8 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
     plt.axhline(y=masses[1], color='grey', linestyle='--')
     plt.annotate('Maximum take off mass', xy=(1600, masses[1] + 60))
 
-    plt.axhline(y = m_oe, color='grey', linestyle = '--')
-    plt.annotate('Operational empty mass', xy=(1500, m_oe + 50))
+    plt.axhline(y = m_oem, color='grey', linestyle = '--')
+    plt.annotate('Operational empty mass', xy=(1500, m_oem + 50))
 
     plt.xlim(0,2900)
     plt.ylim(0,19500)
@@ -76,7 +76,7 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
 
 # -------------------- POINT A ----------------
 
-massA = m_oe + m_pldes
+massA = m_oem + m_pldes
 plmassA = m_pldes
 rangeA = 0
 reserveA = plmassA+reserve_fuel
@@ -99,7 +99,7 @@ rangeC = (R_tot(r_C, r_C, R_div,t_loiter))/1852
 reserveC = plmassC+reserve_fuel
 
 # -------------------- POINT D ----------------
-massD = m_oe + reserve_fuel + trip_fuel
+massD = m_oem + reserve_fuel + trip_fuel
 plmassD = 0
 r_D = R_cruise(0, m_f)
 rangeD = (R_tot(r_D, r_D, 0, 0))/1852
