@@ -93,3 +93,6 @@ kv_TO_Land = 1.461 * 10**(-5)       # Kinematic viscosity
 def Calculate_Reynolds_number(V, l, kv):
     Re = V*l/kv # kv = kinematic viscosity
     return Re
+
+a_cruise = np.sqrt(gamma*specific_gas_constant*T_cruise)          # Speed of sound at cruise altitude  [m/s]
+M_cruise = V_cruise / a_cruise         # Mach number during cruise
