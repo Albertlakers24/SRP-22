@@ -38,22 +38,22 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
              marker='o', markerfacecolor=colour1, markersize=5, label = 'Payload')
     plt.plot(ranges, masses, color = colour2, linewidth=3,
              marker='o', markerfacecolor=colour2, markersize=5, label = 'Aircraft mass')
-
-    plt.axhline(y=plmasses[1], color='grey', linestyle='--')
-    plt.annotate('Design payload', xy=(1600, plmasses[1] + 60))
-
+    # Design payload (point B)
+    plt.axhline(y=m_pldes, color='grey', linestyle='--')
+    plt.annotate('Design payload', xy=(1600, m_pldes + 60))
+    # Range at point B
     plt.axvline(x=ranges[1], color='grey', linestyle='--')
     plt.annotate('Range @ Design payload', xy=(ranges[1] -60, 7000), rotation='vertical')
-
+    # Range at divergence point C
     plt.axvline(x=ranges[2], color='grey', linestyle='--')
     plt.annotate('Divergence Range', xy=(ranges[2] -60, 7000), rotation='vertical')
-
+    # Range at ferry point D
     plt.axvline(x=ranges[3], color='grey', linestyle='--')
     plt.annotate('Ferry Range', xy=(ranges[3] - 60, 7000), rotation='vertical')
-
-    plt.axhline(y=masses[1], color='grey', linestyle='--')
-    plt.annotate('Maximum take off mass', xy=(1600, masses[1] + 60))
-
+    # max take off
+    plt.axhline(y=m_mto, color='grey', linestyle='--')
+    plt.annotate('Maximum take off mass', xy=(1600, m_mto + 60))
+    # operational empty mass
     plt.axhline(y = m_oem, color='grey', linestyle = '--')
     plt.annotate('Operational empty mass', xy=(1500, m_oem + 50))
 
