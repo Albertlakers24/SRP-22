@@ -2,8 +2,8 @@ from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,FL_ft,
 from Constants.Masses_Locations import W_P_design,m_f,m_oem,beta_s_land_fc
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density
 from Constants.Aerodynamics import CL_CD_DesCruise
-from Constants.AircraftGeometry import b, l_f, S_f_wet
-from Constants.Empennage_LandingGear import Sh, taperh, Sv,taperv, x_h
+from Constants.AircraftGeometry import bw, l_f, S_f_wet
+from Constants.Empennage_LandingGear import Sh, taperh, Sv, taperv, x_h
 import numpy as np
 
 
