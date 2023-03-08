@@ -57,8 +57,8 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
     plt.axhline(y = m_oem, color='grey', linestyle = '--')
     plt.annotate('Operational empty mass', xy=(1500, m_oem + 50))
 
-    plt.xlim(0,2900)
-    plt.ylim(0,19500)
+    plt.xlim(0,ranges[-1]+150)
+    plt.ylim(0,m_mto + 1000)
     n = ['A', 'B', 'C', 'D']
     for i, txt in enumerate(n):
         plt.annotate(txt, (ranges[i], plmasses[i]))
@@ -82,15 +82,15 @@ rangeA = 0
 reserveA = plmassA+reserve_fuel
 # -------------------- POINT B ----------------
 
-massB = m_mto
+R_nom = R_norm*1852
+massB = m_oem + m_pldes + trip_fuel
 plmassB = m_pldes
 fuelB = trip_fuel
 r_B = R_cruise(m_pldes, fuelB)
-rangeB = (R_tot(r_B, r_B, 0, 0))/1852
+rangeB = (R_tot(R_norm, r_B, 0, 0))/1852
 reserveB = plmassB+reserve_fuel
 
 # -------------------- POINT C ----------------
-R_nom = R_norm*1852
 massC = m_mto
 plmassC = m_pldes
 fuelC = reserve_fuel + trip_fuel
