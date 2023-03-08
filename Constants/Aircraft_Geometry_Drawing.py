@@ -16,6 +16,7 @@ zv = 3.3026             # Center line fuselage to aerodynamic center VT     [m]
 y_T = 4                 # Center line fuselage to engine                    [m]
 Zw = -1.84              # Center line fuselage to wing                      [m] -> negative for high wing
 center_S_BS = 11        # x center location of the side area                [m]
+#l_nc    = 3.7           # Length of the nose cone                           [m]
 
 '''Area'''
 S_BS = 63.89            # Bode side area                                    [m^2]
