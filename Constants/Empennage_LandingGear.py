@@ -5,6 +5,7 @@
 ''' Vertical Tail '''
 Sv = 13.96                      # Surface area VT               [m^2]
 taperv = 0.5                    # Taper VT                      [-]
+Vh_V = 1                        # Volume fraction for T-tail    [-]
 
 ''' Horizontal tail '''
 Sh = 11.376                     # Surface area HT               [m^2]

@@ -6,9 +6,9 @@ import numpy as np
 
 ''' Wing planform'''
 taperw = 0.45           # wing taper ratio                                  [-]
-S_w = 59.8947           # Wing surface area                                 [m^2]
+S_w = 63.6872413973     # Wing surface area                                 [m^2]
 Aw   = 12               # Wing aspect ratio                                 [-]
-bw   = 26.81071         # Wing span                                         [m]
+bw   = 27.645015        # Wing span                                         [m]
 c_tw = 1.38661           # Wing tip chord                                    [m]
 c_rw = 3.08136           # Wing root chord                                   [m]
 t_c_ratio_w = 0.21      # Wing thickness to chord ratio                     [-]
@@ -40,3 +40,8 @@ w_lav = 0.914           # lavatory width    [m]
 l_galley = 0.762        # galley length     [m]
 w_galley = 0.914        # galley width      [m]
 l_seat = 0.76           # seat pitch        [m]
+
+'''High Lift Devices (for Alberto)'''
+SwfS = 1                # Wing area by flaps area       [-]
+c_accent_c = 1          # c'/c for the flaps            [-]
+b_flap = 1              # Span flaps                    [m]
