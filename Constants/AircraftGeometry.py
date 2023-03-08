@@ -1,4 +1,5 @@
 ''' AIRCRAFT GEOMETRY OUTPUTS --> GABRIEL  ---> Last Update - 27/2/22 '''
+import numpy as np
 
 # Suggested headers - pls change if needed -- segregate as you'd like
 
@@ -14,6 +15,8 @@ t_c_ratio_w = 0.21      # Wing thickness to chord ratio                     [-]
 c_mac_w =   2.34113     # Length of wing mean aerodynamic chord             [m]
 y_mac   =   5.855       # Spanwise position of wing mean aerodynamic chord  [m]
 Sweep_quarterchordw = 0 # Sweep at quarter chord of the wing                [rad]   todo: check
+Sweep_halfchordw = -1.81*np.pi/180 # Sweep at half chord of the wing        [rad]
+SweepLE = 1.81*np.pi/180 # Sweep at LE of the wing                          [rad]
 
 ''' Fuselage geometry'''
 # 4SA configuration

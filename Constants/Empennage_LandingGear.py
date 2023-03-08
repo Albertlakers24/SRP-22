@@ -10,6 +10,8 @@ taperv = 0.5                    # Taper VT                      [-]
 Sh = 11.376                     # Surface area HT               [m^2]
 taperh = 0.75                   # Taper HT                      [-]
 x_h = 23.3                      # x-location horizontal tail    [m]
+A_h = 0                         # HT aspect ratio               [-]
+lh = 10.6                       # Tail arm                      [m]
 
 ''' Landing Gear '''
 
