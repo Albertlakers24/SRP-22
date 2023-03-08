@@ -8,8 +8,8 @@ m_oem = 11930
 m_mto = 13279
 eta_eng = 0.6 * 0.97 * 0.995 * 0.95
 m_pldes = 6030
-W_S_design = 3270
-W_P_design = 0.07746
+W_S_design = 3000
+W_P_design = 0.07755015218235134
 ''' Subsystem masses '''
 
 ''' Sub system locations '''

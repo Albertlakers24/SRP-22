@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from Constants.MissionInputs import ISA_calculator,s_takeoff,s_landing,h_cruise,dt_cruise,rho_0,takeoff_critical,dt_takeoff,A,V_approach,ft_m,V_cruise,g
 from Constants.FlightPerformance_Propulsion import eta_prop
-from Constants.Aerodynamics import CL_MaxLand,CL_MaxTakeOff,CD_DesTakeOff
+from Constants.Aerodynamics import CL_MaxLand,CL_MaxTakeOff,CD_DesTakeOff,CD0_40,CD0_CR
 #Constants
 #Constants
 rho_1524= ISA_calculator(takeoff_critical,dt_takeoff)[2]              #1524m ISA + 10 ◦C day (kg/m3)
@@ -18,11 +18,11 @@ Cfe = 0.0030                        #equivalent skin friction coefficient -> dep
 Swet_S = 6.1                        #(6.0-6.2) wetted area ratios -> depending on airframe structure
 ##Cdo calculations
 e = 1/(np.pi*A*Psi+(1/phi))
-Cd0 = Cfe * Swet_S
 #ROC and beta estimates
-ROC = 7                         #Change with CS25 and literature or Requirement (Rate of Climb)
-ROC_V = 0.024#0.0032
-ROC_V_OEI = 0.0024                     #Change with CS25 and literature or Requirement (Climb Gradient) ROC/V
+ROC = 6                        #Change with CS25 and literature or Requirement (Rate of Climb)
+ROC_OEI = 3
+ROC_V = 0.032#0.0032
+ROC_V_OEI = 0.03                     #Change with CS25 and literature or Requirement (Climb Gradient) ROC/V
 V_approach_stall = V_approach /1.23  #CS 25 requirement of V_stall_land = V_approach / 1.23
 beta_V_app_fc = 0.97
 beta_s_land_fc = 0.97
@@ -41,10 +41,6 @@ def oswald_efficiency(flap_deflection):
     delta_e = 0.0026 * flap_deflection
     e_new = e + delta_e
     return e_new
-def CD_0(flap_deflection, lg):
-    delta_CD0 = flap_deflection * (13 * 10**(-4)) + (175 * 10**(-4)) * lg
-    CD_0_new = Cd0 + delta_CD0
-    return CD_0_new
 def Power_lapse(rho,rho_0):
     alpha_p_ice = (rho/rho_0) ** (3/4)
     return alpha_p_ice
@@ -65,25 +61,26 @@ def roc_constraint(eta,alpha_p,ROC,Cd0,density,A,e,W_S,beta,N_e,y):
     return W_P
 def climb_gradient_constraint(eta,alpha_p,ROC_V,CD,CL,density,W_S,beta,N_e,y):
     if y == 1:
-        W_P = (0.6) * eta * (beta / alpha_p) * (1 / (ROC_V + (CD / CL))) * np.sqrt((density / 2) * ((CL) / (beta * W_S)))
+        W_P = ((N_e - 1)/N_e)* eta * (beta / alpha_p) * (1 / (ROC_V + (CD / CL))) * np.sqrt((density / 2) * ((CL) / (beta * W_S)))
     else:
         W_P = eta_prop * (beta/alpha_p) * (1/(ROC_V + (CD/CL))) * np.sqrt((density/2)*((CL)/(beta*W_S)))
     return W_P
 def takeoff_constraint(alpha_p,L_to,density,h_2, k_t,N_e,y):
     if y == 1:
-        W_P = alpha_p  * (1.15 * np.sqrt((1/0.6)*(W_S/(L_to * k_t * density * g * np.pi * A * e))) + (1/0.6)*(4*h_2/L_to)) **(-1) * np.sqrt((CL_2/W_S) *(density)/2)
+        W_P = alpha_p  * (1.15 * np.sqrt((N_e/(N_e-1))*(W_S/(L_to * k_t * density * g * np.pi * A * e))) + (N_e/(N_e-1))*(4*h_2/L_to)) **(-1) * np.sqrt((CL_2/W_S) *(density)/2)
     else:
         W_P = alpha_p * ((1.15 * np.sqrt((W_S / (L_to * k_t * density * g * np.pi * A * e)))) + (4 * h_2 / L_to)) ** (-1) * np.sqrt((CL_2 / W_S) * ((density) / 2))
     return W_P
+e_to = oswald_efficiency(40)
 W_S_approach = V_approach_constraint(rho_1524, V_approach_stall, CL_MaxLand, beta_V_app_fc)
 W_S_land = s_land_constraint(s_landing_1524, C_LFL, rho_1524, CL_MaxLand, beta_s_land_fc)
-W_P_cruise = cruise_contraint(eta_prop,alpha_p_em, Cd0, rho_cruise, V_cruise, W_S, A, e,beta_cruise_fc)
-W_P_ROC = roc_constraint(eta_prop, alpha_p_em, ROC, Cd0, rho_1524, A, e, W_S, beta_ROC_fc, 2, 2)
-#W_P_ROC_OEI = roc_constraint(eta_prop, alpha_p_em, ROC, Cd0, rho_1524, A, e, W_S, beta_ROC_fc, 2, 1)
-W_P_CV = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V, CD_DesTakeOff, CL_MaxTakeOff, rho_1524, W_S,beta_em, 2, 2)
-W_P_CV_OEI = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V_OEI, CD_DesTakeOff, CL_MaxTakeOff, rho_1524,W_S, beta_cv, 2, 1)
-W_P_TOP = takeoff_constraint(alpha_p_em, s_takeoff_1524, rho_1524, h2, k_t, 2, 2)
-W_P_TOP_OEI = takeoff_constraint(alpha_p_em, s_takeoff_1524, rho_1524, h2, k_t, 2, 1)
+W_P_cruise = cruise_contraint(eta_prop,alpha_p_em, CD0_CR, rho_cruise, V_cruise, W_S, A, e,beta_cruise_fc)
+W_P_ROC = roc_constraint(eta_prop, alpha_p_em, ROC, CD0_40, rho_1524, A, e_to, W_S, beta_ROC_fc, 4, 2)
+W_P_ROC_OEI = roc_constraint(eta_prop, alpha_p_em, ROC_OEI, CD0_40, rho_1524, A, e_to, W_S, beta_ROC_fc, 4, 1)
+W_P_CV = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V, CD_DesTakeOff, CL_MaxTakeOff, rho_1524, W_S,beta_em, 4, 2)
+W_P_CV_OEI = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V_OEI, CD_DesTakeOff, CL_MaxTakeOff, rho_1524,W_S, beta_cv, 4, 1)
+W_P_TOP = takeoff_constraint(alpha_p_em, s_takeoff_1524, rho_1524, h2, k_t, 4, 2)
+W_P_TOP_OEI = takeoff_constraint(alpha_p_em, s_takeoff_1524, rho_1524, h2, k_t, 4, 1)
 #DESIGN POINTS OTHER AIRCRAFT
 #ATR 42
 power_42 = 2 * 1610710
@@ -110,9 +107,10 @@ plt.plot(W_S,W_P_TOP,'g',label = "Takeoff Constraint")
 plt.plot(W_S,W_P_TOP_OEI,'r',label = "Takeoff Constraint (OEI)")
 plt.vlines(W_S_land,0,100,'c',label ="Landing Constraint")
 plt.plot(W_S,W_P_cruise,'m',label = "Cruise Constraint (275kts)")
-plt.plot(W_S,W_P_ROC,'y',label = "Rate of Climb Constraint")
-plt.plot(W_S,W_P_CV,'k',label = "Climb Gradient Constraint, $\gamma=0.024$")
-plt.plot(W_S,W_P_CV_OEI,'indigo',label = "Climb Gradient Constraint (OEI), $\gamma=0.024$")
+plt.plot(W_S,W_P_ROC,'y',label = "Rate of Climb Constraint, ROC = 6")
+plt.plot(W_S,W_P_ROC_OEI,'orange',label = "Rate of Climb Constraint (OEI), ROC = 3")
+plt.plot(W_S,W_P_CV,'k',label = "Climb Gradient Constraint, $\gamma=0.032$")
+plt.plot(W_S,W_P_CV_OEI,'indigo',label = "Climb Gradient Constraint (OEI), $\gamma=0.03$")
 plt.plot(WS_42, WP_42, "*", label="Design Point ATR 42", markersize = 7)
 plt.plot(WS_72, WP_72, "^", label="Design Point ATR 72", markersize = 7)
 plt.plot(WS_dash, WP_dash, "s", label="Design Point Dash 8 q300", markersize = 7)
@@ -127,7 +125,10 @@ plt.axvspan(W_S_land, 6000, color="red", alpha=0.1)
 plt.fill_between(W_S, W_P_cruise, 1, color="red", alpha=0.1)
 plt.fill_between(W_S, W_P_CV_OEI, 1, color="red", alpha=0.1)
 plt.fill_between(W_S, W_P_ROC, 1, color="red", alpha=0.1)
-plt.plot(3270, 0.07746, 'o',label = "Design Point SRP-22", markersize = 7)
+plt.plot(W_S[2999], W_P_ROC[2999], 'o',label = "Design Point SRP-22", markersize = 7)
 plt.legend(loc = "upper right")
 plt.grid()
 plt.show()
+print(W_S[2999])
+print(W_P_ROC[2999])
+print(W_S_land)
