@@ -1,7 +1,9 @@
 import numpy as np
 import math as m
-from Constants.AircraftGeometry import l_f, D_outer, Aw, Sw, bw, taperw, Sweep_quarterchordw, c_mac_w, t_over_c_vtail
+from Constants.AircraftGeometry import l_f, d_f_outer, Aw, S_w, bw, taperw, Sweep_quarterchordw, c_mac_w, t_c_ratio_w
 from Constants.Aircraft_Geometry_Drawing import zv, y_T, Zw, S_BS, center_S_BS
+
+print("FILE: Vertical_Tail")
 
 """
 VT design checks:
@@ -29,14 +31,14 @@ i_v = 0                         # VT : incidence angle              [rad]       
 Dihedral = 0                    # VT : dihedral                     [rad]       -> Symmetric propulsion
 br_bv = 0.7                     # Rudder-to-VT span                 [-]
 Cr_Cv = 0.22                    # Rudder-to-VT chord                [-]         -> graph 12.12 from book
-V_mincont = 0.8 * 58.8/1.05     # Min controllable speed            [m/s]       -> See FAR regulations (estimate 80% of stall speed)
+V_mincont = 0.8 * 58.8/1.05     # Min controllable speed            [m/s]       -> See FAR regulations (estimate 80% of stall speed)    todo: or at TO speed??
 delta_r_max = 30                # Rudder : max allowable deflection [deg]
 Cdy = 0.65                      # Aircraft side drag coefficient    [-]         (0.5-0.8)
 y_i_rudder = 0                  # Rudder : Inboard location         [m]
 
 # Initial Geometry Calculations for VT
 def VT_Geometry():
-    Sv = V_v * (Sw * bw) / l_v
+    Sv = V_v * (S_w * bw) / l_v
     bv = np.sqrt(Av * Sv)                   # VT : Wing span         [m]
     c_mac_v = Sv / bv                       # VT : MAC               [m]
     c_rv = 2 * Sv / ((1 + taperv) * bv)     # VT : Root chord        [m]
@@ -44,8 +46,8 @@ def VT_Geometry():
     return bv, c_mac_v, c_rv, c_tv, Sv
 
 # Variables with new names
-h1 = D_outer                # Fuselage : height at h1               [m]
-h2 = D_outer                # Fuselage : height at h2               [m]
+h1 = d_f_outer              # Fuselage : height at h1               [m]
+h2 = d_f_outer              # Fuselage : height at h2               [m]
 c_mac_v = VT_Geometry()[1]  # VT :  MAC                             [m]
 Cvroot = VT_Geometry()[2]   # VT : root chord                       [m]
 Cvtip = VT_Geometry()[3]    # VT : tip chord                        [m]
@@ -68,7 +70,7 @@ x_cgfront = 11.7            # Airfract front cg                     [m]
 xac = 13                    # AC location                           [m]         -> xac must be aft of cg    TODO: to be calculated
 
 # Imported Variables : Performance
-T_L = 4164                  # Force by main engine                  [N]
+T_L = 4164                  # Force by 1 engine                     [N]
 rho = 1.225                 # Density at approach                   [kg/m^3]    TODO: to be revised for approach altitude
 eta_v = 0.97                # VT dynamic pressure ratio             [-]         -> q_v/q_inf    TODO: estimate or calculate?
 Vw = 52.37                  # Maximum cross-wind speed              [m/s]   -> FAR regulations
@@ -76,7 +78,7 @@ V_approach = 60             # Approach speed                        [m/s]
 
 # Intermediate calculations
 y_o_rudder = br_bv*bv       # Rudder: Outboard location             [m]
-Sidewash_grad = 0.724 +3.06 *((Sv/Sw)/(1+np.cos(Sweep_quarterchord)))+0.4*(Zw/D_outer)+0.009*Aw    # Sidewash gradient   [-]
+Sidewash_grad = 0.724 +3.06 *((Sv/S_w)/(1+np.cos(Sweep_quarterchordw)))+0.4*(Zw/d_f_outer)+0.009*Aw    # Sidewash gradient   [-]
 
 print('----------------- NEEDED TO CALCULATE CN BETA -----------------')
 print("xm/l_f =", x_cgaft/l_f)
@@ -94,7 +96,7 @@ print("AR_wing =", Aw)
 print("----Needed to calculate the Rudder derivatives ----")
 print("Clalpha/Clalpha_theory = ", Cl_alpha_vtail/(2*np.pi))
 print("Cf/C = ", Cr_Cv)
-print("t/c =", t_over_c_vtail)
+print("t/c =", t_c_ratio_w)
 print("eta_i = ", y_i_rudder/bv, "m")
 print("eta_o = ", y_o_rudder/bv, "m")
 print("taper ratio VT =", taperv)
@@ -122,9 +124,9 @@ def Deriv_Directional_Stability():
     :return: Cn_beta and Cn_r
     """
 
-    Cybeta_v = -kv * CL_alpha_vtail * Sidewash_grad * (Sv / Sw)                                # eq. XX (p. XXX)
+    Cybeta_v = -kv * CL_alpha_vtail * Sidewash_grad * (Sv / S_w)                                # eq. XX (p. XXX)
     Cn_beta_w = 0
-    Cn_beta_f = -57.3*K_N*K_Rl*((S_BS*l_f)/(Sw*bw))
+    Cn_beta_f = -57.3*K_N*K_Rl*((S_BS*l_f)/(S_w*bw))
     Cn_beta_v = -Cybeta_v*(l_v*np.cos(alpha)+zv*np.sin(alpha))/bw                           # Determine alpha
     Cn_beta = Cn_beta_w + Cn_beta_f + Cn_beta_v                                             # XX.XX (p. xxx)
     #Cn_beta = 0.09
@@ -140,7 +142,7 @@ Cn_r = Deriv_Directional_Stability()[1]
 
 # R.1. One Engine Inoperative AND R.2. Cross-Wind Landing calculations
 def Deriv_Rudder():
-    Cydelta_r = CL_alpha_vtail*(k_prime*K_b)*Cldelta_over_Cldeltatheory*Cldeltatheory*(Sv/Sw)       # eq. XX (p. XXX)       TODO: revisit
+    Cydelta_r = CL_alpha_vtail*(k_prime*K_b)*Cldelta_over_Cldeltatheory*Cldeltatheory*(Sv/S_w)       # eq. XX (p. XXX)       TODO: revisit
     Cydelta_r = 0.25
 
     Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha) + zv * np.sin(alpha)) / bw                       # eq. XX (p. XXX)       TODO: check for what alpha?
@@ -153,12 +155,12 @@ print("Cndeltar =", Cndelta_r)
 print("Cydelta_r =", Cydelta_r)
 
 
-tau_r = Cndelta_r / (br_bv * (( l_v * Sv /(Sw*bw))) * -CL_alpha_vtail * eta_v)      # Rudder angle of attack effectiveness (eq. 12.100)     [-]
+tau_r = Cndelta_r / (br_bv * (( l_v * Sv /(S_w*bw))) * -CL_alpha_vtail * eta_v)      # Rudder angle of attack effectiveness (eq. 12.100)     [-]
 
 V_T = np.sqrt(V_approach**2 + Vw**2)    # Total airspeed                    [m/s]
 beta = m.atan(Vw/V_approach)            # Side slip angle                   [rad]
 Fw = 0.5*rho*(Vw**2)*S_BS*Cdy           # Force generated by cross wind     [N]
-N_A = -T_L * y_T                        # Yawing moment                     [N]
+N_A = -T_L * y_T                        # Yawing moment for outboard engine inoperative        [N]
 Cnzero = 0                              # Cn0                               [-]
 
 print("Side slip angle =", beta)            #TODO: positive sideslip angle should mean positive rudder deflection!
@@ -171,11 +173,11 @@ def crab_angle(xcg):
     return sigma
 
 "ASYMMETRIC THRUST REQUIREMENT OUTPUT"
-delta_r_assym = (T_L*y_T)/(-0.5*rho*(V_mincont**2)*Sw*bw*Cndelta_r)                                     # Rudder deflection angle        [rad]
+delta_r_assym = (-T_L*y_T)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad] todo: check sign, as otherwise - can be left out.
 
 "CROSS WIND REQUIREMENT OUTPUT"
-delta_r_crosswind_front = ((N_A/(0.5*rho*V_T**2*Sw*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(x_cgfront)))*(1/Cndelta_r)    # Rudder deflection angle for front cg      [rad]
-delta_r_crosswind_aft = ((N_A/(0.5*rho*V_T**2*Sw*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(x_cgaft)))*(1/Cndelta_r)        # Rudder deflection angle for aft cg        [rad]
+delta_r_crosswind_front = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(x_cgfront)))*(1/Cndelta_r)    # Rudder deflection angle for front cg      [rad]
+delta_r_crosswind_aft = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(x_cgaft)))*(1/Cndelta_r)        # Rudder deflection angle for aft cg        [rad]
 if abs(delta_r_crosswind_aft) > abs(delta_r_crosswind_front):
     delta_r_crosswind = delta_r_crosswind_aft
 else:
@@ -309,7 +311,7 @@ print(l_v)
 
 # Imported Variables : Aircraft Geometry
 # l_f = 23.9                  # Fuselage : length                     [m]
-# D_outer = 3.0               # Fuselage : outer diameter             [m]
+# d_f_outer = 3.0             # Fuselage : outer diameter             [m]
 # Sw = 59.9                   # Wing : surface area                   [m^2]
 # bw = 26.8                   # Wing : span                           [m]
 # taperw = 1                  # Wing : taper ratio                    [-]
