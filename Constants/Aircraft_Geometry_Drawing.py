@@ -5,6 +5,8 @@ Geometry calculated using the drawing:
 * Distances
 * Area hall?
 """
+
+"""Distances"""
 ln1 = 2.19543   # [m] Longitudinal position between the big prop to the c/4
 ln2 = 1.88328   # [m] Longitudinal position between the small prop to the c/4
 bn1 = 0.77      # [m] Big nacelle width
@@ -13,8 +15,11 @@ bn2 = 0.51      # [m] Small nacelle width
 zv =  2.422     # [m] Vertical distance between the center line of the fuselage to the vertical tail a.c.
 y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center line to the big engine.
 Zw = -1.82253   # [m] Vertical distance (z-direction) between the fuselage
-                # center line to the LE of the wing, assuming no dihedral.
-# center_S_BS =   # What does this mean?
+l_fn = 10.24    # [m] Length nose to LE wing
+
+
+# center line to the LE of the wing, assuming no dihedral.
+"""Area"""
 S_BS = 74.8936  # Body side area [m**2]
 
 

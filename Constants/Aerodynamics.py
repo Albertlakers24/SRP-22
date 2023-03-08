@@ -31,5 +31,8 @@ CL_Alpha_Wing = 5.63403713             # Lift slope wing [1/rad]
 Cl_Alpha_WingAirfoil =  5.99001331     # Airfoil lift slope [1/rad]
 Cl_Alpha_TailAirfoil =  5.7295779513   # Tail Airfoil lift slope [1/rad]
 
-''' HLD Design '''
-
+''' TO BE UPDATED '''
+DeltaCLflaps = 0.94                    # Change in CL wing due to flaps      [-]    todo: add
+DeltaClmax = 2.3                       # Change in airfoil Cl by flaps       [-]    todo: add
+CL0_Land = 0.29971                     # CL0 for flapped wing (landing)      [-]
+Cm0_airfoil = -0.0794                  # Cm for airfoil at alpha=0           [-]
