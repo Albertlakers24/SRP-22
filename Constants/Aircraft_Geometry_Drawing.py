@@ -3,7 +3,7 @@
 """
 Geometry calculated using the drawing:
 * Distances
-* Area
+* Area hall?
 """
 
 '''Distances'''
