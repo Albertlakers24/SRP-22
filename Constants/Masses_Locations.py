@@ -10,9 +10,10 @@ eta_eng = 0.6 * 0.97 * 0.995 * 0.95
 m_pldes = 5524.75056
 W_S_design = 3000
 W_P_design = 0.07755015218235134
+
 ''' Subsystem masses '''
 
 ''' Sub system locations '''
 
 ''' Overall CG locations '''
-
+xcg_aft = 12.7                              # Aft cg location       [m]
