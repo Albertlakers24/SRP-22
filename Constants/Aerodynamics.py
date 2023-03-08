@@ -7,22 +7,22 @@ CD0_40 = 0.07520760765686323        # CD0 Flap deflection 40 def [-]
 
 ''' Cruise data '''
 CL_DesCruise = 0.63369832                 # CL Design Cruise [-]
-CD_DesCruise = 0.03158978                 # CD Design Cruise [-]
-CL_CD_DesCruise = 20.06022946             # CL/CD Design Cruise [-]
+CD_DesCruise = 0.03323038                # CD Design Cruise [-]
+CL_CD_DesCruise = 19.06985102             # CL/CD Design Cruise [-]
 Alpha_DesCruise = 4                       # Angle of attack Cruise [deg]
 CL_Max_Clean =  1.3499704142011835        # CL max wing clean configuration [-]
 
 '''Take-off data --> 40 deg flap deflection'''
 CL_DesTakeOff = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
-CD_DesTakeOff = 0.17010717                # CD at 40 deg flap deflection [-]
-CL_CD_TakeOff = 12.45115767               # CL/CD at 40 deg flap deflection [-]
+CD_DesTakeOff = 0.17041399                # CD at 40 deg flap deflection [-]
+CL_CD_TakeOff = 12.428740               # CL/CD at 40 deg flap deflection [-]
 Alpha_DesTakeOff = 11.0923                # Alpha at 40 deg flap deflection [-]
 CL_MaxTakeOff = 2.4                       # CL max wing at flap deflection 40 deg
 
 ''' Landing data --> 40 deg flap deflection'''
 CL_DesLand = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
-CD_DesLand = 0.17010717                # CD at 40 deg flap deflection [-]
-CL_CD_Land = 12.45115767               # CL/CD at 40 deg flap deflection [-]
+CD_DesLand = 0.17041399                # CD at 40 deg flap deflection [-]
+CL_CD_Land = 12.428740                 # CL/CD at 40 deg flap deflection [-]
 Alpha_DesLand = 11.0923                # Alpha at 40 deg flap deflection [-]
 CL_MaxLand = 2.4                       # CL max wing at flap deflection 40 deg
 
