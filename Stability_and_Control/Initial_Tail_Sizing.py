@@ -1,21 +1,11 @@
 import numpy as np
-#from Initial_Aircraft_Sizing.Wing_planform import Sw, c_mac,specific_gas_constant, gamma, M_cross,b
-#from Initial_Aircraft_Sizing.Fuselage import l_f
+from Constants.AircraftGeometry import d_f_outer, bw, S_w, c_mac_w
+from Constants.Masses_Locations import xcg_aft
+
+print("FILE: Initial Tail Sizing")
 
 # Design 1; Fuel Cell
 Design = 1
-
-# Imported Variables : Aircraft Geometry
-D_inner = 3.0                       # Inner diameter        [m]
-thickness = 0.21                    # Fuselage thickness    [m]
-D_outer = D_inner+ thickness*2      # Outer diameter        [m]
-bw = 26.8                           # Wing span             [m]
-Sw = 59.9                           # Wing surface area     [m^2]
-l_f = 23.9                          # Fuselage lenght       [m]
-c_mac = 2.3                         # MAC wing              [m]
-xcg_aft = 12.7                      # Aft cg location       [m]
-
-#l_ultimate = 19.755                 # Ultimate location     [m]
 
 if Design ==1:
     # Inputs: Esimated Variables
@@ -32,7 +22,7 @@ if Design ==1:
     # Intermediate Calculations
     l_v = x_v - xcg_aft             # VT location               [m]
     l_h = x_h - xcg_aft             # HT location               [m]
-    l_opt = Kc * np.sqrt((4 * c_mac * Sw * Vh) / (np.pi * D_outer))
+    l_opt = Kc * np.sqrt((4 * c_mac_w * S_w * Vh) / (np.pi * d_f_outer))
 
     print("-----------Location check---------")
     print("l_v =", l_v)
@@ -45,7 +35,7 @@ Type =1
 #abs((Sh-Sh_stability)/Sh)*100 < 10:
 
 if Type ==1:
-    Sh = Vh * (Sw * c_mac) / l_h               # HT surface area           [m^2]
+    Sh = Vh * (S_w * c_mac_w) / l_h               # HT surface area           [m^2]
     if switch ==1:
 
         # Determine Horizontal Tail Geometry
@@ -64,10 +54,10 @@ if Type ==1:
         print("ct_h =",c_th, "m")
         print("c_mach =", c_mach_h)
         print("y_machh =", y_mach_h)
-        print("ratio wing areas =", Sh/Sw)
+        print("ratio wing areas =", Sh/S_w)
         print("tail_arm_h=", x_h - xcg_aft)
 
-        Sv = Vv * (Sw * bw) / l_v           # VT surface area           [m^2]
+        Sv = Vv * (S_w * bw) / l_v           # VT surface area           [m^2]
         bv = np.sqrt(Av*Sv)                 # VT wing span              [m]
         c_mac_v = Sv/bv                     # VT MAC                    [m]
         c_rv = 2*Sv/((1+taperv)*bv)         # VT root chord             [m]
