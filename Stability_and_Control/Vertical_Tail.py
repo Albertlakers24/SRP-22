@@ -2,9 +2,26 @@ import numpy as np
 import math as m
 from Constants.AircraftGeometry import l_f, d_f_outer, Aw, S_w, bw, taperw, Sweep_quarterchordw, c_mac_w, t_c_ratio_w
 from Constants.Aircraft_Geometry_Drawing import zv, y_T, Zw, S_BS, center_S_BS
+from Constants.Masses_Locations import m_mto, m_pldes
+from Constants.Aerodynamics import R_lfus, CL_Alpha_VT, Cl_Alpha_VT_Airfoil
+from Constants.MissionInputs import V_approach, ISA_calculator, landing_critical, dt_land
+
+# Imported Variables :  Aerodynamics
+CLw = 0.63                  # Wing : lift coefficient               [-]         -> CLdes        todo: cruise? TO? Land?
+CD0w =0.021                 # Wing : zero Drag coefficient          [-]                         todo: cruise? deflection flap?
+# Imported Variables : Performance
+T_L = 4164                  # Force by 1 engine                     [N]
+eta_v = 0.97                # VT dynamic pressure ratio             [-]         -> q_v/q_inf    TODO: estimate or calculate?
+Vw = 52.37                  # Maximum cross-wind speed              [m/s]   -> FAR regulations
+#Imported Variables: Masses & Locations
+m_payload = m_pldes         # Payload mass   ?                      [kg]    todo: ask if correct to Albert
+x_cgaft = 12.7              # Aircraft aft cg                       [m]     todo: xcg potato or normal??
+x_cgfront = 11.7            # Airfract front cg                     [m]
+# Imported Variables : Masses and Locations
+xac = 13                    # AC location                           [m]         -> xac must be aft of cg    TODO: to be calculated
+
 
 print("FILE: Vertical_Tail")
-
 """
 VT design checks:
 VT.1. Directional stability:
@@ -54,31 +71,10 @@ Cvtip = VT_Geometry()[3]    # VT : tip chord                        [m]
 bv = VT_Geometry()[0]       # VT : span                             [m]
 Sv = VT_Geometry()[4]       # VT : surface area                     [m^2]
 
-
-# Imported Variables :  Aerodynamics
-R_lfus = 115629986.920      # Fuselage Reynolds number              [-]
-CL_alpha_vtail = 2.55       # VT : CL over alpha                    [rad^-1]
-Cl_alpha_vtail = 6.4588     # VT : Airfoil lift over alpha slope    [rad^-1]
-CLw = 0.63                  # Wing : lift coefficient               [-]         -> CLdes
-CD0w =0.021                 # Wing : zero Drag coefficient          [-]
-
-# Imported Variables : Masses and Locations
-m_payload = 1               # Payload mass                          [kg]
-m_mto =18650                # Maximum TO mass                       [kg]
-x_cgaft = 12.7              # Aircraft aft cg                       [m]
-x_cgfront = 11.7            # Airfract front cg                     [m]
-xac = 13                    # AC location                           [m]         -> xac must be aft of cg    TODO: to be calculated
-
-# Imported Variables : Performance
-T_L = 4164                  # Force by 1 engine                     [N]
-rho = 1.225                 # Density at approach                   [kg/m^3]    TODO: to be revised for approach altitude
-eta_v = 0.97                # VT dynamic pressure ratio             [-]         -> q_v/q_inf    TODO: estimate or calculate?
-Vw = 52.37                  # Maximum cross-wind speed              [m/s]   -> FAR regulations
-V_approach = 60             # Approach speed                        [m/s]
-
 # Intermediate calculations
 y_o_rudder = br_bv*bv       # Rudder: Outboard location             [m]
 Sidewash_grad = 0.724 +3.06 *((Sv/S_w)/(1+np.cos(Sweep_quarterchordw)))+0.4*(Zw/d_f_outer)+0.009*Aw    # Sidewash gradient   [-]
+rho = ISA_calculator(landing_critical, dt_land)                     # Density at critical landing (5000ft)
 
 print('----------------- NEEDED TO CALCULATE CN BETA -----------------')
 print("xm/l_f =", x_cgaft/l_f)
