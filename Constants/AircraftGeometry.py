@@ -3,11 +3,11 @@ import numpy as np
 
 # Suggested headers - pls change if needed -- segregate as you'd like
 
-'''TO BE UPDATED: High Lift Devices (for Alberto)'''
-SwfS = 1                # Wing area by flaps area       [-]
-c_accent_c = 1          # c'/c for the flaps            [-]
-b_flap = 1              # Span flaps                    [m]
-
+'''TO BE UPDATED: High Lift Devices (for Alberto)''' #todo to be updated!
+SwfS = 1                # Wing area by flaps area (Swf/S)   [-]
+c_accent_c = 1          # c'/c for the flaps                [-]
+b_flap = 1              # Span flaps                        [m]
+cf_over_cprime = 1      # Chord flap/c'                     [-]
 
 ''' Wing planform'''
 taperw = 0.45           # wing taper ratio                                  [-]
