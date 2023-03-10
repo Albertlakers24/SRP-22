@@ -15,7 +15,9 @@ y_outboard_aileron = 7          # y outboard location of the aileron        [m]
 y_inboard_aileron = 1           # y inboard location of the aileron         [m]
 y_outboard_flap = 1             # y outboard location of the flap           [m]
 y_inboard_flap = 1              # y inboard location of the flap            [m]
-
+delta_flap =40/180*np.pi        # Flap deflection                           [rad]
+twist = 0                       # Wing twist angle                          [rad]
+dihedral = 0                    # Wing dihedral angle                       [rad]
 
 ''' Wing planform'''
 taperw = 0.45           # wing taper ratio                                  [-]
