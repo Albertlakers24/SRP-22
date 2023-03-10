@@ -1,27 +1,25 @@
 import numpy as np
 import math as m
-from Constants.AircraftGeometry import taperw, Aw, delta_a_righ, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap
-from Constants.Aerodynamics import Cl_Alpha_WingAirfoil, CL_DesCruise
+from Constants.AircraftGeometry import taperw, Aw, c_mac_w,delta_a_righ, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap, twist, dihedral
+from Constants.Aerodynamics import Cl_Alpha_WingAirfoil, CL_DesCruise, Alpha_DesCruise, CD0_CR
 from Constants.MissionInputs import M_cruise
-from Constants.Derivative_List import Cybeta_v
+from Constants.Stability_Control import Cybeta_v, x_AC
+from Constants.Masses_Locations import
 
-zv = 3.3026                                                         # DOROTEYA             -- CHECKED
-alpha = 4 *np.pi/180                                                # [rad] cruise         -- CHECKED
+#New name:
+zv = 3.3026                                                         # DOROTEYA
+alpha = Alpha_DesCruise*np.pi/180                                   # [rad] cruise
 delta_f = 40                                                        # [deg] flap deflection-- CHECKED
-CD0w =0.008216348148174173                                          # Imported from MEGHA  -- CHECKED
 xcg = 12.31402435                                                   # Most aft CG - from nose of aircraft  -- CHECKED
 AC_loc = (0.35*c_mac)  + 11.507   #AC_location()                    # TODO: Get correct AC location - front of A/C
 x_bar = xcg- AC_loc
-Delta_Clr_alpha_delta_f = Delta_Clr_alpha_delta_f_outer-Delta_Clr_alpha_delta_f_inner   # -- CHECKED
-epsilon_t =0                                                        #No twist --  CHECKED
-dihedral = 0                                                        # -- CHECKED
-cl_alpha =  Cl_alpha_M * np.sqrt(1-M_cruise**2)                     #lift-curve slope airfoil -- CHECKED
+cl_alpha =  Cl_alpha_M * np.sqrt(1-M_cruise**2)                     # lift-curve slope airfoil -- CHECKED
 deltacl =  0.45*0.35*np.radians(40)*cl_alpha                        # section 8.1.2.1 -- CHECKED
-wing_sweep_quarter = 0                                              # CHECKED
-#Cl_alpha_a = Cl_alpha_M
 alpha_deltaf = deltacl / (cl_alpha * delta_f)                       # in rad/deg -- CHECKED
 
-
+# Intermediate equations YAW RATE
+x_bar =
+Delta_Clr_alpha_delta_f = Delta_Clr_alpha_delta_f_outer-Delta_Clr_alpha_delta_f_inner
 
 
 print("FILE: Static Derivatives")
@@ -92,7 +90,7 @@ def Aileron():      #CHECKED
 
 print("------------Needed to find X graph coefficients for YAW RATE derivatives ---------------")
 print("Aw=", Aw)
-print("x_bar/MAC =", x_bar/c_mac)       # todo: should be about 0.2
+print("x_bar/MAC =", x_bar/c_mac_w)       # todo: should be about 0.2
 print("Sweep_quarterchord =", Sweep_quarterchordw)
 print("taper=", taperw)
 print("y_outboard/(b/2)=", y_outboard_flap/(bw/2))
@@ -108,15 +106,15 @@ def YawRate():
     Cy_r = -2*Cybeta_v*(l_v*np.cos(alpha)+zv*np.sin(alpha))/b
 
     B = (1-(M_cruise**2)*(np.cos(Sweep_quarterchordw))**2)**(1/2)
-    num = 1 + ((A*1-B**2)/(2*B*(A*B + 2*np.cos(wing_sweep_quarter)))) + (((A*B + 2*np.cos(wing_sweep_quarter))/(A*B + 4*np.cos(wing_sweep_quarter)))*(np.tan(wing_sweep_quarter))**2)
-    den = 1 + (((A + 2*np.cos(wing_sweep_quarter))/(A + 4*np.cos(wing_sweep_quarter)))*(np.tan(wing_sweep_quarter))**2)
+    num = 1 + ((A*1-B**2)/(2*B*(A*B + 2*np.cos(Sweep_quarterchordw)))) + (((A*B + 2*np.cos(Sweep_quarterchordw))/(A*B + 4*np.cos(Sweep_quarterchordw)))*(np.tan(Sweep_quarterchordw))**2)
+    den = 1 + (((A + 2*np.cos(Sweep_quarterchordw))/(A + 4*np.cos(Sweep_quarterchordw)))*(np.tan(Sweep_quarterchordw))**2)
 
     Clr_CL_CL0 = Clr_CL_CL0_M0 *num/den
-    Clrw =CL_DesCruise*Clr_CL_CL0 + 0 + Delta_lr_epsilont*epsilon_t + Delta_Clr_alpha_delta_f*alpha_deltaf*delta_f
+    Clrw =CL_DesCruise*Clr_CL_CL0 + 0 + Delta_lr_epsilont*twist + Delta_Clr_alpha_delta_f*alpha_deltaf*delta_f
     Clrv = -(2/b**2)*(l_v*np.cos(alpha)+zv*np.sin(alpha))*(zv*np.cos(alpha)-l_v*np.sin(alpha))*Cybeta_v
     Cl_r = Clrw + Clrv
 
-    Cnr_w = Cnr_CL2*CL_DesCruise**2 + Cnr_CD0*CD0w
+    Cnr_w = Cnr_CL2*CL_DesCruise**2 + Cnr_CD0*CD0_CR
     Cnr_v =(2/b**2)*((l_v*np.cos(alpha)+zv*np.sin(alpha))**2)*Cybeta_v
     Cn_r = Cnr_v + Cnr_w
     return Cy_r, Cl_r, Cn_r
@@ -144,7 +142,7 @@ roll_damping_parameter_w = -0.54                                    #graph 10.35
 k_roll_w = CL_alpha_w_CL*beta/(2*np.pi)                             # CHECKED
 print('K roll factor for wing', k_roll_w)
 drag_dueto_lift_roll_damping_parameter_w = -0.01                    #graph 10.36 (p. 420)   CHECKED
-Delta_Clp_drag_w = drag_dueto_lift_roll_damping_parameter_w*(CL_DesCruise**2)-0.125*CD0w     #CHECKED
+Delta_Clp_drag_w = drag_dueto_lift_roll_damping_parameter_w*(CL_DesCruise**2)-0.125*CD0_CR     #CHECKED
 
 ##Horizontal Tail Parameters
 CL_alpha_M_H =Cl_alpha_AFtail                                       #Airfoil lift curve at any Moment   CHECKED
@@ -197,7 +195,7 @@ def RollRate():             # CHECKED
     Cnp_CL_CL0 = part1*(part2a/part2b)*Cnp_CL_CL0_M0              #Eq 10.63 (p.453) per radians
     #alpha_deltaf = deltacl/cl_alpha*delta_f
 
-    Cnpw =Cnp_CL_CL0*CL_DesCruise + Cnp_epsilont*epsilon_t + DeltaCnp_alpha_deltaf*alpha_deltaf*delta_f
+    Cnpw =Cnp_CL_CL0*CL_DesCruise + Cnp_epsilont*twist + DeltaCnp_alpha_deltaf*alpha_deltaf*delta_f
     Cnpv = -(2/b**2)*(l_v*np.cos(alpha) + zv*np.sin(alpha))*(zv*np.cos(alpha)-l_v*np.sin(alpha)-zv)*Cybeta_v
     Cn_p = Cnpw+Cnpv
     return Cy_p, Cl_p, Cn_p
