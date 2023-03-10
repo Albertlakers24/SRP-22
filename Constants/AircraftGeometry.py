@@ -4,18 +4,26 @@ import numpy as np
 # Suggested headers - pls change if needed -- segregate as you'd like
 
 '''TO BE UPDATED: High Lift Devices (for Alberto)''' #todo to be updated!
-SwfS = 1                # Wing area by flaps area (Swf/S)   [-]
-c_accent_c = 1          # c'/c for the flaps                [-]
-b_flap = 1              # Span flaps                        [m]
-cf_over_cprime = 1      # Chord flap/c'                     [-]
+SwfS_flap = 1                   # Wing area by flaps area (Swf/S)           [-]
+c_accent_c_flap = 1             # c'/c for the flaps                        [-]
+b_flap = 1                      # Span flaps                                [m]
+cf_over_cprime_flap = 1         # Chord flap/c'                             [-]
+delta_a_left = 1                # Left deflection aileron                   [rad]
+delta_a_righ = 1                # Right deflection aileron                  [rad]
+cf_over_c_aileron = 0.38        # chord flap/c for the aileron              [-]
+y_outboard_aileron = 7          # y outboard location of the aileron        [m]
+y_inboard_aileron = 1           # y inboard location of the aileron         [m]
+y_outboard_flap = 1             # y outboard location of the flap           [m]
+y_inboard_flap = 1              # y inboard location of the flap            [m]
+
 
 ''' Wing planform'''
 taperw = 0.45           # wing taper ratio                                  [-]
 S_w = 63.6872413973     # Wing surface area                                 [m^2]
 Aw   = 12               # Wing aspect ratio                                 [-]
 bw   = 27.645015        # Wing span                                         [m]
-c_tw = 1.38661           # Wing tip chord                                    [m]
-c_rw = 3.08136           # Wing root chord                                   [m]
+c_tw = 1.38661          # Wing tip chord                                    [m]
+c_rw = 3.08136          # Wing root chord                                   [m]
 t_c_ratio_w = 0.21      # Wing thickness to chord ratio                     [-]
 c_mac_w =   2.34113     # Length of wing mean aerodynamic chord             [m]
 y_mac   =   5.855       # Spanwise position of wing mean aerodynamic chord  [m]
