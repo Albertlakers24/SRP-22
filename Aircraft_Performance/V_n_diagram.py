@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Constants.MissionInputs import rho_0,rho_cruise,lbs_kg,V_cruise
+from Constants.MissionInputs import rho_0,rho_cruise,lbs_kg,V_cruise, ISA_calculator, h_cruise, dt_cruise,dt_takeoff,h_loiter,dt_loiter
 from Constants.Aerodynamics import CL_Max_Clean
 from Constants.Masses_Locations import m_mto,W_S_design
 
