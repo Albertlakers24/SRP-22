@@ -1,7 +1,7 @@
 import numpy as np
 import math as m
 import matplotlib.pyplot as plt
-from Constants.AircraftGeometry import S_w, Aw, c_mac_w,c_rw, Sweep_quarterchordw, Sweep_halfchordw, SweepLE, d_f_outer, SwfS, c_accent_c, b_flap, bw, taperw, l_f
+from Constants.AircraftGeometry import S_w, Aw, c_mac_w,c_rw, Sweep_quarterchordw, Sweep_halfchordw, SweepLE, d_f_outer, SwfS_flap, c_accent_c_flap, b_flap, bw, taperw, l_f, cf_over_cprime_flap
 from Constants.Empennage_LandingGear import A_h, lh, Vh_V, lambdahalf_h, Sh, cmac_h
 from Constants.Aircraft_Geometry_Drawing import ln1, ln2, bn1,bn2,l_fn
 from Constants.Masses_Locations import LEMAC, xcg_gear,xcg_front_potato, xcg_aft_potato
@@ -13,7 +13,6 @@ from Constants.Masses_Locations import m_mto
 # Imported Variables :  Aircraft Geometry Drawings to do
 v_t_w = 4.166                   # Vertical distance HT and wing     [m]
 beta_s_land_fc = 1              # Wing loading diagram              [?]
-cf_over_cprime = 1              # Chord flap/c'                     [-]
 
 # Inputs : Constants
 SM = 0.05                       # Stability Margin                  [-]
@@ -39,7 +38,7 @@ print("-----Needed for flap contribution graphs (mu1, mu2, mu3)------")
 print("Type of flap = Slotted (Fowler) flaps")
 print("taper wing =", taperw)
 print("b_flap/b", b_flap/(bw/2))
-print("cf/c'=", cf_over_cprime)
+print("cf/c'=", cf_over_cprime_flap)
 
 # Graph Variables       TODO: TO BE FILLED IN
 x_ac_w = 0.25                   # Wing contribution to ac           [MAC]   Lecture 7 (SEAD), Slide 31 (Torenbeek)
@@ -120,7 +119,7 @@ def total_ac_calc():
     return x_ac_A, x_ac_tail_scaled, x_ac_wf_scaled
 
 def flapcont(mu1, mu2, mu3):
-    flap_cont_quarter = mu2 * (-mu1 * DeltaClmax * c_accent_c - (CL_MaxLand + DeltaClmax * (1 - SwfS)) * (1 / 8) * c_accent_c*(c_accent_c - 1)) + 0.7 * (Aw / (1 + 2 / Aw)) * mu3 * DeltaClmax * np.tan(Sweep_quarterchordw)
+    flap_cont_quarter = mu2 * (-mu1 * DeltaClmax * c_accent_c_flap - (CL_MaxLand + DeltaClmax * (1 - SwfS_flap)) * (1 / 8) * c_accent_c_flap*(c_accent_c_flap - 1)) + 0.7 * (Aw / (1 + 2 / Aw)) * mu3 * DeltaClmax * np.tan(Sweep_quarterchordw)
     #flap_cont_quarter = -mu1 * DeltaClmax * c_accent_c - (CL_MaxLand + DeltaClmax * (1 - SwfS)) * (1 / 8) * c_accent_c*(c_accent_c - 1)
     flap_cont = flap_cont_quarter - (CL_Max_Clean-DeltaCLflaps)*(0.25-AC_location())
     return flap_cont
