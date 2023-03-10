@@ -16,7 +16,6 @@ W_P_design = 0.07755015218235134
 ''' Sub system locations '''
 
 ''' Overall CG locations '''
-xcg_aft = 12.7              # Aft cg location                   [m]
 LEMAC = 11.507              # LEMAC position                    [m]
 xcg_gear = 13.4             # Location landing gear             [m]
 xcg_aft_potato = 12.6       # Aft cg location (potato plot)     [m]
