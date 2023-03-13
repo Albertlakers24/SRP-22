@@ -38,27 +38,27 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
              marker='o', markerfacecolor=colour1, markersize=5, label = 'Payload')
     plt.plot(ranges, masses, color = colour2, linewidth=3,
              marker='o', markerfacecolor=colour2, markersize=5, label = 'Aircraft mass')
-
-    plt.axhline(y=plmasses[1], color='grey', linestyle='--')
-    plt.annotate('Design payload', xy=(1600, plmasses[1] + 60))
-
+    # Design payload (point B)
+    plt.axhline(y=m_pldes, color='grey', linestyle='--')
+    plt.annotate('Design payload', xy=(1600, m_pldes + 60))
+    # Range at point B
     plt.axvline(x=ranges[1], color='grey', linestyle='--')
     plt.annotate('Range @ Design payload', xy=(ranges[1] -60, 7000), rotation='vertical')
-
+    # Range at divergence point C
     plt.axvline(x=ranges[2], color='grey', linestyle='--')
     plt.annotate('Divergence Range', xy=(ranges[2] -60, 7000), rotation='vertical')
-
+    # Range at ferry point D
     plt.axvline(x=ranges[3], color='grey', linestyle='--')
     plt.annotate('Ferry Range', xy=(ranges[3] - 60, 7000), rotation='vertical')
-
-    plt.axhline(y=masses[1], color='grey', linestyle='--')
-    plt.annotate('Maximum take off mass', xy=(1600, masses[1] + 60))
-
+    # max take off
+    plt.axhline(y=m_mto, color='grey', linestyle='--')
+    plt.annotate('Maximum take off mass', xy=(1600, m_mto + 60))
+    # operational empty mass
     plt.axhline(y = m_oem, color='grey', linestyle = '--')
     plt.annotate('Operational empty mass', xy=(1500, m_oem + 50))
 
-    plt.xlim(0,2900)
-    plt.ylim(0,19500)
+    plt.xlim(0,ranges[-1]+150)
+    plt.ylim(0,m_mto + 1000)
     n = ['A', 'B', 'C', 'D']
     for i, txt in enumerate(n):
         plt.annotate(txt, (ranges[i], plmasses[i]))
@@ -82,15 +82,15 @@ rangeA = 0
 reserveA = plmassA+reserve_fuel
 # -------------------- POINT B ----------------
 
-massB = m_mto
+R_nom = R_norm*1852
+massB = m_oem + m_pldes + trip_fuel
 plmassB = m_pldes
 fuelB = trip_fuel
 r_B = R_cruise(m_pldes, fuelB)
-rangeB = (R_tot(r_B, r_B, 0, 0))/1852
+rangeB = (R_tot(R_norm, r_B, 0, 0))/1852
 reserveB = plmassB+reserve_fuel
 
 # -------------------- POINT C ----------------
-R_nom = R_norm*1852
 massC = m_mto
 plmassC = m_pldes
 fuelC = reserve_fuel + trip_fuel

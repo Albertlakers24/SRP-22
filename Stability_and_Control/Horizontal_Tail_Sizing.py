@@ -1,41 +1,30 @@
 import numpy as np
 import math as m
 import matplotlib.pyplot as plt
-from Constants import *
-from Initial_Aircraft_Sizing.Empennage_Design import l_h, Ah, c_mach_h, c_rh, c_th, bh, Sh
-from Initial_Aircraft_Sizing.Wing_planform import Sw, c_mac, M_cruise
-from Control_and_Stability.Scissorplot import Vh_V, C_m_AC, mu1, mu2, mu3, lambdahalf_h, lambdahalf_w, C_L_alpha, x_ac_w, LEMAC, Downwash
-from Aerodynamic_characteristics.AeroData import Cm_alpha, AlphaCL0_CR, CL_alpha, Cl_alpha_AFtail, CL_alpha_htail
+from Constants.Empennage_LandingGear import lh, bh, Sh, lambdahalf_h, c_rh, c_th, A_h, Vh_V
+from Constants.AircraftGeometry import S_w, c_mac_w, Aw, Sweep_quarterchordw
+from Constants.Masses_Locations import m_mto, LEMAC
+from Constants.MissionInputs import g, ISA_calculator, h_cruise, dt_cruise, M_cruise, V_cruise, V_approach
+from Constants.Aerodynamics import CL_Alpha_Wing, downwash, Cl_Alpha_HT_Airfoil, CL_Alpha_HT
 
-print("-------------------RESULTS FROM CONTROL/STABILITY------------------")
-# Variables
-lh= l_h                                                 # Horizontal tail arm       [m]
-bh = bh                                                 # Span horizontal tail      [m]         TODO: check this
-Sh = Sh                                                 # Surface area horizontal wing  [m^2]   TODO: check this
-rho = ISA_calculator(h = h_cruise, dt=dt_cruise)[2]     # Density at cruise         [kg/m^3]
-S = Sw                                                  # Wing surface area         [m^2]
-MAC = c_mac                                             # MAC                       [m]
-MTOW = 18650*g                                          # Maximum to weight         [N]
-Sh=Sh                                                   # Horizontal tail surface area  [m^2]
-Aw = A                                                  # Aspect Ratio              [-]
-M = M_cruise                                            # Mach number               [-]
+print("FILE: Horizontal Tail Sizing")
+
+# To be found still :( todo
 Cmac = C_m_AC(mu1=mu1, mu2=mu2, mu3=mu3)                # C_mac                     [-]
-Sweep_halfc_h = lambdahalf_h                            # Sweep half chord HT       [rad]
-Sweep_halfc_w = lambdahalf_w                            # Sweep half chord wing     [rad]
 Cmalpha = Cm_alpha*180/np.pi                            # Moment curve slope        [rad^-1]
 AlphaCL0_CR = np.radians(np.mean(AlphaCL0_CR))          # Angle of attack at CL0    [rad]
-CL_alpha = CL_alpha                                     # Lift curve slope wing     [rad^-1]
+xcg_aft = 12.66                                         # Aft cg position           [m]         todo which one?
+x_ac_w_MAC = x_ac_w                                     # Position ac of the wing   [MAC]   at 0.25c
+
+# Variables for this file:
 eta = 0.95                                              #                           [-]
 CNh_delta = 0.024*180/np.pi                             # Normal force gradient     [rad^-1]    Graph (pg. 317 FD reader)
-xcg_aft = 12.66                                         # Aft cg position           [m]
-i_h = -2*np.pi/180                                      # Incidence angle           [rad]       To minimize parasite drag
-C_L_alpha_h = CL_alpha_htail                            # Lift curve gradient HT    [rad^-1]
-C_N_alpha_h = C_L_alpha_h                               # Lift curve gradient HT    [rad^-1]
-downwash = Downwash()                                     # Downwash gradient         [-]                         TODO: determine on downwash gradient calcultions if necessary
-Cl_alpha_AFtail = Cl_alpha_AFtail                       # Airfoil slope lift curve for HT       [rad^-1]
-x_ac_w_MAC = x_ac_w                                     # Position ac of the wing   [MAC]
+i_h = -2*np.pi/180                                      # Incidence angle           [rad]       To minimize parasite drag todo: or from HT file?
 
-print("ct=", c_th, "cr=", c_rh)
+# Intermediate Equations
+MTOW = m_mto*g                                          # Maximum to weight         [N]
+rho = ISA_calculator(h = h_cruise, dt=dt_cruise)[2]     # Density at cruise         [kg/m^3]
+C_N_alpha_h = CL_Alpha_HT                               # Lift curve gradient HT    [rad^-1]
 
 # Graph arange velocities and angle of attack
 V_tailload = np.arange(V_cruise-V_cruise*0.7,V_cruise+V_cruise*0.4,0.01)         # Velocity range for tailload      [m/s]
@@ -152,7 +141,7 @@ def HingemomentAF_Coefficients_trim():
     Ch_alpha_bal = c_accent_h_alpha*Ch_alpha_bal_over_Chalpha
     ChAF_alpha = Ch_alpha_bal/((1-M_cruise**2)**0.5)
 
-    Chdelta_t_AF = Chdeltat_cl_delta-Chcl_deltat_delta*Cl_alpha_AFtail*alpha_delta_cl_delta
+    Chdelta_t_AF = Chdeltat_cl_delta-Chcl_deltat_delta*Cl_Alpha_HT_Airfoil*alpha_delta_cl_delta
     RatioAF = ChAF_alpha/Chdelta_t_AF
     return Chdelta_t_AF, ChAF_alpha, RatioAF
 
@@ -187,12 +176,12 @@ alpha_d = 0.51                              # Graph 8.17 (p. 262) at delta_f = 3
 
 def Hingemoment_Coefficients():
     Kalpha = Kalpha_i*(1-Eta_i)-Kalpha_o*((1-Eta_o)/(Eta_o-Eta_i))
-    DeltaC_h_alpha = DeltaCha_over_clalphaBK*(Cl_alpha_AFtail*B2*Kalpha*np.cos(Sweep_quarter_h))
-    Ch_alpha = ((Ah*np.cos(Sweep_quarter_h))/(Ah+2*np.cos(Sweep_quarter_h)))*ch_alpha_M + DeltaC_h_alpha
+    DeltaC_h_alpha = DeltaCha_over_clalphaBK*(Cl_Alpha_HT_Airfoil*B2*Kalpha*np.cos(Sweep_quarter_h))
+    Ch_alpha = ((A_h*np.cos(Sweep_quarter_h))/(A_h+2*np.cos(Sweep_quarter_h)))*ch_alpha_M + DeltaC_h_alpha
 
     Kdelta = Kdelta_i*(1-Eta_i)-Kdelta_o*((1-Eta_o)/(Eta_o-Eta_i))
     DeltaCh_delta =DeltaChd_cldBKd*(cl_delta*B2*Kdelta*np.cos(Sweep_quarter_h)*np.cos(Sweep_hl))
-    Ch_delta = np.cos(Sweep_quarter_h)*np.cos(Sweep_hl)*(ch_delta_M +alpha_d*ch_alpha_M)*((2*np.cos(Sweep_quarter_h))/(Ah+2*np.cos(Sweep_quarter_h)))+DeltaCh_delta
+    Ch_delta = np.cos(Sweep_quarter_h)*np.cos(Sweep_hl)*(ch_delta_M +alpha_d*ch_alpha_M)*((2*np.cos(Sweep_quarter_h))/(A_h+2*np.cos(Sweep_quarter_h)))+DeltaCh_delta
 
     Ch_delta_horn = Ch_delta*0.26                                    # Horn Effect
     Ratio = Ch_alpha / Ch_delta_horn
@@ -231,9 +220,9 @@ def Chdelta_t():
 print("Chdelta_t=", Chdelta_t())
 # Supporting Equations
 CNhalpha_free= C_N_alpha_h - CNh_delta*Chalpha_Chdelta                                          # Normal force gradient eq. 7.5 Sam1                [rad^-1]
-x_ac_w_meters = MAC*x_ac_w_MAC+LEMAC                                                            # Location aerodynamic center wing                  [m]
-xnfree = ((CNhalpha_free/CL_alpha)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S*MAC))*MAC) + x_ac_w_meters# Location neutral point stick free eq. 7.7 Sam1    [m]         normal value 0.483*MAC
-Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(Sw*MAC))                                                 # eq. 5.21 Sam1                                     [rad^-1]
+x_ac_w_meters = c_mac_w*x_ac_w_MAC+LEMAC                                                        # Location aerodynamic center wing                  [m]
+xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters# Location neutral point stick free eq. 7.7 Sam1    [m]         normal value 0.483*MAC
+Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                 # eq. 5.21 Sam1                                     [rad^-1]
 
 if xcg_aft<xnfree:
     print("Aircraft is statically stable as xcg<xnfree")
@@ -253,7 +242,7 @@ def Cm0():
     :param i_h: incidence angle to minimize the parasite drag (rad)
     :return: Cm0 (-)
     """
-    Cm0 = Cmac - C_N_alpha_h*(AlphaCL0_CR+i_h)*(Vh_V**2)*(Sh*lh/(S*MAC))
+    Cm0 = Cmac - C_N_alpha_h*(AlphaCL0_CR+i_h)*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))
     return Cm0
 
 print("Where should the suspension point be for stability?")
@@ -269,7 +258,7 @@ def Cmdelta_e():
     :param CNh_delta: (rad^-1)
     :return: Cmdelta_e: (rad^-1)    normal value around -1.0 to -1.5
     """
-    Cmdelta_e = -CNh_delta*(Vh_V**2)*(Sh*lh/(S*MAC))
+    Cmdelta_e = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))
     return Cmdelta_e
 
 print("Cmdelta_e=", Cmdelta_e(), "Control derivative is stable as Cmdelta_e < 0")
@@ -286,7 +275,7 @@ def delta_e(V):
     :param V: velocity (m/s)
     :return: delta_e: elevator deflection (deg)
     """
-    delta_e = -(1/Cmdelta_e())*(Cm0() + (Cmalpha/CL_alpha)*(MTOW/(0.5*S*rho*V**2)))
+    delta_e = -(1/Cmdelta_e())*(Cm0() + (Cmalpha/CL_Alpha_Wing)*(MTOW/(0.5*S_w*rho*V**2)))
     delta_e_degree = delta_e*180/np.pi
     return delta_e_degree
 
@@ -314,7 +303,7 @@ def TailLoad(V):
     :param xcg and xw: locations (m)
     :return: Tail Load (N)
     """
-    Nh = (1/lh)*(Cmac*0.5*rho*V**2*S*MAC + MTOW*(xcg_aft-x_ac_w_MAC))
+    Nh = (1/lh)*(Cmac*0.5*rho*V**2*S_w*c_mac_w + MTOW*(xcg_aft-x_ac_w_MAC))
     return Nh
 
 def CNh():
@@ -322,7 +311,7 @@ def CNh():
     normal force equation
     :return: CNh (-)
     """
-    CNh = TailLoad(V = V_cruise)/(0.5*rho*V_cruise**2*S)
+    CNh = TailLoad(V = V_cruise)/(0.5*rho*V_cruise**2*S_w)
     return CNh
 
 def trimtab_0():
@@ -342,14 +331,14 @@ def ControlForce(V, delta_te):
     :param: Se; Use surface area of 1 elevator (m^2) - same when you have St
     :return: Tail Load (N)
     """
-    F_velocity_independent = (MTOW/S)*(Ch_delta/Cmdelta_e())*((xcg_aft-xnfree)/MAC)
+    F_velocity_independent = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft-xnfree)/c_mac_w)
     F_velocity_dependent= 0.5*rho*V**2*Chdelta_t()*(delta_te-trimtab_0())
     a = deriv_deltae_se*Se*MACe*(Vh_V)**2
     Fe = a*(F_velocity_independent - F_velocity_dependent)
     return Fe
 
 def deriv_controlForce():
-    deriv_trim = -2*deriv_deltae_se*Se*MACe*(Vh_V**2)*(MTOW/S)*(Ch_delta/Cmdelta_e())*((xcg_aft-xnfree)/MAC)*(1/Vtrim)
+    deriv_trim = -2*deriv_deltae_se*Se*MACe*(Vh_V**2)*(MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft-xnfree)/c_mac_w)*(1/Vtrim)
     return deriv_trim
 
 print("------------IMPORTANT OUTPUTS FOR STABILITY-----------")
@@ -447,3 +436,9 @@ plt.show()
 # plt.title("Elevator Control Force Curve - Stick Free")
 # plt.legend(["delta_te<delta_te0", "delta_te=delta_te0", "delta_te>delta_te0"])
 # plt.show()
+
+# from Constants import *
+# from Initial_Aircraft_Sizing.Empennage_Design import l_h, Ah, c_mach_h, c_rh, c_th, bh, Sh
+# from Initial_Aircraft_Sizing.Wing_planform import Sw, c_mac, M_cruise
+# from Control_and_Stability.Scissorplot import Vh_V, C_m_AC, mu1, mu2, mu3, lambdahalf_h, lambdahalf_w, C_L_alpha, x_ac_w, LEMAC, Downwash
+# from Aerodynamic_characteristics.AeroData import Cm_alpha, AlphaCL0_CR, CL_alpha, Cl_alpha_AFtail, CL_alpha_htail

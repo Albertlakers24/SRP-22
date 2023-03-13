@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from Constants.MissionInputs import ISA_calculator,s_takeoff,s_landing,h_cruise,dt_cruise,rho_0,takeoff_critical,dt_takeoff,A,V_approach,ft_m,V_cruise,g
+from Constants.MissionInputs import ISA_calculator,s_takeoff,s_landing,h_cruise,dt_cruise,rho_0,takeoff_critical,dt_takeoff,Aw,V_approach,ft_m,V_cruise,g
 from Constants.FlightPerformance_Propulsion import eta_prop
 from Constants.Aerodynamics import CL_MaxLand,CL_MaxTakeOff,CD_DesTakeOff,CD0_40,CD0_CR
 #Constants
@@ -17,10 +17,10 @@ phi = 0.97                          #span efficiency factor (value based on Roel
 Cfe = 0.0030                        #equivalent skin friction coefficient -> depending on aircraft from empirical estimation
 Swet_S = 6.1                        #(6.0-6.2) wetted area ratios -> depending on airframe structure
 ##Cdo calculations
-e = 1/(np.pi*A*Psi+(1/phi))
+e = 1/(np.pi*Aw*Psi+(1/phi))
 #ROC and beta estimates
 ROC = 6                        #Change with CS25 and literature or Requirement (Rate of Climb)
-ROC_OEI = 3
+ROC_OEI = 2
 ROC_V = 0.032#0.0032
 ROC_V_OEI = 0.03                     #Change with CS25 and literature or Requirement (Climb Gradient) ROC/V
 V_approach_stall = V_approach /1.23  #CS 25 requirement of V_stall_land = V_approach / 1.23
@@ -50,14 +50,14 @@ def V_approach_constraint(density,V_approach_stall,CL_MaxLand,beta):
 def s_land_constraint(s_land,C_LFL,density,CL_MaxLand,beta):
     W_S = (s_land / C_LFL) * (density * CL_MaxLand / 2) * 1/beta
     return W_S
-def cruise_contraint(eta_prop,alpha_p,Cd0,density,V,W_S,A,e,beta):
-    W_P = eta_prop * (alpha_p/beta) *((Cd0*1/2*density*V**3)/(beta*W_S)+ (beta*W_S)/(np.pi*A*e*1/2*density*V))**(-1)
+def cruise_contraint(eta_prop,alpha_p,Cd0,density,V,W_S,Aw,e,beta):
+    W_P = eta_prop * (alpha_p/beta) *((Cd0*1/2*density*V**3)/(beta*W_S)+ (beta*W_S)/(np.pi*Aw*e*1/2*density*V))**(-1)
     return W_P
-def roc_constraint(eta,alpha_p,ROC,Cd0,density,A,e,W_S,beta,N_e,y):
+def roc_constraint(eta,alpha_p,ROC,Cd0,density,Aw,e,W_S,beta,N_e,y):
     if y == 1: #One engine inoperative case
-        W_P = ((N_e - 1)/N_e)*eta * (alpha_p/beta) *(ROC + ((4*Cd0**(1/4))/(3*np.pi*A*e)**(3/4) * np.sqrt(beta * W_S * (2/density))))**(-1)
+        W_P = ((N_e - 1)/N_e)*eta * (alpha_p/beta) *(ROC + ((4*Cd0**(1/4))/(3*np.pi*Aw*e)**(3/4) * np.sqrt(beta * W_S * (2/density))))**(-1)
     else:
-        W_P = eta * (alpha_p/beta) *(ROC + ((4*Cd0**(1/4))/(3*np.pi*A*e)**(3/4) * np.sqrt(beta * W_S * (2/density))))**(-1)
+        W_P = eta * (alpha_p/beta) *(ROC + ((4*Cd0**(1/4))/(3*np.pi*Aw*e)**(3/4) * np.sqrt(beta * W_S * (2/density))))**(-1)
     return W_P
 def climb_gradient_constraint(eta,alpha_p,ROC_V,CD,CL,density,W_S,beta,N_e,y):
     if y == 1:
@@ -67,16 +67,16 @@ def climb_gradient_constraint(eta,alpha_p,ROC_V,CD,CL,density,W_S,beta,N_e,y):
     return W_P
 def takeoff_constraint(alpha_p,L_to,density,h_2, k_t,N_e,y):
     if y == 1:
-        W_P = alpha_p  * (1.15 * np.sqrt((N_e/(N_e-1))*(W_S/(L_to * k_t * density * g * np.pi * A * e))) + (N_e/(N_e-1))*(4*h_2/L_to)) **(-1) * np.sqrt((CL_2/W_S) *(density)/2)
+        W_P = alpha_p  * (1.15 * np.sqrt((N_e/(N_e-1))*(W_S/(L_to * k_t * density * g * np.pi * Aw * e))) + (N_e/(N_e-1))*(4*h_2/L_to)) **(-1) * np.sqrt((CL_2/W_S) *(density)/2)
     else:
-        W_P = alpha_p * ((1.15 * np.sqrt((W_S / (L_to * k_t * density * g * np.pi * A * e)))) + (4 * h_2 / L_to)) ** (-1) * np.sqrt((CL_2 / W_S) * ((density) / 2))
+        W_P = alpha_p * ((1.15 * np.sqrt((W_S / (L_to * k_t * density * g * np.pi * Aw * e)))) + (4 * h_2 / L_to)) ** (-1) * np.sqrt((CL_2 / W_S) * ((density) / 2))
     return W_P
 e_to = oswald_efficiency(40)
 W_S_approach = V_approach_constraint(rho_1524, V_approach_stall, CL_MaxLand, beta_V_app_fc)
 W_S_land = s_land_constraint(s_landing_1524, C_LFL, rho_1524, CL_MaxLand, beta_s_land_fc)
-W_P_cruise = cruise_contraint(eta_prop,alpha_p_em, CD0_CR, rho_cruise, V_cruise, W_S, A, e,beta_cruise_fc)
-W_P_ROC = roc_constraint(eta_prop, alpha_p_em, ROC, CD0_40, rho_1524, A, e_to, W_S, beta_ROC_fc, 4, 2)
-W_P_ROC_OEI = roc_constraint(eta_prop, alpha_p_em, ROC_OEI, CD0_40, rho_1524, A, e_to, W_S, beta_ROC_fc, 4, 1)
+W_P_cruise = cruise_contraint(eta_prop,alpha_p_em, CD0_CR, rho_cruise, V_cruise, W_S, Aw, e,beta_cruise_fc)
+W_P_ROC = roc_constraint(eta_prop, alpha_p_em, ROC, CD0_40, rho_1524, Aw, e_to, W_S, beta_ROC_fc, 4, 2)
+W_P_ROC_OEI = roc_constraint(eta_prop, alpha_p_em, ROC_OEI, CD0_40, rho_1524, Aw, e_to, W_S, beta_ROC_fc, 4, 1)
 W_P_CV = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V, CD_DesTakeOff, CL_MaxTakeOff, rho_1524, W_S,beta_em, 4, 2)
 W_P_CV_OEI = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V_OEI, CD_DesTakeOff, CL_MaxTakeOff, rho_1524,W_S, beta_cv, 4, 1)
 W_P_TOP = takeoff_constraint(alpha_p_em, s_takeoff_1524, rho_1524, h2, k_t, 4, 2)
@@ -108,7 +108,7 @@ plt.plot(W_S,W_P_TOP_OEI,'r',label = "Takeoff Constraint (OEI)")
 plt.vlines(W_S_land,0,100,'c',label ="Landing Constraint")
 plt.plot(W_S,W_P_cruise,'m',label = "Cruise Constraint (275kts)")
 plt.plot(W_S,W_P_ROC,'y',label = "Rate of Climb Constraint, ROC = 6")
-plt.plot(W_S,W_P_ROC_OEI,'orange',label = "Rate of Climb Constraint (OEI), ROC = 3")
+plt.plot(W_S,W_P_ROC_OEI,'orange',label = "Rate of Climb Constraint (OEI), ROC = 2")
 plt.plot(W_S,W_P_CV,'k',label = "Climb Gradient Constraint, $\gamma=0.032$")
 plt.plot(W_S,W_P_CV_OEI,'indigo',label = "Climb Gradient Constraint (OEI), $\gamma=0.03$")
 plt.plot(WS_42, WP_42, "*", label="Design Point ATR 42", markersize = 7)
@@ -131,4 +131,3 @@ plt.grid()
 plt.show()
 print(W_S[2999])
 print(W_P_ROC[2999])
-print(W_S_land)

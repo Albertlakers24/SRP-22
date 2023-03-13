@@ -1,5 +1,13 @@
 ''' AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 08/03/22 '''
 
+'''To Be Added:'''
+R_lfus = 115629986.920      # Fuselage Reynolds number              [-]
+CL_Alpha_VT =  2.55         # VT : CL over alpha                    [rad^-1]        todo: determine for VT the one in this file is for HT right?
+Cl_Alpha_VT_Airfoil = 1     # VT :  cl over alpha airfoil of VT     [rad^-1]
+downwash = 0.00571439       # Downwash gradient                     [-]        Inès
+CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]        todo: determine for VT the one in this file is for HT right?
+Cl_Alpha_HT_Airfoil = 1     # VT :  cl over alpha airfoil of VT     [rad^-1]
+
 ''' Zero-Drag estimations '''
 CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
 CD0_15 = 0.04030446169943226        # CD0 Flap deflection 15 deg [-]
@@ -31,5 +39,8 @@ CL_Alpha_Wing = 5.63403713             # Lift slope wing [1/rad]
 Cl_Alpha_WingAirfoil =  5.99001331     # Airfoil lift slope [1/rad]
 Cl_Alpha_TailAirfoil =  5.7295779513   # Tail Airfoil lift slope [1/rad]
 
-''' HLD Design '''
-
+''' TO BE UPDATED '''
+DeltaCLflaps = 0.94                    # Change in CL wing due to flaps      [-]    todo: add
+DeltaClmax = 2.3                       # Change in airfoil Cl by flaps       [-]    todo: add
+CL0_Land = 0.29971                     # CL0 for flapped wing (landing)      [-]
+Cm0_airfoil = -0.0794                  # Cm for airfoil at alpha=0           [-]

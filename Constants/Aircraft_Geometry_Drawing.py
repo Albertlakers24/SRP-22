@@ -10,10 +10,14 @@ ln2 = 1.88328   # [m] Longitudinal distance between the small prop to the wing c
 bn1 = 0.77      # [m] Big nacelle width (in y direction)
 bn2 = 0.51      # [m] Small nacelle width (in y direction)
 v_t_w = 3.83079 # [m] Verticl distance (z-direction) from the ac of the HT to the ac of wing (always +ve)
-zv =  2.422     # [m] Vertical distance between the center line of the fuselage to the vertical tail a.c.
 y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center line to the big engine.
 Zw = -1.82253   # [m] Vertical distance (z-direction) between the fuselage
                 # center line to the LE of the wing, assuming no dihedral.
+l_fn = 10.24    # [m] Length nose to LE wing
+zv = 2.422     # [m] Distance: cg aircraft to the ac of the VT (positive when going up)
+
+# center line to the LE of the wing, assuming no dihedral.
+"""Area"""
 S_BS = 74.8936  # Body side area [m**2]
 
 
