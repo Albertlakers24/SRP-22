@@ -30,8 +30,3 @@ lh = 10.6                       # Tail arm                      [m]
 
 
 ''' Landing Gear '''
-
-''' To be updated '''
-depth_lg = (0.838*4) + (0.343*2)                           # Depth of landing gear (strut + wheel)
-width_lg =(0.247 *4) + (0.108*2)                           # Width of landing gear (strut + wheel)
-S_lg_front = (0.834*0.247)*4 + (0.343*0.108*2)             # Frontal area of landing gear (strut area ) --- p.52 of ADSEE2, Lecture 2
