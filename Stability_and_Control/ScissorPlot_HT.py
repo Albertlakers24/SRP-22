@@ -76,13 +76,12 @@ def CL_alpha_Ah():
 print("CL_alpha_tailless=", CL_alpha_Ah(), "per rad")
 
 def Downwash():
-    # TODO: revisit equations, in T-Tail there is probably no downwash at all.
     """
     :param mtv; phi = sin^-1(mtv/r)
     :return: Downwash gradient (-)
     """
     r = lh/(bw/2)
-    mtv = v_t_w
+    mtv = v_t_w/(bw/2)              # todo: check if this is still correct, because before, mtv=v_t_w in Alvaros code
     K_EA = ((0.1124 + 0.1265 * Sweep_quarterchordw + 0.1766 * Sweep_quarterchordw ** 2) / r ** 2) + 0.1024 / r + 2
     K_EA0 = (0.1124 / r ** 2) + (0.1024 / r) + 2
     downwash = (K_EA/K_EA0)*(r/(r**2+mtv**2) * (0.4876/np.sqrt(r**2+0.6319+mtv**2)) +(1+(r**2/(r**2+0.7915+5.0734*mtv**2))**0.3113)*(1-np.sqrt(mtv**2/(1+mtv**2))))*(CL_Alpha_Wing/(np.pi*Aw))
