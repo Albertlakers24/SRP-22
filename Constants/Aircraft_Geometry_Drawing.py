@@ -16,7 +16,7 @@ zv =  2.422     # [m] Vertical distance between the center line of the fuselage 
 y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center line to the big engine.
 Zw = -1.82253   # [m] Vertical distance (z-direction) between the fuselage
 l_fn = 10.24    # [m] Length nose to LE wing
-
+zv = 3.3026     # [m] Distance: cg aircraft to the ac of the VT (positive when going up)
 
 # center line to the LE of the wing, assuming no dihedral.
 """Area"""
