@@ -21,7 +21,12 @@ zv = 2.422     # [m] Distance: cg aircraft to the ac of the VT (positive when go
 S_BS = 74.8936  # Body side area [m**2]
 
 
-
+''' To be updated '''
+Amax_fuse = 7.116                       # Max frontal area of fuselage [m^2]
+A_base_fuse = 0.023561944               # Base area of fuselage (from the back of the fuselage) [m^2]
+l_nacelle = 2.5                         # Length of nacelle [m]
+Amax_nacelle = 0.5                      # Max frontal area of nacelle [m^2]
+upsweep_ang = 5.71                      # Upsweep angle of fuselage [m^2] (centerline of fuselage to center of base - adsee II, lec 2, pg 51)
 
 # '''Distances'''
 # ln1 = 1.983             # Big engine: front nacelle to c/4 of the wing      [m]
