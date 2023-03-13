@@ -6,6 +6,7 @@ tc_tail = 0.09                     # Average t/c ratio of wing crosssection
 xc_m_tail = 0.29                        # (x/c)_m Position of max thickness - 0.3 for low speed, 0.5 for high speed
 
 '''To be updated :'''
+Sweep_quarter_chord_H = 0       # HT c/4 sweep angle            [rad]
 lambdahalf_h = 0                # Sweep at half chord of HT     [rad]
 cmac_h =  1.614 #1              # MAC for HT                    [m]
 bh = 6                          # Span of the HT                [m]
