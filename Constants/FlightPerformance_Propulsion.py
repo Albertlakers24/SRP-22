@@ -2,7 +2,8 @@
 
 # Suggested headers - pls change if needed -- segregate as you'd like
 ''' FLIGHT PERFORMANCE '''
-
+n_ult_pos = 3.24796708 * 1.5
+n_ult_neg = -1.24796708 * 1.5
 
 ''' PROPULSION SYSTEM '''
 
