@@ -139,7 +139,7 @@ Cn_r = Deriv_Directional_Stability()[1]
 # R.1. One Engine Inoperative AND R.2. Cross-Wind Landing calculations
 def Deriv_Rudder():
     Cydelta_r = CL_alpha_vtail*(k_prime*K_b)*Cldelta_over_Cldeltatheory*Cldeltatheory*(Sv/S_w)       # eq. XX (p. XXX)       TODO: revisit
-    Cydelta_r = 0.25
+    #Cydelta_r = 0.25
 
     Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha) + zv * np.sin(alpha)) / bw                       # eq. XX (p. XXX)       TODO: check for what alpha?
     #Cndelta_r = -0.09

@@ -15,6 +15,7 @@ c_th =  1.29 #1                 # HT tip chord                  [m]
 cmac_v =  3.204                 # MAC for VT                    [m]
 c_rv = 3.88                     # VT  root chord                [m]
 c_tv = 1.98                     # VT tip chord                  [m]
+lv = 10.2                       # VT tail arm                   [m]
 
 ''' Vertical Tail '''
 Sv = 13.96                      # Surface area VT               [m^2]

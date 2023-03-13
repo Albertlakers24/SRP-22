@@ -1,32 +1,21 @@
 import numpy as np
 import math as m
-from Constants.AircraftGeometry import taperw, Aw, c_mac_w,delta_a_righ, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap, twist, dihedralw
+from Constants.AircraftGeometry import taperw, Aw, c_mac_w,delta_a_righ, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap, twist, dihedralw, S_w
 from Constants.Aerodynamics import Cl_Alpha_WingAirfoil, CL_DesCruise, Alpha_DesCruise, CD0_CR, CL_Alpha_Wing, CL_Alpha_HT, CLH_adj, CD0_tailhCR
 from Constants.MissionInputs import M_cruise
-from Constants.Stability_Control import Cybeta_v, x_AC, Cnbeta, Clbeta
+from Constants.Stability_Control import Cybeta_v, x_AC, Cnbeta, Clbeta, Cn_r, Cydelta_r, Cndelta_r
 from Constants.Masses_Locations import xcg_front_potato
-from Constants.Aircraft_Geometry_Drawing import zv
+from Constants.Aircraft_Geometry_Drawing import zv, zw
 from Constants.AircraftGeometry import d_f_outer
-from Constants.Empennage_LandingGear import Sweep_quarter_chord_H
+from Constants.Empennage_LandingGear import Sweep_quarter_chord_H, Sv, lv
+
+# TODO continue in the SIDESLIP calculations !
 
 # todo for YAW RATE: calculate depending on the flap we have (p.261) -> For YAW RATE calculations
 delta_f = 40                                                        # [deg] flap deflection
 deltacl =  0.45*0.35*np.radians(40)*cl_alpha                        # section 8.1.2.1           (p. 261)
 cl_alpha = Cl_Alpha_WingAirfoil                                     # 8.1.1.2.                  (p. 247)
 alpha_deltaf = deltacl / (cl_alpha * delta_f)                       # in rad/deg [?]            (p. 454)
-
-# todo for ROLL RATE
-# New names for this file:
-bf = d_f_outer
-CL_alpha_w_CL = CL_Alpha_Wing                                      #Wing lift curve slope at any CL    CHECKED
-CL_alpha_w_CL0 =CL_Alpha_Wing                                      #wing lift curve slope at CL=0      CHECKED
-CL_alpha_M_H =Cl_Alpha_WingAirfoil                                 # Airfoil lift curve at any Moment   CHECKED
-CL_alpha_H_CL = CL_Alpha_HT
-CL_alpha_H_CL0 = CL_Alpha_HT
-CLH = CLH_adj                                                          # CLh for horizontal tail - adjustable ADSEE Lec 8 -- CHECKED
-CD0H =  CD0_tailhCR                                          # CD0 for horizontal tail - from drag estimations   CHECKED
-
-zw =
 
 
 print("FILE: Static Derivatives")
@@ -37,8 +26,8 @@ These are listed in the following order
 * Aileron, delta_a                      Aileron()
 * Yaw rate, r                           YawRate()
 * Roll rate, p                          RollRate()
-* Rudder, delta_r                       Rudder()
 * Sideslip angle, beta                  Sideslip()
+* Rudder, delta_r                       Rudder()
 * Lateral Control Department Parameter  LCDP
 """
 
@@ -106,7 +95,7 @@ def Aileron():      #CHECKED
 # Intermediate equations YAW RATE
 x_bar = AC_loc - xcg_front_potato                                   # Distance ac to cg                 [m]     todo: most critical at fron cg right?
 Delta_Clr_alpha_delta_f = Delta_Clr_alpha_delta_f_outer-Delta_Clr_alpha_delta_f_inner
-alpha = Alpha_DesCruise*np.pi/180                                   # Angle of attack for cruise        [rad]
+alpha_cr_rad = Alpha_DesCruise*np.pi/180                            # Angle of attack for cruise        [rad]
 
 print("------------Needed to find X graph coefficients for YAW RATE derivatives ---------------")
 print("Aw=", Aw)
@@ -133,20 +122,21 @@ def YawRate():
     Clrv = -(2/b**2)*(l_v*np.cos(alpha)+zv*np.sin(alpha))*(zv*np.cos(alpha)-l_v*np.sin(alpha))*Cybeta_v
     Cl_r = Clrw + Clrv
 
-    Cnr_w = Cnr_CL2*CL_DesCruise**2 + Cnr_CD0*CD0_CR
-    Cnr_v =(2/b**2)*((l_v*np.cos(alpha)+zv*np.sin(alpha))**2)*Cybeta_v
-    Cn_r = Cnr_v + Cnr_w
-    return Cy_r, Cl_r, Cn_r
+    # Cnr_w = Cnr_CL2*CL_DesCruise**2 + Cnr_CD0*CD0_CR
+    # Cnr_v =(2/b**2)*((l_v*np.cos(alpha)+zv*np.sin(alpha))**2)*Cybeta_v
+    # Cn_r = Cnr_v + Cnr_w
+    Cn_r_calc = Cn_r
+    return Cy_r, Cl_r, Cn_r_calc
 
 
 """Calculation for the ROLL RATE derivatives:"""
 
 # Intermediate equations ROLL RATE
 beta = (1-M_cruise**2)**(1/2)                                                               # Eq 10.53 (p.449)
-k_roll_w = CL_alpha_w_CL*beta/(2*np.pi)                                                     # Eq 10.54 (p.451)
-k_roll_H = CL_alpha_M_H*(beta/(2*np.pi))                                                    # Eq 10.54 (p.451)
+k_roll_w = CL_Alpha_Wing*beta/(2*np.pi)                                                     # Eq 10.54 (p.451)
+k_roll_H = CL_Alpha_HT*(beta/(2*np.pi))                                                     # Eq 10.54 (p.451)
 Delta_Clp_drag_w = drag_dueto_lift_roll_damping_parameter_w*(CL_DesCruise**2)-0.125*CD0_CR  # Eq 10.56 (p.451)
-Delta_Clp_drag_H = drag_dueto_lift_roll_damping_parameter_H*(CLH**2)-0.125*CD0H             # Eq 10.56 (p.451)
+Delta_Clp_drag_H = drag_dueto_lift_roll_damping_parameter_H*(CLH_adj**2)-0.125*CD0_tailhCR  # Eq 10.56 (p.451)
 Dihedraleffect_w = 1-(4*zw/(bw*np.sin(dihedralw)))+12*((zw/bw)**2)*(np.sin(dihedralw))**2   # Eq 10.44 (p.451)
 Dihedraleffect_HT = 1                                                                       # Eq 10.55 (p.451)
 
@@ -154,7 +144,7 @@ print("------------Needed to find graph coefficients for Roll Rate derivatives -
 print("For wing parameters:")
 print("Aw=", Aw)
 print("taperw=", taperw)
-print("bf/b", bf/bw)
+print("bf/b", d_f_outer/bw)
 print("for wing: beta*A/k =", (beta*Aw)/k_roll_w)
 print("beta=", beta)
 print("Quarter chord sweep wing =", Sweep_quarterchordw*180/np.pi, "deg")
@@ -173,10 +163,14 @@ def RollRate_Coefficient(roll_damping_parameter, k_roll, CL_alpha_i_CL, CL_alpha
     return Clpi
 
 def RollRate():
+    """Roskam Book:
+            Cy_p (p. ??)
+            Cl_p (p. ??)
+            Cn_p (p. ??)"""
     Cy_p = 2*Cybeta_v*(zv*np.cos(alpha)-l_v*np.sin(alpha))/bw
 
-    Clpw = RollRate_Coefficient(roll_damping_parameter=roll_damping_parameter_w, k_roll=k_roll_w, CL_alpha_i_CL=CL_alpha_w_CL, CL_alpha_i_CL0= CL_alpha_w_CL0, Delta_Clp_drag_i=Delta_Clp_drag_w, Dihedraleffect=Dihedraleffect_w)
-    Clp_h = RollRate_Coefficient(roll_damping_parameter=roll_damping_parameter_H, k_roll=k_roll_H, CL_alpha_i_CL=CL_alpha_w_CL, CL_alpha_i_CL0=CL_alpha_H_CL0, Delta_Clp_drag_i=Delta_Clp_drag_H, Dihedraleffect=Dihedraleffect_HT)
+    Clpw = RollRate_Coefficient(roll_damping_parameter=roll_damping_parameter_w, k_roll=k_roll_w, CL_alpha_i_CL=CL_Alpha_Wing, CL_alpha_i_CL0= CL_Alpha_Wing, Delta_Clp_drag_i=Delta_Clp_drag_w, Dihedraleffect=Dihedraleffect_w)
+    Clp_h = RollRate_Coefficient(roll_damping_parameter=roll_damping_parameter_H, k_roll=k_roll_H, CL_alpha_i_CL=CL_Alpha_HT, CL_alpha_i_CL0=CL_Alpha_HT, Delta_Clp_drag_i=Delta_Clp_drag_H, Dihedraleffect=Dihedraleffect_HT)
     Clph =0.5*Clp_h*(Sh/Sw)*(bh/bw)**2
     Clpv =2*Cybeta_v*(zv/bw)**2
     Cl_p = Clpw + Clph + Clpv
@@ -198,21 +192,54 @@ def RollRate():
     Cn_p = Cnpw+Cnpv
     return Cy_p, Cl_p, Cn_p
 
+"""Calculation for the SIDESLIP derivatives:"""
+
+# Intermediate equations SIDESLIP
+                                                                    # Eq 10.55 (p.451)
+
+print("------------Needed to find graph coefficients for Sideslip derivatives ---------------")
+
+kv = 0.95
+C_L_alpha_v =1
+Sidewash_grad = 0.724 +3.06 *((Sv/Sw)/(1+np.cos(Lambda_c4w)))+0.4*(Zw/dfus)+0.009*Aw
+Ki = 1
+S0=1
+
 def Sideslip():
-    Cybeta = 1
-    Clbeta = 1
-    Cnbeta = 1
-    return Cybeta, Clbeta, Cnbeta
+    """Roskam Book:
+            Cy_beta (p. 415)
+            Cl_beta (p. 421)
+            Cn_beta (p. 429)"""
+
+    Cybeta_w = -0.00573*dihedralw*180/np.pi
+    Cybeta_f = -2*Ki*(S0/S_w)
+    Cybeta_v = -kv*C_L_alpha_v* Sidewash_grad* (Sv/S_w)
+    Cybeta = Cybeta_w + Cybeta_f + Cybeta_v
+
+    Clbeta_wf = 1
+    Clbeta_h =1
+    Clbeta_v = Cybeta*(zv*np.cos(alpha_cr_rad)-lv*np.sin(alpha_cr_rad))/bw
+    Clbeta = Clbeta_wf + Clbeta_h + Clbeta_v
+
+    Cnbeta_calc = Cnbeta
+    return Cybeta, Clbeta, Cnbeta_calc
+
+"""Calculation for the RUDDER derivatives:"""
 
 def Rudder():
-    Cydelta_r = Deriv_Rudder()[0]
-    Cldelta_r = 1
-    Cn_delta_r = Deriv_Rudder()[1]
-    return Cydelta_r, Cldelta_r, Cn_delta_r
+    """Roskam Book:
+            Cy_deltar (p. 493)
+            Cl_deltar (p. 493)
+            Cn_deltar (p. 494)"""
+    Cydelta_r_calc = Cydelta_r
+
+    Cldelta_r = ((zv*np.cos(alpha_cr_rad)-lv*np.sin(alpha_cr_rad))/bw)*Cydelta_r
+
+    Cn_delta_r_calc = Cndelta_r
+    return Cydelta_r_calc, Cldelta_r, Cn_delta_r_calc
 
 """Calculation for the LCDP:"""
-LCDP = Cnbeta-Clbeta*(Aileron()[2]/Aileron()[1])
-
+LCDP = Cnbeta-Clbeta*(Aileron()[2]/Aileron()[1])            # todo add in as inputs from constants
 
 
 print("-------------RESULTS STABILITY AND CONTROL DERIVATIVE--------------")
