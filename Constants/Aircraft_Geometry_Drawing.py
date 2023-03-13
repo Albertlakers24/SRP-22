@@ -21,12 +21,19 @@ zv = 2.422     # [m] Distance: cg aircraft to the ac of the VT (positive when go
 S_BS = 74.8936  # Body side area [m**2]
 
 
-''' To be updated '''
+''' To be updated - fuselage '''
 Amax_fuse = 7.116                       # Max frontal area of fuselage [m^2]
 A_base_fuse = 0.023561944               # Base area of fuselage (from the back of the fuselage) [m^2]
 l_nacelle = 2.5                         # Length of nacelle [m]
 Amax_nacelle = 0.5                      # Max frontal area of nacelle [m^2]
 upsweep_ang = 5.71                      # Upsweep angle of fuselage [m^2] (centerline of fuselage to center of base - adsee II, lec 2, pg 51)
+
+
+''' To be updated - undercarriage '''
+depth_lg = (0.838*4) + (0.343*2)                           # Depth of landing gear (strut + wheel)
+width_lg =(0.247 *4) + (0.108*2)                           # Width of landing gear (strut + wheel)
+S_lg_front = (0.834*0.247)*4 + (0.343*0.108*2)             # Frontal area of landing gear (strut area ) --- p.52 of ADSEE2, Lecture 2
+
 
 # '''Distances'''
 # ln1 = 1.983             # Big engine: front nacelle to c/4 of the wing      [m]
