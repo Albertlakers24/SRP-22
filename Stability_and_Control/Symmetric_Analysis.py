@@ -1,6 +1,11 @@
 import control
 import matplotlib.pyplot as plt
-from Control_and_Stability.ControlDerivatives import *
+from Constants.AircraftGeometry import S_w , c_mac_w
+from Constants.Stability_Control import CZadot, Cmadot, KY2, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cma, Cmq, CXde, CZde, Cmde
+
+# Changed namings:
+S = S_w
+c = c_mac_w
 
 # Needed from Other files:
 rho0 =
@@ -9,12 +14,8 @@ hp0 =
 Temp0 =
 g =
 R =
-S =
-c =
-CZadot =
-Cmadot =
-Ky2 =
 # todo continue here
+
 
 # ---------------------------------------------
 # Equations of Symmetric motion  in State-Space
@@ -204,6 +205,7 @@ def step_deflection(elevator_deflection, response_duration):
 
 
 plotting = True
+# todo determine:
 elevator_deflection = -0.005
 response_duration = 240
 t, u, x0 = step_deflection(elevator_deflection, response_duration)
