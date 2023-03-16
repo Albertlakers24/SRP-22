@@ -1,19 +1,25 @@
 import control
 import matplotlib.pyplot as plt
+import numpy as np
 from Constants.AircraftGeometry import S_w , c_mac_w
 from Constants.Stability_Control import CZadot, Cmadot, KY2, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cma, Cmq, CXde, CZde, Cmde
+from Constants.MissionInputs import rho_0, g, V_cruise
+from Constants.Masses_Locations import m_mto
 
 # Changed namings:
 S = S_w
 c = c_mac_w
 
 # Needed from Other files:
-rho0 =
-Lambda =
-hp0 =
-Temp0 =
-g =
-R =
+rho0 = rho_0
+Lambda = 1
+hp0 =1
+Temp0 =1
+R =1
+V0 = V_cruise
+alpha0 = 1
+theta0 = 0
+m= m_mto
 # todo continue here
 
 
