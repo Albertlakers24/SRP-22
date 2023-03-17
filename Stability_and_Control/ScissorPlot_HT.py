@@ -2,7 +2,7 @@ import numpy as np
 import math as m
 import matplotlib.pyplot as plt
 from Constants.AircraftGeometry import S_w, Aw, c_mac_w,c_rw, Sweep_quarterchordw, Sweep_halfchordw, SweepLE, d_f_outer, SwfS_flap, c_accent_c_flap, b_flap, bw, taperw, l_f, cf_over_cprime_flap
-from Constants.Empennage_LandingGear import A_h, lh, Vh_V, lambdahalf_h, Sh, cmac_h
+from Constants.Empennage_LandingGear import A_h, lh, Vh_V, lambdahalf_h, Sh, cmac_h, Av, Sweep_halfchord_VT, Av_eff
 from Constants.Aircraft_Geometry_Drawing import ln1, ln2, bn1,bn2,l_fn
 from Constants.Masses_Locations import LEMAC, xcg_gear,xcg_front_potato, xcg_aft_potato
 from Constants.Aerodynamics import Cm0_airfoil, CL0_Land, DeltaCLflaps, CL_DesCruise,CL_Alpha_Wing, CL_Max_Clean, CL_MaxLand, DeltaClmax
@@ -46,7 +46,6 @@ mu1 =0.205                      # Lecture 8, Slide 20               [-]     Lect
 mu2 =0.65                       # Lecture 8, Slide 21               [-]     Lecture 7 (SEAD) (Torenbeek)
 mu3 =0.06                       # Lecture 8, Slide 21               [-]     Lecture 7 (SEAD) (Torenbeek)
 
-print("-----------Check Values-----------")
 def Location_in_MAC(Location):
     """
     :return: Location (MAC)
@@ -63,7 +62,9 @@ def C_L_alpha(A, lambdahalf):
     C_L_alpha = 2 * np.pi * A / (2 + np.sqrt(4 + ((A * beta / eta)**2 * (1 + ((np.tan(lambdahalf)) ** 2 / beta ** 2)))))
     return C_L_alpha
 
-print("CL_alpha_h", C_L_alpha(A_h, lambdahalf_h), "per rad")
+print("CL_alpha_h=", C_L_alpha(A=A_h, lambdahalf=lambdahalf_h), "per rad")
+print("CL_alpha_v=", C_L_alpha(A=Av, lambdahalf=Sweep_halfchord_VT), "per rad")
+print("CL_alpha_veff=", C_L_alpha(A=Av_eff, lambdahalf=Sweep_halfchord_VT), "per rad")
 
 def CL_alpha_Ah():
     """ CHECKED

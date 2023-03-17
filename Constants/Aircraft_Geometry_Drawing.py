@@ -5,6 +5,12 @@ Geometry calculated using the drawing:
 * Distances
 * Area hall?
 """
+
+"""To be updated/added:"""
+center_S_BS = 11            # Center location Side area aircraft    [m]
+
+
+
 ln1 = 2.19543   # [m] Longitudinal distance between the big prop to the wing c/4
 ln2 = 1.88328   # [m] Longitudinal distance between the small prop to the wing c/4
 bn1 = 0.77      # [m] Big nacelle width (in y direction)

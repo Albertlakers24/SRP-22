@@ -30,12 +30,12 @@ m= m_mto
 def matrix_symmetric(hp0, V0, theta0, m):
     rho = rho0 * pow(((1 + (Lambda * hp0 / Temp0))), (-((g / (Lambda * R)) + 1)))
     W = m * g
-    muc = m / (rho * S * c)
+    muc = m / (rho * S_w * c_mac_w)
     CX0 = W * np.sin(theta0) / (0.5 * rho * V0 ** 2 * S)
     CZ0 = -W * np.cos(theta0) / (0.5 * rho * V0 ** 2 * S)
 
-    C_1 = np.array([ [-2*muc * (c/V0), 0, 0, 0],
-                     [0, CZadot -2*muc * (c/V0), 0, 0],
+    C_1 = np.array([ [-2*muc * (c_mac_w/V0), 0, 0, 0],
+                     [0, CZadot -2*muc * (c_mac_w/V0), 0, 0],
                      [0, 0, -c/V0, 0],
                      [0, Cmadot * (c/V0), 0, -2*muc * KY2 * (c/V0)] ])
 

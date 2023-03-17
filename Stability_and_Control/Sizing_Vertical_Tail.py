@@ -16,7 +16,6 @@ Vw = 52.37                  # Maximum cross-wind speed              [m/s]   -> F
 # Imported Variables : Masses and Locations
 xac = 13                    # AC location                           [m]         -> xac must be aft of cg    TODO: to be calculated
 
-
 print("FILE: Vertical_Tail")
 """
 VT design checks:
@@ -94,6 +93,11 @@ print("eta_o = ", y_o_rudder/bv, "m")
 print("taper ratio VT =", taperv)
 print("Highest allowable flap deflection = ", delta_r_max, "deg")
 
+print("----Needed to calculate the effective aspect ratio VT ----")
+print("taper_v =", taperv)
+print("bv/2r1=", bv/2*1.75)
+print("x/cr=", 0.25)
+
 # TODO: read graphs for Cn_beta
 K_N = 0.00125            # Empirical factor     [-]     Fig 10.28 (p.431)
 K_Rl = 1.945             # Factor               [-]     Fig 10.29 (p.432)
@@ -109,6 +113,11 @@ k_prime =  0.675                                # Correction factor     [-]     
 K_b = 0.7                                       # Flap-span fraction    [-]         Fig 8.51 (p. 292)
 Cldelta_over_Cldeltatheory  = 1.0               # Fraction              [-]         Fig 8.15 (p. 262)
 Cldeltatheory = 3.5                             # Fraction              [rad-1]     Fig 8.14 (p. 260)
+
+# TODO: read graphs for effective aspect ratio
+A_vf_Av = 1.3             # In isolated tail                            [-]         Fig 10.14 (p.420)
+A_vhf_Avf = 1.7           # In the presence of fuselage alone           [-]         Fig 10.15 (p.420)
+Av_eff = A_vf_Av*Av*(1+K_vh*(A_vhf_Avf)-1)
 
 def Deriv_Directional_Stability():
     """
@@ -217,6 +226,8 @@ if CheckVT == 1 and CheckR ==1:
     print("---- VT Dimensions ----")
     print("Sv = ", Sv, "m^2")
     print("bv = ", bv, "m")
+    print("Av =", bv**2/Sv)
+    print("Av_eff =", Av_eff)
     print("Cv_r = ", Cvroot, "m")
     print("Cv_t = ", Cvtip, "m")
     print("taperv = ", taperv)
