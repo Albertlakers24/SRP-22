@@ -10,6 +10,7 @@ CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]    
 Cl_Alpha_HT_Airfoil = 1     # VT :  cl over alpha airfoil of VT     [rad^-1]
 CLH_adj = -0.8                  # HT: CL for an adjustable tail         [-]
 CD0_tailhCR = 0.0741993961878728 # HT: CD0 for cruise condition     [-]
+CLwf = 0.8                  # Cruise: wing and fuselage lift coefficient    [-]
 
 ''' Zero-Drag estimations '''
 CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
