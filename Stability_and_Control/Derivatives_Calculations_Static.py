@@ -1,7 +1,7 @@
 import numpy as np
 import math as m
 from Constants.AircraftGeometry import taperw, Aw, c_mac_w,delta_a_righ, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap, twist, dihedralw, S_w
-from Constants.Aerodynamics import Cl_Alpha_WingAirfoil, CL_DesCruise, Alpha_DesCruise, CD0_CR, CL_Alpha_Wing, CL_Alpha_HT, CLH_adj, CD0_tailhCR
+from Constants.Aerodynamics import Cl_Alpha_WingAirfoil, CL_DesCruise, Alpha_DesCruise, CD0_CR, CL_Alpha_Wing, CL_Alpha_HT, CLH_adj, CD0_tailhCR, CL_Alpha_VT
 from Constants.MissionInputs import M_cruise
 from Constants.Stability_Control import Cybeta_v, x_AC, Cnbeta, Clbeta, Cn_r, Cydelta_r, Cndelta_r
 from Constants.Masses_Locations import xcg_front_potato
@@ -193,17 +193,20 @@ def RollRate():
     return Cy_p, Cl_p, Cn_p
 
 """Calculation for the SIDESLIP derivatives:"""
-
 # Intermediate equations SIDESLIP
-                                                                    # Eq 10.55 (p.451)
+S0=np.pi*(d_f_outer/2)**2                           # Cross-sectional area of unpotential flow  [m^2] todo determine?
+Sidewash_grad = 0.724 +3.06 *((Sv/S_w)/(1+np.cos(Sweep_quarterchordw)))+0.4*(zw/d_f_outer)+0.009*Aw
+# todo: is zf = d_f_outer? eq.10.31 (p.421)
 
 print("------------Needed to find graph coefficients for Sideslip derivatives ---------------")
+print("zw/df/2 =", zw/(d_f_outer/2))
+print("bv/2*r1 =", "deze afmaken")                  # todo define
 
-kv = 0.95
-C_L_alpha_v =1
-Sidewash_grad = 0.724 +3.06 *((Sv/Sw)/(1+np.cos(Lambda_c4w)))+0.4*(Zw/dfus)+0.009*Aw
-Ki = 1
-S0=1
+# X Graph Values for the Sideslip Derivatives       TODO: find graph SIDESLIP
+Ki = 1.7                                            # Factor                                    [-]     Graph 10.8  (p.416)
+kv = 0.95                                           # Empirical Factor for side-force           [-]     Graph 10.12 (p.417)
+
+
 
 def Sideslip():
     """Roskam Book:
@@ -213,9 +216,11 @@ def Sideslip():
 
     Cybeta_w = -0.00573*dihedralw*180/np.pi
     Cybeta_f = -2*Ki*(S0/S_w)
-    Cybeta_v = -kv*C_L_alpha_v* Sidewash_grad* (Sv/S_w)
+    Cybeta_v = -kv*CL_Alpha_VT* Sidewash_grad* (Sv/S_w)     # todo note that effective A has not been used, is that alright?
     Cybeta = Cybeta_w + Cybeta_f + Cybeta_v
 
+
+    # todo CONTINUE HERE!!!
     Clbeta_wf = 1
     Clbeta_h =1
     Clbeta_v = Cybeta*(zv*np.cos(alpha_cr_rad)-lv*np.sin(alpha_cr_rad))/bw

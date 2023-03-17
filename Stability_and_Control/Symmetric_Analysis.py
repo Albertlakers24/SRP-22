@@ -2,7 +2,7 @@ import control
 import matplotlib.pyplot as plt
 import numpy as np
 from Constants.AircraftGeometry import S_w , c_mac_w
-from Constants.Stability_Control import CZadot, Cmadot, KY2, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cma, Cmq, CXde, CZde, Cmde
+from Constants.Stability_Control import CZadot, Cmadot, KY2, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmde
 from Constants.MissionInputs import rho_0, g, V_cruise
 from Constants.Masses_Locations import m_mto
 
@@ -42,7 +42,7 @@ def matrix_symmetric(hp0, V0, theta0, m):
     C_2 = np.array([ [CXu, CXa, CZ0, CXq],
                      [CZu, CZa, -CX0, CZq + 2*muc],
                      [0, 0, 0, 1],
-                     [Cmu, Cma, 0, Cmq] ])
+                     [Cmu, Cmalpha, 0, Cmq] ])
 
     C_3 = np.array([ [CXde],
                      [CZde],
