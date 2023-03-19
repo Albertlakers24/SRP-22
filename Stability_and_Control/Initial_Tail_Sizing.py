@@ -1,6 +1,6 @@
 import numpy as np
 from Constants.AircraftGeometry import d_f_outer, bw, S_w, c_mac_w
-from Constants.Masses_Locations import xcg_aft
+from Constants.Masses_Locations import xcg_aft_potato
 
 print("FILE: Initial Tail Sizing")
 
@@ -20,8 +20,8 @@ if Design ==1:
     Kc = 1.4                        # ?
 
     # Intermediate Calculations
-    l_v = x_v - xcg_aft             # VT location               [m]
-    l_h = x_h - xcg_aft             # HT location               [m]
+    l_v = x_v - xcg_aft_potato             # VT location               [m]
+    l_h = x_h - xcg_aft_potato             # HT location               [m]
     l_opt = Kc * np.sqrt((4 * c_mac_w * S_w * Vh) / (np.pi * d_f_outer))
 
     print("-----------Location check---------")
@@ -55,7 +55,7 @@ if Type ==1:
         print("c_mach =", c_mach_h)
         print("y_machh =", y_mach_h)
         print("ratio wing areas =", Sh/S_w)
-        print("tail_arm_h=", x_h - xcg_aft)
+        print("tail_arm_h=", x_h - xcg_aft_potato)
 
         Sv = Vv * (S_w * bw) / l_v           # VT surface area           [m^2]
         bv = np.sqrt(Av*Sv)                 # VT wing span              [m]
@@ -73,7 +73,7 @@ if Type ==1:
         print("ct_v =",c_tv, "m")
         print("c_macv =", c_mac_v)
         print("y_machv =", y_mach_v)
-        print("tail_arm_v=", x_v-xcg_aft)
+        print("tail_arm_v=", x_v-xcg_aft_potato)
 
         # print("Sh ratio", Sw/Sh)
         # print("Sv ratio", Sw/Sv)

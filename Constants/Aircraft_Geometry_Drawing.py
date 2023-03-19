@@ -5,6 +5,12 @@ Geometry calculated using the drawing:
 * Distances
 * Area hall?
 """
+
+"""To be updated/added:"""
+center_S_BS = 11            # Center location Side area aircraft    [m]
+
+
+
 ln1 = 2.19543   # [m] Longitudinal distance between the big prop to the wing c/4
 ln2 = 1.88328   # [m] Longitudinal distance between the small prop to the wing c/4
 bn1 = 0.77      # [m] Big nacelle width (in y direction)
@@ -14,19 +20,27 @@ y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center
 Zw = -1.82253   # [m] Vertical distance (z-direction) between the fuselage
                 # center line to the LE of the wing, assuming no dihedral.
 l_fn = 10.24    # [m] Length nose to LE wing
-zv = 2.422     # [m] Distance: cg aircraft to the ac of the VT (positive when going up)
+zv = 2.422      # [m] Distance: cg aircraft to the ac of the VT (positive when going up)
+zw = -1.84      # [m] Center line fuselage to root of the wing in the z direction -> negative for high wing
 
 # center line to the LE of the wing, assuming no dihedral.
 """Area"""
 S_BS = 74.8936  # Body side area [m**2]
 
 
-''' To be updated '''
+''' To be updated - fuselage '''
 Amax_fuse = 7.116                       # Max frontal area of fuselage [m^2]
 A_base_fuse = 0.023561944               # Base area of fuselage (from the back of the fuselage) [m^2]
 l_nacelle = 2.5                         # Length of nacelle [m]
 Amax_nacelle = 0.5                      # Max frontal area of nacelle [m^2]
 upsweep_ang = 5.71                      # Upsweep angle of fuselage [m^2] (centerline of fuselage to center of base - adsee II, lec 2, pg 51)
+
+
+''' To be updated - undercarriage '''
+depth_lg = (0.838*4) + (0.343*2)                           # Depth of landing gear (strut + wheel)
+width_lg =(0.247 *4) + (0.108*2)                           # Width of landing gear (strut + wheel)
+S_lg_front = (0.834*0.247)*4 + (0.343*0.108*2)             # Frontal area of landing gear (strut area ) --- p.52 of ADSEE2, Lecture 2
+
 
 # '''Distances'''
 # ln1 = 1.983             # Big engine: front nacelle to c/4 of the wing      [m]

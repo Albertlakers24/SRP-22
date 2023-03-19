@@ -2,7 +2,7 @@ import numpy as np
 import math as m
 from Constants.AircraftGeometry import l_f, d_f_outer, Aw, S_w, bw, taperw, Sweep_quarterchordw, c_mac_w, t_c_ratio_w
 from Constants.Aircraft_Geometry_Drawing import zv, y_T, Zw, S_BS, center_S_BS
-from Constants.Masses_Locations import m_mto, m_pldes
+from Constants.Masses_Locations import m_mto, m_pldes, xcg_aft_potato, xcg_front_potato
 from Constants.Aerodynamics import R_lfus, CL_Alpha_VT, Cl_Alpha_VT_Airfoil
 from Constants.MissionInputs import V_approach, ISA_calculator, landing_critical, dt_land
 
@@ -13,13 +13,8 @@ CD0w =0.021                 # Wing : zero Drag coefficient          [-]         
 T_L = 4164                  # Force by 1 engine                     [N]
 eta_v = 0.97                # VT dynamic pressure ratio             [-]         -> q_v/q_inf    TODO: estimate or calculate?
 Vw = 52.37                  # Maximum cross-wind speed              [m/s]   -> FAR regulations
-#Imported Variables: Masses & Locations
-m_payload = m_pldes         # Payload mass   ?                      [kg]    todo: ask if correct to Albert
-x_cgaft = 12.7              # Aircraft aft cg                       [m]     todo: xcg potato or normal??
-x_cgfront = 11.7            # Airfract front cg                     [m]
 # Imported Variables : Masses and Locations
 xac = 13                    # AC location                           [m]         -> xac must be aft of cg    TODO: to be calculated
-
 
 print("FILE: Vertical_Tail")
 """
@@ -77,7 +72,7 @@ Sidewash_grad = 0.724 +3.06 *((Sv/S_w)/(1+np.cos(Sweep_quarterchordw)))+0.4*(Zw/
 rho = ISA_calculator(landing_critical, dt_land)                     # Density at critical landing (5000ft)
 
 print('----------------- NEEDED TO CALCULATE CN BETA -----------------')
-print("xm/l_f =", x_cgaft/l_f)
+print("xm/l_f =", xcg_aft_potato/l_f)
 print("l_f**2/S_BS =", l_f**2/S_BS)
 print("sqrth1/h2 =", np.sqrt(h1/h2))
 print("h/wf =", 1)                          # h/wf = 1 in our aircraft
@@ -86,7 +81,7 @@ print("Rfus *10^6", R_lfus*10**(-6))
 print('----------------- NEEDED TO CALCULATE Cr -----------------')
 print("taper ratio = ", taperw)
 print("Sweep c/4 = ", Sweep_quarterchordw*180/np.pi, "deg")
-print("xbar/c_mac =", (xac -x_cgaft)/c_mac_w)
+print("xbar/c_mac =", (xac -xcg_aft_potato)/c_mac_w)
 print("AR_wing =", Aw)
 
 print("----Needed to calculate the Rudder derivatives ----")
@@ -97,6 +92,11 @@ print("eta_i = ", y_i_rudder/bv, "m")
 print("eta_o = ", y_o_rudder/bv, "m")
 print("taper ratio VT =", taperv)
 print("Highest allowable flap deflection = ", delta_r_max, "deg")
+
+print("----Needed to calculate the effective aspect ratio VT ----")
+print("taper_v =", taperv)
+print("bv/2r1=", bv/2*1.75)
+print("x/cr=", 0.25)
 
 # TODO: read graphs for Cn_beta
 K_N = 0.00125            # Empirical factor     [-]     Fig 10.28 (p.431)
@@ -113,6 +113,11 @@ k_prime =  0.675                                # Correction factor     [-]     
 K_b = 0.7                                       # Flap-span fraction    [-]         Fig 8.51 (p. 292)
 Cldelta_over_Cldeltatheory  = 1.0               # Fraction              [-]         Fig 8.15 (p. 262)
 Cldeltatheory = 3.5                             # Fraction              [rad-1]     Fig 8.14 (p. 260)
+
+# TODO: read graphs for effective aspect ratio
+A_vf_Av = 1.3             # In isolated tail                            [-]         Fig 10.14 (p.420)
+A_vhf_Avf = 1.7           # In the presence of fuselage alone           [-]         Fig 10.15 (p.420)
+Av_eff = A_vf_Av*Av*(1+K_vh*(A_vhf_Avf)-1)
 
 def Deriv_Directional_Stability():
     """
@@ -139,7 +144,7 @@ Cn_r = Deriv_Directional_Stability()[1]
 # R.1. One Engine Inoperative AND R.2. Cross-Wind Landing calculations
 def Deriv_Rudder():
     Cydelta_r = CL_alpha_vtail*(k_prime*K_b)*Cldelta_over_Cldeltatheory*Cldeltatheory*(Sv/S_w)       # eq. XX (p. XXX)       TODO: revisit
-    Cydelta_r = 0.25
+    #Cydelta_r = 0.25
 
     Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha) + zv * np.sin(alpha)) / bw                       # eq. XX (p. XXX)       TODO: check for what alpha?
     #Cndelta_r = -0.09
@@ -172,8 +177,8 @@ def crab_angle(xcg):
 delta_r_assym = (-T_L*y_T)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad] todo: check sign, as otherwise - can be left out.
 
 "CROSS WIND REQUIREMENT OUTPUT"
-delta_r_crosswind_front = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(x_cgfront)))*(1/Cndelta_r)    # Rudder deflection angle for front cg      [rad]
-delta_r_crosswind_aft = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(x_cgaft)))*(1/Cndelta_r)        # Rudder deflection angle for aft cg        [rad]
+delta_r_crosswind_front = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(xcg_front_potato)))*(1/Cndelta_r)    # Rudder deflection angle for front cg      [rad]
+delta_r_crosswind_aft = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(xcg_aft_potato)))*(1/Cndelta_r)        # Rudder deflection angle for aft cg        [rad]
 if abs(delta_r_crosswind_aft) > abs(delta_r_crosswind_front):
     delta_r_crosswind = delta_r_crosswind_aft
 else:
@@ -221,6 +226,8 @@ if CheckVT == 1 and CheckR ==1:
     print("---- VT Dimensions ----")
     print("Sv = ", Sv, "m^2")
     print("bv = ", bv, "m")
+    print("Av =", bv**2/Sv)
+    print("Av_eff =", Av_eff)
     print("Cv_r = ", Cvroot, "m")
     print("Cv_t = ", Cvtip, "m")
     print("taperv = ", taperv)
@@ -247,7 +254,7 @@ if CheckVT == 1 and CheckR ==1:
 # Inputs :  Estimated
 lv = l_v
 A_v = Av
-W_pmax = m_payload * 9.81
+W_pmax = m_pldes * 9.81
 W_to = m_mto * 9.81
 rho = 1.225
 

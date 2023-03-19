@@ -2,11 +2,15 @@
 
 '''To Be Added:'''
 R_lfus = 115629986.920      # Fuselage Reynolds number              [-]
-CL_Alpha_VT =  2.55         # VT : CL over alpha                    [rad^-1]        todo: determine for VT the one in this file is for HT right?
+CL_Alpha_VT =  4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT
+CL_Alpha_VT_eff = 3.77      # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT
 Cl_Alpha_VT_Airfoil = 1     # VT :  cl over alpha airfoil of VT     [rad^-1]
-downwash = 0.00571439       # Downwash gradient                     [-]        Inès
-CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]        todo: determine for VT the one in this file is for HT right?
+downwash = 0.00571439       # Downwash gradient                     [-]             FILE:
+CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT
 Cl_Alpha_HT_Airfoil = 1     # VT :  cl over alpha airfoil of VT     [rad^-1]
+CLH_adj = -0.8                  # HT: CL for an adjustable tail         [-]
+CD0_tailhCR = 0.0741993961878728 # HT: CD0 for cruise condition     [-]
+CLwf = 0.8                  # Cruise: wing and fuselage lift coefficient    [-]
 
 ''' Zero-Drag estimations '''
 CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
