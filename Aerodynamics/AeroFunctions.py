@@ -1,5 +1,5 @@
 from Constants.MissionInputs import M_cruise
-from Constants.AircraftGeometry import S_w, taper, c_mac, t_c_ratio, Aw
+from Constants.AircraftGeometry import S_w, taperw, c_mac_w, t_c_ratio_w, Aw
 import pandas as pd
 import numpy as np
 
