@@ -103,9 +103,9 @@ WS_dash = weight_dash / surface_dash
 print(WS_dash, WP_dash)
 
 plt.vlines(W_S_approach,0,100,'b',label="Approach Speed Constraint(141kts)")
-plt.plot(W_S,W_P_TOP,'g',label = "Takeoff Constraint")
-plt.plot(W_S,W_P_TOP_OEI,'r',label = "Takeoff Constraint (OEI)")
-plt.vlines(W_S_land,0,100,'c',label ="Landing Constraint")
+plt.plot(W_S,W_P_TOP,'g',label = "Takeoff Constraint, CL = 1.9")
+plt.plot(W_S,W_P_TOP_OEI,'r',label = "Takeoff Constraint (OEI), CL = 1.9")
+plt.vlines(W_S_land,0,100,'c',label ="Landing Constraint, CL = 2.2")
 plt.plot(W_S,W_P_cruise,'m',label = "Cruise Constraint (275kts)")
 plt.plot(W_S,W_P_ROC,'y',label = "Rate of Climb Constraint, ROC = 6")
 plt.plot(W_S,W_P_ROC_OEI,'orange',label = "Rate of Climb Constraint (OEI), ROC = 2")

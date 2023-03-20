@@ -5,6 +5,7 @@ import numpy as np
 
 '''TO BE UPDATED: High Lift Devices (for Alberto)''' #todo to be updated!
 SwfS_flap = 0.52                # Wing area by flaps area (Swf/S)           [-]
+S_flap = 2                      # Flaps area                                [m^2]
 c_accent_c_flap = 1             # c'/c for the flaps                        [-]
 b_flap = 1                      # Span flaps                                [m]
 cf_over_cprime_flap = 1         # Chord flap/c'                             [-]
