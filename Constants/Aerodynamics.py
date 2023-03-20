@@ -29,7 +29,7 @@ CL_DesTakeOff = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
 CD_DesTakeOff = 0.17041399                # CD at 40 deg flap deflection [-]
 CL_CD_TakeOff = 12.428740               # CL/CD at 40 deg flap deflection [-]
 Alpha_DesTakeOff = 11.0923                # Alpha at 40 deg flap deflection [-]
-CL_MaxTakeOff = 1.9                       # CL max wing at flap deflection 40 deg
+CL_MaxTakeOff = 1.83                      # CL max wing at flap deflection 40 deg
 
 ''' Landing data --> 40 deg flap deflection'''
 CL_DesLand = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
@@ -44,7 +44,7 @@ Cl_Alpha_WingAirfoil =  5.99001331     # Airfoil lift slope [1/rad]
 Cl_Alpha_TailAirfoil =  5.7295779513   # Tail Airfoil lift slope [1/rad]
 
 ''' TO BE UPDATED '''
-DeltaCLflaps = 0.94                    # Change in CL wing due to flaps      [-]    todo: add
-DeltaClmax = 2.3                       # Change in airfoil Cl by flaps       [-]    todo: add
+DeltaCLflaps = 0.853914517995425       # Change in CL wing due to flaps      [-]    todo: add
+DeltaClmax = 1.5812727272727276        # Change in airfoil Cl by flaps       [-]    todo: add
 CL0_Land = 0.29971                     # CL0 for flapped wing (landing)      [-]
 Cm0_airfoil = -0.0794                  # Cm for airfoil at alpha=0           [-]
