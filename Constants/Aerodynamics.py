@@ -20,7 +20,7 @@ CD0_40 = 0.07520760765686323        # CD0 Flap deflection 40 def [-]
 ''' Cruise data '''
 CL_DesCruise = 0.63369832                 # CL Design Cruise [-]
 CD_DesCruise = 0.03323038                # CD Design Cruise [-]
-CL_CD_DesCruise = 19.06985102             # CL/CD Design Cruise [-]
+CL_CD_DesCruise = 18.31272406 #19.06985102             # CL/CD Design Cruise [-]
 Alpha_DesCruise = 4                       # Angle of attack Cruise [deg]
 CL_Max_Clean =  1.3499704142011835        # CL max wing clean configuration [-]
 
