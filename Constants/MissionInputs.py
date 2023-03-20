@@ -64,8 +64,8 @@ Aw = 12                            #Aspect Ratio (ONLY VALUE THAT COULD BE ITERA
 #Aerodynamic Constants
 ''' PLS ADD THE NEXT FEW COMMENTED TO WEIGHT ESTIMATION FILES SEPARATELY --- THESE ARE NOT MISSION INPUTS 
                     AND ARE ONLY USED THERE AS FAR AS I (MEGHA) KNOW  '''
-# Psi = 0.0075                        #Parasite drag dependent on the lift coefficient (value based on Roelof reader p.46)
-# phi = 0.97                          #span efficiency factor (value based on Roelof reader p.46)
+Psi = 0.0075                        #Parasite drag dependent on the lift coefficient (value based on Roelof reader p.46)
+phi = 0.97                          #span efficiency factor (value based on Roelof reader p.46)
 # Cfe = 0.0030                        #equivalent skin friction coefficient -> depending on aircraft from empirical estimation
 # Swet_S = 6.1                        #(6.0-6.2) wetted area ratios -> depending on airframe structure
 
