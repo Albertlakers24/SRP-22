@@ -3,7 +3,7 @@ from Constants.Masses_Locations import W_P_design,m_f,m_oem,beta_s_land_fc
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
 from Constants.Aerodynamics import CL_CD_DesCruise
 from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap
-from Constants.Empennage_LandingGear import Sh, taperh, Sv, taperv, x_h
+from Constants.Empennage_LandingGear import Sh,lh,A_h, taperh, Sv, taperv, x_h
 import numpy as np
 
 
@@ -21,12 +21,10 @@ LH2_system_tank = m_tanks       #Must be done, thus change
 
 #Engine
 power_req = m_mto * g / W_P_design
-Eng_W_kg = 6000 #Check Later
+Eng_W_kg = 200*10**3 / 13 #Check Later
 Engine_weight = power_req / eta_EM / Eng_W_kg + (power_req / eta_EM / eta_wire / eta_inverter) / inverter_power_density / 10**3
 
 #Fuel Cell
-FC_W_kg = 3000
-# Fuel_Cell_Weight = power_req / (eta_EM * eta_wire * eta_inverter) / FC_W_kg
 Fuel_Cell_Weight = no_fc * 80
 
 #Wing
@@ -42,7 +40,7 @@ W_wing = W_wing_lbs * lbs_kg
 
 #Horizontal Tail
 
-# W_hor_tail_lbs =
+W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sh**0.75 * lh**(-1) * K_y* np.cos()**(-1) * A_h**0.166 * (1+Se/Sht)**0.1
 # W_hor_tail = W_hor_tail_lbs * lbs_kg
 
 # #Vertical Tail

@@ -29,14 +29,14 @@ CL_DesTakeOff = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
 CD_DesTakeOff = 0.17041399                # CD at 40 deg flap deflection [-]
 CL_CD_TakeOff = 12.428740               # CL/CD at 40 deg flap deflection [-]
 Alpha_DesTakeOff = 11.0923                # Alpha at 40 deg flap deflection [-]
-CL_MaxTakeOff = 2.4                       # CL max wing at flap deflection 40 deg
+CL_MaxTakeOff = 1.9                       # CL max wing at flap deflection 40 deg
 
 ''' Landing data --> 40 deg flap deflection'''
 CL_DesLand = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
 CD_DesLand = 0.17041399                # CD at 40 deg flap deflection [-]
 CL_CD_Land = 12.428740                 # CL/CD at 40 deg flap deflection [-]
 Alpha_DesLand = 11.0923                # Alpha at 40 deg flap deflection [-]
-CL_MaxLand = 2.4                       # CL max wing at flap deflection 40 deg
+CL_MaxLand = 2.2                       # CL max wing at flap deflection 40 deg
 
 ''' Slopes '''
 CL_Alpha_Wing = 5.63403713             # Lift slope wing [1/rad]
