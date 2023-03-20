@@ -4,7 +4,7 @@ import numpy as np
 # Suggested headers - pls change if needed -- segregate as you'd like
 
 '''TO BE UPDATED: High Lift Devices (for Alberto)''' #todo to be updated!
-SwfS_flap = 1                   # Wing area by flaps area (Swf/S)           [-]
+SwfS_flap = 0.52                # Wing area by flaps area (Swf/S)           [-]
 c_accent_c_flap = 1             # c'/c for the flaps                        [-]
 b_flap = 1                      # Span flaps                                [m]
 cf_over_cprime_flap = 1         # Chord flap/c'                             [-]
@@ -17,7 +17,7 @@ y_inboard_aileron = 1           # y inboard location of the aileron         [m]
 y_outboard_flap = 1             # y outboard location of the flap           [m]
 y_inboard_flap = 1              # y inboard location of the flap            [m]
 delta_flap =40/180*np.pi        # Flap deflection                           [rad]
-twist = 0                       # Wing twist angle                          [rad]
+twist = 4/180*np.pi             # Wing twist angle                          [rad]
 dihedralw = 0                   # Wing dihedral angle                       [rad]
 
 ''' Wing planform'''
