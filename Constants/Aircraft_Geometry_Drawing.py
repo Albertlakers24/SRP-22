@@ -28,15 +28,15 @@ zw = -1.84      # [m] Center line fuselage to root of the wing in the z directio
 S_BS = 74.8936  # Body side area [m**2]
 
 
-''' To be updated - fuselage '''
-Amax_fuse = 7.116                       # Max frontal area of fuselage [m^2]
-A_base_fuse = 0.023561944               # Base area of fuselage (from the back of the fuselage) [m^2]
-l_nacelle = 1                         # Length of nacelle [m]
-Amax_nacelle = 0.3                      # Max frontal area of nacelle [m^2]
-upsweep_ang = 5.71                      # Upsweep angle of fuselage [m^2] (centerline of fuselage to center of base - adsee II, lec 2, pg 51)
+''' updated 20-03 - fuselage '''
+Amax_fuse = 7.1158                      # Max frontal area of fuselage [m^2]
+A_base_fuse = 1.138525             # Base area of fuselage (from the back of the fuselage) [m^2]
+l_nacelle = 1.1975                           # Length of nacelle [m] (can still alter if we decided to install the MLG in the nacelles)
+Amax_nacelle = 0.74375                     # Max frontal area of nacelle [m^2]
+upsweep_ang =  3.03116                    # Upsweep angle of fuselage [deg] (centerline of fuselage to center of base - adsee II, lec 2, pg 51)
 
 
-''' To be updated - undercarriage '''
+''' will be updated once the design is finalized - undercarriage '''
 depth_lg = (0.838*4) + (0.343*2)                           # Depth of landing gear (strut + wheel)
 width_lg =(0.247 *4) + (0.108*2)                           # Width of landing gear (strut + wheel)
 S_lg_front = (0.834*0.247)*4 + (0.343*0.108*2)             # Frontal area of landing gear (strut area ) --- p.52 of ADSEE2, Lecture 2
