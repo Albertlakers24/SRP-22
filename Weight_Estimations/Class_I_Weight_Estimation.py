@@ -13,6 +13,7 @@ m_f_extra = 0.03                #-
 fuel_mass_ref = 669             #kg
 m_tanks = 1.4 * fuel_mass_ref   #kg
 CL_CD = CL_CD_DesCruise         #[-]
+CL_CD = 18.5
 
 def mf_mMTO(range):
     if range == "full":
@@ -44,13 +45,13 @@ def fuel_mass(oew_ratio, range):
 
 oew_mtom = 12770 / 18650
 m_mto = mtom(oew_mtom)
-m_f = fuel_mass(oew_mtom, 1000)
+m_f = fuel_mass(oew_mtom, "full")
 oem = oew_mtom * m_mto  #+ m_f * 1.4
 m_zf = m_mto - m_f
 m_tanks = 1.4 * m_f
 print("MTOM:", m_mto)
 print("OEM:", oem, oew_mtom)
-print("Fuel mass:", fuel_mass(oew_mtom, 1000))
+print("Fuel mass:", fuel_mass(oew_mtom, "full"))
 print("Payload:", m_payload)
 print("Tank mass:", m_tanks)
 # print(mf_mMTO("full"))

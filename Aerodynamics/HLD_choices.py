@@ -1,7 +1,7 @@
 #from Constants.MissionInputs import *
 import numpy as np
 from Aerodynamics.AeroFunctions import Calculate_wingsweep
-from Constants.AircraftGeometry import bw,taperw,c_rw
+from Constants.AircraftGeometry import bw,taperw,c_rw, S_w, Aw, c_tw
 from Constants.Aerodynamics import CL_Max_Clean, CL_MaxLand
 def yield_func(low,high,step):
     i = low
@@ -39,8 +39,8 @@ def HLD_LE_deltaClmax(flap_type,c_prime_over_c):
         delta_clmax_LE = 0
     return delta_clmax_LE
 
-def trapezoid_area(h,top,base):
-    area = (top+base)/2 * h
+def wing_area(l_top,l_root,h):
+    area = (l_top + l_root)/2 * h
     return area
 
 def l_top(alpha,beta,height,base):
@@ -48,9 +48,6 @@ def l_top(alpha,beta,height,base):
     x2 = height/ np.tan(beta)
     top = base - x1 - x2
     return top
-
-#Lift Data
-CL_max_req = 1 * CL_MaxLand
 
 #Design Options
 te_hld = ["single slotted","double slotted","fowler"]
@@ -63,21 +60,35 @@ LE_hinge_line_angle_deg = Calculate_wingsweep(0,0.25,0.15,taperw)   #front spar 
 TE_hinge_line_angle_deg = Calculate_wingsweep(0,0.25,0.60,taperw)    #rear spar position at 60% chord
 LE_angle_deg = Calculate_wingsweep(0,0.25,0,taperw)                 #Leading edge angle
 TE_angle_deg = Calculate_wingsweep(0,0.25,1,taperw)                 #Trailing edge angle
-alpha_angle = np.radians(90 + TE_angle_deg)
-beta_angle = np.radians(90 - LE_angle_deg)
+alpha_angle = np.radians(90 - LE_angle_deg)
+beta_angle = np.radians(90 + TE_angle_deg)
 aileron_percent = 0.55                                   #aileron starting position
-#file = open("HLD_design_choices.txt", "w")
-#file.write("ld[m]\tld[%]\tSwfS\tCf_C\tDCL\tDCLalpha\tDCl\tdf\tc_prime_over_c\tflap_type\n")
-deltaCL_max_corrected = CL_max_req - CL_Max_Clean #Change it to CL_max_wing from airfoil selection
-A1 = trapezoid_area(lm,l_top(alpha_angle,beta_angle,lm,c_rw),c_rw)
-lm_top = l_top(alpha_angle,beta_angle,lm,c_rw)
-lm_topLE = l_top(alpha_angle,beta_angle,lm_LE,c_rw)
-l3_sequence = yield_func(lm_LE,(bw/2)*aileron_percent,0.01)
+# file = open("HLD_design_choices.txt", "w")
+# file.write("ld[m]\tld[%]\tSwfS\tCf_C\tDCL\tDCLalpha\tDCl\tdf\tc_prime_over_c\tflap_type\n")
+deltaCL_max_corrected = CL_MaxLand - CL_Max_Clean #Change it to CL_max_wing from airfoil selection
+
+A1 = wing_area(c_tw,c_rw,bw/2)
+C_t_trial = l_top(alpha_angle,beta_angle,bw/2,c_rw)
+A1 = wing_area(C_t_trial,c_rw,bw/2)
+print(C_t_trial)
+print(c_tw)
+print(A1)
+print((c_rw+c_tw)/2 * bw/2)
+print(S_w/2)
+# print(l_top(alpha_angle,beta_angle,bw/2,c_rw))
+# print(A1*2)
+# print(LE_angle_deg)
+# print(TE_angle_deg)
+# print(A1)
+# print(S_w/2)
+# lm_top = l_top(alpha_angle,beta_angle,lm,c_rw)
+# lm_topLE = l_top(alpha_angle,beta_angle,lm_LE,c_rw)
+# l3_sequence = yield_func(lm_LE,(bw/2)*aileron_percent,0.01)
 # for l3 in l3_sequence:
-#     A2 = trapezoid_area(l3,l_top(alpha_angle,beta_angle,l3,c_r),lm_topLE)
-#     if 0.585 <= A2/(Sw/2):
+#     A2 = trapezoid_area(l3,l_top(alpha_angle,beta_angle,l3,c_rw),lm_topLE)
+#     if 0.585 <= A2/(S_w/2):
 #         ld = l3
-#         ld_percent = l3/(b/2) * 100
+#         ld_percent = l3/(bw/2) * 100
 #         break
 #     else:
 #         ld = -1
@@ -100,15 +111,15 @@ l3_sequence = yield_func(lm_LE,(bw/2)*aileron_percent,0.01)
 #                         DP = 0.9 * deltaClmax_HLD * SwfS * np.cos(np.radians(TE_hinge_line_angle_deg)) #+ 0.9 * deltaClmax_LE * 0.585 * np.cos(np.radians(LE_hinge_line_angle_deg))  # Calculating total CL max increase
 #                         DPA = -15 * SwfS * np.cos(np.radians(TE_hinge_line_angle_deg))  # Calculating change in CL alpha
 #                         if DP >= deltaCL_max_corrected:
-#                             l1_sequence = yield_func(lm,(b/2)*aileron_percent,0.01)
+#                             l1_sequence = yield_func(lm,(bw/2)*aileron_percent,0.01)
 #                             for l1 in l1_sequence:
-#                                 A2 = trapezoid_area(l1, l_top(alpha_angle, beta_angle, l1, c_r), lm_top)
-#                                 if SwfS <= A2/ (Sw/2):
-#                                     SwfS = A2/ (Sw/2)
+#                                 A2 = trapezoid_area(l1, l_top(alpha_angle, beta_angle, l1, c_rw), lm_top)
+#                                 if A2/ (S_w/2) >= SwfS
+#                                     SwfS = A2/ (S_w/2)
 #                                     DP = 0.9 * deltaClmax_HLD * SwfS * np.cos(np.radians(TE_hinge_line_angle_deg))
 #                                     DPA = -15 * SwfS * np.cos(np.radians(TE_hinge_line_angle_deg))
 #                                     ld = l1
-#                                     ld_percent = l1/(b/2)*100
+#                                     ld_percent = l1/(bw/2)*100
 #                                     break
 #                                 else:
 #                                     ld = -1

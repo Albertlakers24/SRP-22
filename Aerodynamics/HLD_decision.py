@@ -6,9 +6,9 @@ from Aerodynamics.HLD_choices import HLD_TE_deltaClmax,TE_hinge_line_angle_deg
 from Constants.Aerodynamics import CL_Alpha_Wing
 
 working_directory = os.getcwd()
-working_directory = working_directory.split("SRX-22-ALAR-FOX")[0]
+working_directory = working_directory.split("AI")[0]
 working_directory = os.path.join(working_directory,"SRX-22-ALAR-FOX")
-folder = os.path.join(working_directory,"Aerodynamic_characteristics")
+folder = os.path.join(working_directory,"Aerodynamics")
 file = os.path.join(folder,"HLD_design_choices.txt")
 HLD_choices = pd.read_csv(file,sep = "\t")
 HLD_choices = HLD_choices[HLD_choices['ld[m]']>0].sort_values("ld[%]")
@@ -37,3 +37,4 @@ DCL_alpha_to = S_total_to/S_w * CL_Alpha_Wing
 # print(DCL_to)
 # print(DPA_to)
 # print(DCL_alpha_to)
+print(HLD_choices)

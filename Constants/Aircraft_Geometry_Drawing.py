@@ -5,6 +5,12 @@ Geometry calculated using the drawing:
 * Distances
 * Area hall?
 """
+
+"""To be updated/added:"""
+center_S_BS = 11            # Center location Side area aircraft    [m]
+
+
+
 ln1 = 2.19543   # [m] Longitudinal distance between the big prop to the wing c/4
 ln2 = 1.88328   # [m] Longitudinal distance between the small prop to the wing c/4
 bn1 = 0.77      # [m] Big nacelle width (in y direction)
@@ -14,7 +20,8 @@ y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center
 Zw = -1.82253   # [m] Vertical distance (z-direction) between the fuselage
                 # center line to the LE of the wing, assuming no dihedral.
 l_fn = 10.24    # [m] Length nose to LE wing
-zv = 2.422     # [m] Distance: cg aircraft to the ac of the VT (positive when going up)
+zv = 2.422      # [m] Distance: cg aircraft to the ac of the VT (positive when going up)
+zw = -1.84      # [m] Center line fuselage to root of the wing in the z direction -> negative for high wing
 
 # center line to the LE of the wing, assuming no dihedral.
 """Area"""

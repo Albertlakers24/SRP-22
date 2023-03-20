@@ -3,17 +3,16 @@ import math as m
 import matplotlib.pyplot as plt
 from Constants.Empennage_LandingGear import lh, bh, Sh, lambdahalf_h, c_rh, c_th, A_h, Vh_V
 from Constants.AircraftGeometry import S_w, c_mac_w, Aw, Sweep_quarterchordw
-from Constants.Masses_Locations import m_mto, LEMAC
+from Constants.Masses_Locations import m_mto, LEMAC, xcg_aft_potato
 from Constants.MissionInputs import g, ISA_calculator, h_cruise, dt_cruise, M_cruise, V_cruise, V_approach
-from Constants.Aerodynamics import CL_Alpha_Wing, downwash, Cl_Alpha_HT_Airfoil, CL_Alpha_HT
+from Constants.Aerodynamics import CL_Alpha_Wing, downwash, Cl_Alpha_HT_Airfoil, CL_Alpha_HT, A
+from Constants.Stability_Control import Cmalpha
 
 print("FILE: Horizontal Tail Sizing")
 
 # To be found still :( todo
 Cmac = C_m_AC(mu1=mu1, mu2=mu2, mu3=mu3)                # C_mac                     [-]
-Cmalpha = Cm_alpha*180/np.pi                            # Moment curve slope        [rad^-1]
 AlphaCL0_CR = np.radians(np.mean(AlphaCL0_CR))          # Angle of attack at CL0    [rad]
-xcg_aft = 12.66                                         # Aft cg position           [m]         todo which one?
 x_ac_w_MAC = x_ac_w                                     # Position ac of the wing   [MAC]   at 0.25c
 
 # Variables for this file:
@@ -224,13 +223,13 @@ x_ac_w_meters = c_mac_w*x_ac_w_MAC+LEMAC                                        
 xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters# Location neutral point stick free eq. 7.7 Sam1    [m]         normal value 0.483*MAC
 Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                 # eq. 5.21 Sam1                                     [rad^-1]
 
-if xcg_aft<xnfree:
+if xcg_aft_potato <xnfree:
     print("Aircraft is statically stable as xcg<xnfree")
-    print("xcg_aft=",xcg_aft)
+    print("xcg_aft=",xcg_aft_potato )
     print("xnfree=", xnfree)
 else:
     print("Aircraft is NOT statically stable as xcg>xnfree")
-    print("xcg_aft=", xcg_aft)
+    print("xcg_aft=", xcg_aft_potato )
     print("xnfree=", xnfree)
 
 def Cm0():
@@ -303,7 +302,7 @@ def TailLoad(V):
     :param xcg and xw: locations (m)
     :return: Tail Load (N)
     """
-    Nh = (1/lh)*(Cmac*0.5*rho*V**2*S_w*c_mac_w + MTOW*(xcg_aft-x_ac_w_MAC))
+    Nh = (1/lh)*(Cmac*0.5*rho*V**2*S_w*c_mac_w + MTOW*(xcg_aft_potato -x_ac_w_MAC))
     return Nh
 
 def CNh():
@@ -331,14 +330,14 @@ def ControlForce(V, delta_te):
     :param: Se; Use surface area of 1 elevator (m^2) - same when you have St
     :return: Tail Load (N)
     """
-    F_velocity_independent = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft-xnfree)/c_mac_w)
+    F_velocity_independent = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft_potato -xnfree)/c_mac_w)
     F_velocity_dependent= 0.5*rho*V**2*Chdelta_t()*(delta_te-trimtab_0())
     a = deriv_deltae_se*Se*MACe*(Vh_V)**2
     Fe = a*(F_velocity_independent - F_velocity_dependent)
     return Fe
 
 def deriv_controlForce():
-    deriv_trim = -2*deriv_deltae_se*Se*MACe*(Vh_V**2)*(MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft-xnfree)/c_mac_w)*(1/Vtrim)
+    deriv_trim = -2*deriv_deltae_se*Se*MACe*(Vh_V**2)*(MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft_potato -xnfree)/c_mac_w)*(1/Vtrim)
     return deriv_trim
 
 print("------------IMPORTANT OUTPUTS FOR STABILITY-----------")
