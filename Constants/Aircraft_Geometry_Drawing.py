@@ -30,7 +30,7 @@ S_BS = 74.8936  # Body side area [m**2]
 
 ''' updated 20-03 - fuselage '''
 Amax_fuse = 7.1158                      # Max frontal area of fuselage [m^2]
-A_base_fuse = 1.138525             # Base area of fuselage (from the back of the fuselage) [m^2]
+A_base_fuse = 0.7 #1.138525             # Base area of fuselage (from the back of the fuselage) [m^2]
 l_nacelle = 1.1975                           # Length of nacelle [m] (can still alter if we decided to install the MLG in the nacelles)
 Amax_nacelle = 0.74375                     # Max frontal area of nacelle [m^2]
 upsweep_ang =  3.03116                    # Upsweep angle of fuselage [deg] (centerline of fuselage to center of base - adsee II, lec 2, pg 51)

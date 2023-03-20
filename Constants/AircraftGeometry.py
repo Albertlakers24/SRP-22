@@ -21,6 +21,14 @@ delta_flap =40/180*np.pi        # Flap deflection                           [rad
 twist = 4/180*np.pi             # Wing twist angle                          [rad]
 dihedralw = 0                   # Wing dihedral angle                       [rad]
 
+DCL_Alpha0_TO =-6.2             # Change Alpha_0 for take off               [deg]
+DCL_Alpha0_LD =-9.3             # Change Alpha_0 for landing                [deg]
+delta_CL_TO = 0.9               # delta CL for take-off                     [-]
+delta_CL_LD = 1.05              # delta CL for landing                      [-]
+delta_CLAlpha_TO = 1.1          # change of CL_Alpha take-off               [-]
+delta_CLAlpha_LD = 1.1495       # change of CL_Alpha landing                [-]
+
+
 ''' Wing planform'''
 taperw = 0.45           # wing taper ratio                                  [-]
 S_w = 65.28286905    # Wing surface area                                 [m^2]
