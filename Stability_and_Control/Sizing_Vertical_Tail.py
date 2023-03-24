@@ -2,7 +2,7 @@ import numpy as np
 import math as m
 from Constants.AircraftGeometry import l_f, d_f_outer, Aw, S_w, bw, taperw, Sweep_quarterchordw, c_mac_w, t_c_ratio_w
 from Constants.Aircraft_Geometry_Drawing import zv, y_T, Zw, S_BS, center_S_BS
-from Constants.Masses_Locations import m_mto, m_pldes, xcg_aft_potato, xcg_front_potato
+from Constants.Masses_Locations import m_pldes, xcg_aft_potato, xcg_front_potato
 from Constants.Aerodynamics import R_lfus, CL_Alpha_VT, Cl_Alpha_VT_Airfoil
 from Constants.MissionInputs import V_approach, ISA_calculator, landing_critical, dt_land
 

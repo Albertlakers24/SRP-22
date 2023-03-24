@@ -16,9 +16,9 @@ CL_Alpha_LD = 6.365986907313    # change of CL_Alpha landing                [-]
 
 
 ''' Wing planform'''
-taperw = 0.45           # wing taper ratio                                  [-]
-S_w = 65.28286905    # Wing surface area                                 [m^2]
-Aw   = 12               # Wing aspect ratio                                 [-]
+taperw = 0.45                   # Wing taper ratio                                  [-]
+S_w = 65.28286905               # Wing surface area                                 [m^2]
+Aw   = 12                       # Wing aspect ratio                                 [-]
 bw   = 27.9891841360194        # Wing span                                         [m]
 c_tw = 1.4477164208285898          # Wing tip chord                                    [m]
 c_rw = 3.2171476018413103        # Wing root chord                                   [m]
