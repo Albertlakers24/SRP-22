@@ -1,5 +1,5 @@
 from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,FL_ft,V_cruise,dt_cruise,Aw,m_inches,rho_5000,V_approach
-from Constants.Masses_Locations import W_P_design,m_f,m_oem,beta_s_land_fc
+from Constants.Masses_Locations import W_P_design,m_f,m_oem,m_pldes
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
 from Constants.Aerodynamics import CL_CD_DesCruise
 from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap, d_f_outer
@@ -52,7 +52,6 @@ K_z = 1                     #aircraft yawing radius of gyration, ft ( = L,)
 W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(0)**(-1) * Av**0.35 * t_cw**(-0.5)
 W_ver_tail = W_ver_tail_lbs *lbs_kg
 
-
 #Fuselage
 K_door = 1                  # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
 K_lg =  1                   # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
@@ -76,14 +75,12 @@ V_stall = V_approach/1.23       #V_stall at landing
 W_mainlg_lbs = 0.0106 * K_mp * W_l ** 0.888 * N_l ** 0.25 * L_m ** 0.4 * N_mw **0.321 * N_mss ** (-0.5) * V_stall ** 0.1
 W_mainlg = W_mainlg_lbs * lbs_kg
 
-
 # #Nose Landing Gear
 K_np = 1.15                     #Kneeling gear or not, 1 if not , if so 1.15
 L_n = 1.2 * m_inches            #Nose gear length [inches]  [1.2m]
 N_nw = 2                        # Number of nose wheels
 W_noselg_lbs = 0.032 * K_np * W_l ** 0.646 * N_l ** 0.2 * L_n** 0.5 * N_nw**0.45
 W_noselg = W_noselg_lbs * lbs_kg
-
 
 # # Nacelle Group
 power_req = m_mto * g / W_P_design
@@ -92,7 +89,8 @@ Engine_weight = power_req / eta_EM / Eng_W_kg + (power_req / eta_EM / eta_wire /
 K_ng = 1.017                                #Pylon mounted nacelle or not, if not 1, if so 1.017
 N_lt = 1                                    #Nacelle Length [ft]
 N_w = 1                                     #Nacelle Width [ft]
-W_ec = 2.331 * (Engine_weight/4 * (1/lbs_kg))**0.901 * 1.4         #Weight of engine and content [lbs]
+K_p = 1.4
+W_ec = 2.331 * (Engine_weight/4 * (1/lbs_kg))**0.901 * K_p         #Weight of engine and content [lbs]
 N_en = 4                                    #Number of engines
 S_n = 1                                     #Nacelle wetted area [ft^2]
 W_nacelle_lbs = 0.6724 * K_ng * N_lt**0.10 * N_w**0.294 * Nz**0.119 * W_ec**0.611 * N_en**0.984 * S_n**0.224
@@ -116,39 +114,46 @@ I_y =  1                #yawing moment of inertia
 W_flight_controls_lbs = 145.9 * N_f**0.554 * (1+N_m/N_f)**(-1) * S_cs **0.20 * (I_y * 10**(-6))**0.07
 W_flight_controls = W_flight_controls_lbs * lbs_kg
 
-#
-# #Hydrolics
-# W_hydraulics_lbs = 0.008*W_dg                #CHANGE THIS LATER
-# W_hydraulics = W_hydraulics_lbs * lbs_kg
-#
-# #Avionics
-# #W_auv uninstalled avionics weight
-# W_uav = 800
-#
-# W_av_lbs = 2.117*W_uav**(0.933)
-# W_av = W_av_lbs * lbs_kg
-#
-# #Electrical
-# W_elec_lbs = 12.57*(W_av_lbs)**(0.51)
-# W_elec = W_elec_lbs * lbs_kg
-#
-# #Airconditioning and Anti-Icing
-# #N_p personnel
-# N_p = 3
-# #Mach Number
-# Mach = V_cruise/a_cruise
-#
-# W_aircon_ice_lbs = 0.265*W_dg**(0.52)*N_p**(0.68)*W_av_lbs**(0.17)*Mach**(0.08)
-# W_aircon_ice = W_aircon_ice_lbs * lbs_kg
-#
-# #Furnishing
-# W_furnish_lbs = 0.0582*W_dg-65
-# W_furnish = W_furnish_lbs * lbs_kg
-#
-# #Paint
-# W_paint_lbs = 0.0045 * W_dg * 0
-# W_paint = W_paint_lbs * lbs_kg
+#Instrument
+Kr = 1                  # Reciprocating engine or not
+Nc = 3                  # Number of crew
+W_instrument_lbs = 4.509 * Kr * K_p * Nc**0.541 * N_en * (L_f + bw)**0.5
+W_hydraulics = W_instrument_lbs * lbs_kg
 
+#Hydraulics
+W_hydraulics_lbs = 0.2673 * N_f * (l_f + bw)**0.937
+W_hydraulics = W_hydraulics_lbs * lbs_kg
+
+#Electrical
+R_kva = 60                      #system electrical rating, kv · A (typically 40-60 for transports)
+L_a = 1                         #electrical routing distance, generators to avionics to cockpit [ft]
+N_gen = N_en                       #Number of Generator (typically the same as N_en)
+W_electrical_lbs = 7.291 * R_kva**0.782 * L_a**0.346 * N_gen**0.10
+W_electrical = W_electrical_lbs * lbs_kg
+
+#Avionics
+W_uav = 1400                    #Typically around 800- 1400 lbs
+W_avionics_lbs = 1.73 * W_uav**0.983
+W_avionics = W_avionics_lbs * lbs_kg
+
+#Furnishing
+W_c = m_pldes * (1/lbs_kg)
+W_furnishing_lbs = 0.0577*Nc**0.1 * W_c**0.393 * S_f**0.75
+W_furnishing = W_furnishing_lbs * lbs_kg
+
+#Air conditioning
+N_p = 51
+V_pr = 1                    #Volume of presurried section [ft^3]
+W_airconditioning_lbs = 62.36 * N_p**0.25 * (V_pr/1000)**0.604 * W_uav**0.10
+W_airconditioning = W_airconditioning_lbs * lbs_kg
+
+#Anti-Icing
+W_antiice_lbs = 0.002 * Wdg
+W_antiice = W_antiice_lbs * lbs_kg
+
+#Handling Gear
+W_handling_gear_lbs = 3.0 * 10**(-4) * Wdg
+W_handling_gear = W_handling_gear_lbs * lbs_kg
 #Results:
 
 #Things to be reconsidered later before iteration etc:
