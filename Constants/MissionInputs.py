@@ -11,6 +11,7 @@ km_m = 1000                         #km to m
 FL_ft = 100                         #FL to ft
 lbs_kg = 0.453592                   #lbs to kg
 kW_hp = 1.341                       #kW to hp
+m_inches = 39.37                    #m to inches
 #General Constants
 g = 9.80665                         #gravity
 T_0 = 288.15                        #ISA Temperature
