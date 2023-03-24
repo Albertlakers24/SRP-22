@@ -82,13 +82,6 @@ print("S_tab=", S_tab, "1 trim tab")
 
 print("Hinge position=",        )
 
-#cf = 0.7                                                # Flap chord elevator       [m]
-#chord = 1.74                                            # Chord length horizontal tail  [m]
-#ct = 0.348                                              # Tab chord                 [m]
-#cb = 0.21                                               # Distance nose to Hinge Line elevator  [m]
-#cf_over_c = cf/chord                                    # Flap chord over chord for elevator    [-]  about 0.3?
-#ct_over_c = ct/chord                                    # Tab chord over chord for elevator     [-]  about 0.2?
-
 # Supporting Values from the Graphs for AF calculations for elevator
 cla_over_cla_theory_HT = 0.76                           # Graph 10.64a (p. 501)     CHECKED
 c_accent_alpha_over_chalpha_theory_HT = 0.3             # Graph 10.63a (p. 500)     CHECKED
@@ -398,46 +391,13 @@ plt.title("Horizontal tail load curve")
 plt.legend(["Tail loading", "Vcruise"])
 plt.show()
 
-
 plt.plot(V_controlforce, ControlForce(V=V_controlforce, delta_te= delta_te))
 plt.grid(True)
 plt.xlabel("Velocity (m/s)")
 plt.ylabel("Control Force (N)")
-#plt.title("Elevator Control Force Curve - Stick Free")
-#TODO: Adjust for right value
 plt.axvline(x=V_cruise, color="black")          # V_cr
 plt.axvline(x=124, color="g")                   # V_trim
 plt.axvline(x=178, color="r")                   # V_max
 plt.xlim(80,180)
 plt.legend(["Elevator control force", "Vcruise", "Vtrim", "Vmax"])
 plt.show()
-
-
-#xnfree= xnfix +(Cmdelta/CN_alpha(A = A, Sweep_halfc=Sweep_halfc_w))
-#xnfree1 = AC_loc + ((C_L_alpha(A = Ah, lambdahalf=lambdahalf_h)-CNh_delta*(Chalpha_Chdelta))/CL_alpha_Ah())*(1-downwash)*(Sh*lh/(S*MAC))*(Vh_V**2)
-#print('Stability margin stick-free', (xnfree - xcg_aft)/c_mac)
-#print('Stability margin stick-fixed',(xnfix- xcg_aft)/c_mac)
-#AC_loc = 0.35                                           # AC location                      [MAC]
-#xnfix1 = AC_loc + (C_L_alpha_h/CL_alpha_Ah())*(1-downwash)*(Sh*lh/(S*MAC))*(Vh_V**2)
-#xnfix = AC_loc + (((CL_alpha_htail/(1-downwash))/CL_alpha)*(1-downwash)*Vh_V**2*Sh*lh/S/MAC)
-# Chalpha_Chdelta = -de_dalphafree/(1-downwash)           # Sammaries 1 eq 7.3
-#Ch_delta = -0.25                                        # Hinge moment due to deflection    [rad^-1]        -0.25 normal values: -0.3 to -0.1 FD (p. 383)
-#Ch_alpha = -0.02                                        # Hinge moment due to alpha         [rad^-1]        -0.02 can be positive or negative
-#de_dalphafree = -0.87417                               # Slope of de/dalpha graph free     [??]
-#de_dalphafix = -0.8741417                               # Slope of de/dalpha graph  fixed   [??]
-
-# plt.plot(V_controlforce, ControlForce(V=V_controlforce, delta_te= trimtab_0()-trimtab_0())[0])
-# plt.plot(V_controlforce, ControlForce(V=V_controlforce, delta_te= trimtab_0())[0])
-# plt.plot(V_controlforce, ControlForce(V=V_controlforce, delta_te= 2*trimtab_0())[0])
-# plt.grid(True)
-# plt.xlabel("Velocity (m/s)")
-# plt.ylabel("Control Force (N)")
-# plt.title("Elevator Control Force Curve - Stick Free")
-# plt.legend(["delta_te<delta_te0", "delta_te=delta_te0", "delta_te>delta_te0"])
-# plt.show()
-
-# from Constants import *
-# from Initial_Aircraft_Sizing.Empennage_Design import l_h, Ah, c_mach_h, c_rh, c_th, bh, Sh
-# from Initial_Aircraft_Sizing.Wing_planform import Sw, c_mac, M_cruise
-# from Control_and_Stability.Scissorplot import Vh_V, C_m_AC, mu1, mu2, mu3, lambdahalf_h, lambdahalf_w, C_L_alpha, x_ac_w, LEMAC, Downwash
-# from Aerodynamic_characteristics.AeroData import Cm_alpha, AlphaCL0_CR, CL_alpha, Cl_alpha_AFtail, CL_alpha_htail
