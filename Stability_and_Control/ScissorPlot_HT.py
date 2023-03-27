@@ -184,7 +184,12 @@ def y_c(C_L_h):
 # CG location range
 xcg = [Location_in_MAC(xcg_front_potato)-0.05, Location_in_MAC(xcg_aft_potato)+0.05]
 ycg = [Sh/S_w, Sh/S_w]
-print("Sh=", Sh)
+print("------------------------------------------------------")
+print("--------------- HT Dimensions ------------------------")
+print("Sh =", Sh)                  # TODO: see scissorplot
+print("Ah =", A_h)
+print("bh =", np.sqrt(Sh*A_h))
+
 #Plotting the curves
 plt.plot(x, ys_SM, 'g', linestyle = '--', label='Neutral stability Line')
 plt.plot(x,ys, 'g', label="Stability Line")
@@ -199,36 +204,5 @@ plt.ylabel('Sh/S', color='#1C2833', weight="bold", fontsize=15)
 plt.legend(loc='upper left', fontsize=15)
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=15)
-#plt.xlim([-0.2, 5.0])
-#plt.ylim([0,0.3])
 plt.grid(True)
 plt.show()
-
-
-
-
-
-# from Class_I_Weight_Estimation.Wing_Loading_Diagram import V_approach_stall, beta_s_land_fc
-# from Class_I_Weight_Estimation.Class_I_fuel_cell import m_MTOW
-# from Initial_Aircraft_Sizing.Empennage_Design import l_h, Ah, bv, Sh, c_mach_h, x_h
-# from Initial_Aircraft_Sizing.Wing_planform import c_mac, M_cruise, Sw, A, b, c_r, taper
-# from Initial_Aircraft_Sizing.Fuselage import D_outer, l_f
-# from Aerodynamic_characteristics.AeroData import Cm0_AF, CL0_wing_CR, CL_Des_CR, CL_alpha
-# from Aerodynamic_characteristics.HLD_design_decision import DCl, c_prime_over_c_land, ld, lm, SwfS, cf_over_cprime
-
-# Imported Variable : Aircraft Geometry
-# Sw = S_w                         # Wing : Surface area               [m^2]
-# ARw = Aw                        # Wing : Aspect Ratio               [-]
-# c_bar = c_mac_w                       # Wing : Mean aerodynamic chord     [m]
-# cr = c_rw                          # Wing : Root chord                 [m]
-# lambdahalf_w = Sweep_halfchordw  # Wing : Half sweep                 [rad]
-# lambda_quarterchord = Sweep_quarterchordw         # Wing : c/4 sweep                  [rad]
-# lambdahalf_h = 2.05*np.pi/180   # HT : Half sweep                   [rad]
-# bf = d_f_outer                           # Fuselage : Width                  [m]
-# hf = bf                         # fuselage : Height                 [m]
-# Swf_over_S = SwfS               # Wing area by flaps                [-]
-# c_accent_c = c_prime_over_c_land # cprime over c                    [-]
-# b_flap = ld-lm                  # span flaps                        [m]
-
-# Imported Variables : Aerodynamics
-# CL = CL_DesCruise                  # CL at clean cruise condition      [-]        0.630347

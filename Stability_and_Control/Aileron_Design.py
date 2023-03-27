@@ -1,15 +1,16 @@
 import numpy as np
 
-from Constants.MissionInputs import V_approach, g, ISA_calculator, takeoff_critical, dt_takeoff, rho_5000
+from Constants.MissionInputs import V_approach, g, ISA_calculator, takeoff_critical, dt_takeoff, rho_5000, V_cruise,a_cruise
 from Constants.AircraftGeometry import S_w,bw,c_rw,c_tw,taperw
 from Aerodynamics.AeroFunctions import Calculate_wingsweep
+from Constants.Masses_Locations import m_mto
 import pandas as pd
 aileron_efficiency = 6.7/2.6 * 0.2
 Ca_c = 0.3
-aileron_percent = 0.55
+aileron_percent = 0.535
 aileron_lm_choice = aileron_percent * bw/2
 V_approach_stall = V_approach /1.23  #CS 25 requirement of V_stall_land = V_approach / 1.23
-V_stall = np.sqrt(18650 * g / (ISA_calculator(takeoff_critical,dt_takeoff)[2]*0.5*2.4*S_w))
+V_stall = np.sqrt(m_mto * g / (ISA_calculator(takeoff_critical,dt_takeoff)[2]*0.5*2.4*S_w))
 CL_alpha_AF = 6.86861805
 Cd0_AF_ALpha0 = 0.0046
 column_name = ["ld","l1","Ca_c","dA","dA_upper","dA_lower","dt"]
@@ -78,17 +79,18 @@ for l1 in l1_sequence:
                                         "Cl_p":[Cl_p],
                                         "Cl_dA":[Cl_dA]})
                 aileron_DP = aileron_DP.append(choices)
-aileron_DP = aileron_DP.sort_values("dA_upper")
-aileron_lm = aileron_DP.iloc[1][0]
-aileron_l1 = aileron_DP.iloc[1][1]
-aileron_Ca_c = aileron_DP.iloc[1][2]
-aileron_dA = aileron_DP.iloc[1][3]
-aileron_dA_upper = aileron_DP.iloc[1][4]
-aileron_dA_lower = aileron_DP.iloc[1][5]
-aileron_dt = aileron_DP.iloc[1][6]
-aileron_P = aileron_DP.iloc[1][7]
-aileron_cl_p = aileron_DP.iloc[1][8]
-aileron_cl_dA = aileron_DP.iloc[1][9]
+aileron_DP = aileron_DP[(aileron_DP["dA_upper"] < 26.0) & (aileron_DP['dt'] < 1.39)].sort_values("dA_upper")
+aileron_final_design = aileron_DP.iloc[0]
+aileron_lm = aileron_final_design.iloc[0]
+aileron_l1 = aileron_final_design.iloc[1]
+aileron_Ca_c = aileron_final_design.iloc[2]
+aileron_dA = aileron_final_design.iloc[3]
+aileron_dA_upper = aileron_final_design.iloc[4]
+aileron_dA_lower = aileron_final_design.iloc[5]
+aileron_dt = aileron_final_design.iloc[6]
+aileron_P = aileron_final_design.iloc[7]
+aileron_cl_p = aileron_final_design.iloc[8]
+aileron_cl_dA = aileron_final_design.iloc[9]
 # print(aileron_lm)
 # print(aileron_l1)
 # print(aileron_Ca_c)
@@ -150,11 +152,11 @@ y_m = (aileron_lm + aileron_l1)/2
 #
 control_F = -np.radians(aileron_dA)/0.4 * 1/2 * rho_5000 * V_stall * aileron_P * (bw/2) * S_a * aileron_Ca_c * ((Hingemoment_Coefficients()[1] * (2*y_m/bw)) - (Hingemoment_Coefficients()[3]*aileron_cl_p/(2*aileron_cl_dA)))
 control_F_horn = -np.radians(aileron_dA)/0.4 * 1/2 * rho_5000 * V_stall * aileron_P * (bw/2) * S_a * aileron_Ca_c * ((Hingemoment_Coefficients()[1] * (2*y_m/bw)) - (Hingemoment_Coefficients()[0]*aileron_cl_p/(2*aileron_cl_dA)))
-# print(control_F)
-# print(control_F_horn)
-# # print(aileron_cl_dA)
-# # print(aileron_cl_p)
-#print(-aileron_cl_dA/aileron_cl_p*np.radians(aileron_dA))
-# print(aileron_l1)
-# print(b/2)
-# print(b/2 - 2.15/2)
+print(control_F)
+print(control_F_horn)
+# # # print(aileron_cl_dA)
+# # # print(aileron_cl_p)
+# #print(-aileron_cl_dA/aileron_cl_p*np.radians(aileron_dA))
+# # print(aileron_l1)
+# # print(b/2)
+# # print(b/2 - 2.15/2)

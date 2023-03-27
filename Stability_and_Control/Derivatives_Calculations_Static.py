@@ -1,6 +1,6 @@
 import numpy as np
 import math as m
-from Constants.AircraftGeometry import l_f, taperw, Aw, c_mac_w,delta_a_right, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap, twist, dihedralw, S_w, Sweep_halfchordw
+from Constants.AircraftGeometry import cf_over_cprime_flap,c_accent_c_flap,delta_flap,l_f, taperw, Aw, c_mac_w,delta_a_right, delta_a_left, t_c_ratio_w, cf_over_c_aileron, y_inboard_aileron, y_outboard_aileron, bw, Sweep_quarterchordw, y_outboard_flap, y_inboard_flap, twist, dihedralw, S_w, Sweep_halfchordw
 from Constants.Aerodynamics import Alpha_DesCruise, Cl_Alpha_WingAirfoil, CL_DesCruise, Alpha_DesCruise, CD0_CR, CL_Alpha_Wing, CL_Alpha_HT, CLH_adj, CD0_tailhCR, CL_Alpha_VT, CL_Alpha_VT_eff, CLwf
 from Constants.MissionInputs import M_cruise
 from Constants.Stability_Control import Cybeta_v, x_AC, Cnbeta, Clbeta, Cn_r, Cydelta_r, Cndelta_r, AC_loc, Cn_delta_a, Cl_delta_a
@@ -8,12 +8,6 @@ from Constants.Masses_Locations import xcg_front_potato
 from Constants.Aircraft_Geometry_Drawing import zv, zw
 from Constants.AircraftGeometry import d_f_outer
 from Constants.Empennage_LandingGear import Sweep_quarter_chord_H, Sv, lv, A_h, taperh, lambdahalf_h, bh, Sh
-
-# todo for YAW RATE: calculate depending on the flap we have (p.261) -> For YAW RATE calculations
-delta_f = 40                                                        # [deg] flap deflection
-deltacl =  1#0.45*0.35*np.radians(40)*cl_alpha                        # section 8.1.2.1           (p. 261)
-cl_alpha = Cl_Alpha_WingAirfoil                                     # 8.1.1.2.                  (p. 247)
-alpha_deltaf = 1#deltacl / (cl_alpha * delta_f)                       # in rad/deg [?]            (p. 454)
 
 print("FILE: Static Derivatives")
 
@@ -37,12 +31,13 @@ Cl_deltatheory = 5.2                                # Lift effectiveness of a pl
 k_a = -0.05                                         # Correlation Constant                      [-]             Graph 10.48 (p. 480)
 
 # 6 Graph Values for the Yaw rate Derivatives       TODO: find graph YAW RATE
-Delta_Clr_alpha_delta_f_outer = 0.0078              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p. 463)
-Delta_Clr_alpha_delta_f_inner = 0.0030              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p. 463)
+Delta_Clr_alpha_delta_f_outer = 0.0078              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p.463)
+Delta_Clr_alpha_delta_f_inner = 0.0030              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p.463)
 Cnr_CL2 = -0.02                                     # Wing Yaw Damping derivative               [rad^-1]        Graph 10.44 (p.465)
 Cnr_CD0 =-0.3                                       # Drag effect                               [rad^-1]        Graph 10.45 (p.466)
-Clr_CL_CL0_M0 =0.25                                 # Lifting effect                            [rad^-1]        Graph 10.41 (p. 462)
-Delta_lr_epsilont = -0.017                          # Effect of wing twist                      [1/(rad-deg)]   Graph 10.42 (p. 462)
+Clr_CL_CL0_M0 =0.25                                 # Lifting effect                            [rad^-1]        Graph 10.41 (p.462)
+Delta_lr_epsilont = -0.017                          # Effect of wing twist                      [1/(rad-deg)]   Graph 10.42 (p.462)
+alpha_d = 0.4                                       # Lift effectiveness of a single slotted flap [-]           Graph 8.17  (p.262)
 
 # 6 Graph Values for the Roll rate Derivatives      TODO: find graph ROLL RATE
 roll_damping_parameter_w = -0.54                    # Wing roll damping parameter               [-]             Graph 10.35 (p.450)
@@ -109,6 +104,9 @@ x_bar = AC_loc - xcg_front_potato                                   # Distance a
 Delta_Clr_alpha_delta_f = Delta_Clr_alpha_delta_f_outer-Delta_Clr_alpha_delta_f_inner
 alpha_cr_rad = Alpha_DesCruise*np.pi/180                            # Angle of attack for cruise        [rad]
 alpha = Alpha_DesCruise
+delta_f_deg = delta_flap*180/np.pi                                  # Flap deflection                   [deg]
+deltacl =  Cl_Alpha_WingAirfoil*c_accent_c_flap*delta_flap*alpha_d  # Fowler flap eq. 8.6               [-]     (p. 261)
+alpha_deltaf = deltacl / (Cl_Alpha_WingAirfoil * delta_f_deg)       # in rad/deg                        [-]     (p. 454)
 
 print("------------Needed to find X graph coefficients for YAW RATE derivatives ---------------")
 print("Aw=", Aw)
@@ -118,6 +116,8 @@ print("taper=", taperw)
 print("y_outboard/(b/2)=", y_outboard_flap/(bw/2))
 print("y_inboard/(b/2)=", y_inboard_flap/(bw/2))
 print("Cybeta_v", Cybeta_v)
+print("delta_f =", delta_f_deg, "deg")
+print("cf/c =", cf_over_cprime_flap/c_accent_c_flap)
 
 def YawRate():
     """Roskam Book:
@@ -131,7 +131,7 @@ def YawRate():
     den = 1 + (((Aw + 2*np.cos(Sweep_quarterchordw))/(Aw + 4*np.cos(Sweep_quarterchordw)))*(np.tan(Sweep_quarterchordw))**2)
 
     Clr_CL_CL0 = Clr_CL_CL0_M0 *num/den
-    Clrw =CL_DesCruise*Clr_CL_CL0 + 0 + Delta_lr_epsilont*twist + Delta_Clr_alpha_delta_f*alpha_deltaf*delta_f
+    Clrw =CL_DesCruise*Clr_CL_CL0 + 0 + Delta_lr_epsilont*twist + Delta_Clr_alpha_delta_f*alpha_deltaf*delta_f_deg
     Clrv = -(2/bw**2)*(lv*np.cos(alpha)+zv*np.sin(alpha))*(zv*np.cos(alpha)-lv*np.sin(alpha))*Cybeta_v
     Cl_r = Clrw + Clrv
 
@@ -200,7 +200,7 @@ def RollRate():
     Cnp_CL_CL0 = part1*(part2a/part2b)*Cnp_CL_CL0_M0              #Eq 10.63 (p.453) per radians
     #alpha_deltaf = deltacl/cl_alpha*delta_f
 
-    Cnpw =Cnp_CL_CL0*CL_DesCruise + Cnp_epsilont*twist + DeltaCnp_alpha_deltaf*alpha_deltaf*delta_f
+    Cnpw =Cnp_CL_CL0*CL_DesCruise + Cnp_epsilont*twist + DeltaCnp_alpha_deltaf*alpha_deltaf*delta_f_deg
     Cnpv = -(2/bw**2)*(lv*np.cos(alpha) + zv*np.sin(alpha))*(zv*np.cos(alpha)-lv*np.sin(alpha)-zv)*Cybeta_v
     Cn_p = Cnpw+Cnpv
     return Cy_p, Cl_p, Cn_p

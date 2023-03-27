@@ -1,9 +1,10 @@
-from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,FL_ft,V_cruise,dt_cruise,Aw
-from Constants.Masses_Locations import W_P_design,m_f,m_oem,beta_s_land_fc
+from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,FL_ft,V_cruise,dt_cruise,Aw,m_inches,rho_5000,V_approach
+from Constants.Masses_Locations import W_P_design,m_f,m_oem,m_pldes
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
 from Constants.Aerodynamics import CL_CD_DesCruise
-from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap
-from Constants.Empennage_LandingGear import Sh,lh,A_h, taperh, Sv, taperv, x_h
+from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap, d_f_outer
+from Constants.Empennage_LandingGear import Sh,lh,A_h,bh,taperh, Sv, taperv, x_h, Av, tc_tail, Sweep_quarter_chord_H #, Sweep_quarter_chord_VT
+from Constants.Aerodynamics import CL_MaxLand
 import numpy as np
 
 
@@ -15,14 +16,9 @@ m_tanks = 850
 #all the equations from Raymer
 #Calculated seperaterly:
 
-#LH2 Storage
+#LH2 Storage/Fuel System
 #Estimated at 1.4 grav index, add more detail later I would say
 LH2_system_tank = m_tanks       #Must be done, thus change
-
-#Engine
-power_req = m_mto * g / W_P_design
-Eng_W_kg = 200*10**3 / 13 #Check Later
-Engine_weight = power_req / eta_EM / Eng_W_kg + (power_req / eta_EM / eta_wire / eta_inverter) / inverter_power_density / 10**3
 
 #Fuel Cell
 Fuel_Cell_Weight = no_fc * 80
@@ -39,111 +35,125 @@ W_wing_lbs = 0.0051 * (Wdg*Nz)**0.557 * S_W**0.649 * Aw **0.5 * t_cw**(-0.4) * (
 W_wing = W_wing_lbs * lbs_kg
 
 #Horizontal Tail
-
-W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sh**0.75 * lh**(-1) * K_y* np.cos()**(-1) * A_h**0.166 * (1+Se/Sht)**0.1
-# W_hor_tail = W_hor_tail_lbs * lbs_kg
+K_uht = 1.143
+F_w = 1                     #fuselage width at horizontal tail intersection [ft] #TODO
+B_h = bh * 1/ft_m           #horizontal tail span [ft]
+L_t = 1                     #tail length; wing quarter-MAC to tail quarter-MAC [ft] #TODO
+K_y = 1                     #aircraft pitching radius of gyration [ft] ( = 0.3Lt) #TODO
+S_e = 1                     #elevator area [ft^2] #TODO
+Sht = Sh * (1/ft_m)**2      #Horizontal Tail area [ft^2]
+W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sh**0.75 * lh**(-1) * K_y* np.cos(Sweep_quarter_chord_H)**(-1) * A_h**0.166 * (1+S_e/Sht)**0.1
+W_hor_tail = W_hor_tail_lbs * lbs_kg
 
 # #Vertical Tail
-# #Ht/Hv
-# H_t_H_v = 1.
-# #S_vt
-# S_vt = Sv/(ft_m)**2
-# #taper_vt
-# taper_vt = taperv
-#
-# W_ver_tail_lbs = 0.073*(1+0.2*(H_t_H_v))*(N_z*W_dg)**(0.376)*q_lbft2**(0.122)*S_vt**(0.873)*((100*tc)/np.cos(Lambda))**(-0.49)*(Aw/(np.cos(Lambda))**(2))**(0.357)*taper_vt**(0.039)
-# W_ver_tail = W_ver_tail_lbs *lbs_kg
-#
-#
-# #Fuselage
-#
-# #S_f
-# S_f = S_f_wet/(ft_m)**2
-# l_f += 2
-# #L_t
-# L_t = (x_h+2)/ft_m
-#
-# #L_D
-# L_D = CL_CD_DesCruise
-#
-# #W_press
-# V_pr_m3 = 95.36#86.78 #Could change
-# V_pr_ft3 = V_pr_m3/(ft_m**(3))
-# P_delta = 8 #psi
-# W_press = 11.9+(V_pr_ft3*P_delta)**(0.271)
-#
-# W_fus_lbs = 0.052*S_f**(1.086)*(N_z*W_dg)**(0.177)*L_t**(-0.051)*(L_D)**(-0.072)*q_lbft2**(0.241)+W_press
-# W_fus = W_fus_lbs * lbs_kg
-#
-# #Main Landing Gear
-#
-# #W_l Max land weight,lbs
-# W_l =  beta_s_land_fc*m_mto/lbs_kg
-# #L_m lenght of main landing gear, in
-# L_m = 0.853*12/ft_m
-# #N_l load factor
-# N_main_load = 2#240000/(g*beta_s_land_fc*m_mto) #240000 is from 4 * 60000
-# N_l = 1.5* N_main_load
-#
-# W_land_main_lbs = 0.095*(N_l*W_l)**(0.768)*(L_m/12)**(0.409)
-# W_land_main = W_land_main_lbs * lbs_kg
-# print(N_l, W_l, L_m)
-# #Nose Landing Gear
-# #L_n lenght of nose landing gear, in
-# L_n = 0.853*12/ft_m
-#
-# W_land_nose_lbs = 0.125*(N_l*W_l)**(0.566)*(L_n/12)**(0.845)
-# W_land_nose = W_land_nose_lbs * lbs_kg
-#
-# #Installed Engine
-# N_engines = 1           #Could change
-# W_installed_eng = 2.575*Engine_weight**(0.922)*N_engines
-#
-# #Fuel System
-# #this is done with the gravimetric index etc and hydrogen tank, Should be a better approach
-#
-# #Flight Controls
-# #L_fus
-# L_fus = l_f/ft_m
-# #B_w wing span
-# B_w = b/ft_m
-#
-# W_flight_controls_lbs = 0.053*L_fus**(1.536)*B_w**(0.371)*(N_z*W_dg*0.0001)**(0.80)
-# W_flight_controls = W_flight_controls_lbs * lbs_kg
-#
-#
-# #Hydrolics
-# W_hydraulics_lbs = 0.008*W_dg                #CHANGE THIS LATER
-# W_hydraulics = W_hydraulics_lbs * lbs_kg
-#
-# #Avionics
-# #W_auv uninstalled avionics weight
-# W_uav = 800
-#
-# W_av_lbs = 2.117*W_uav**(0.933)
-# W_av = W_av_lbs * lbs_kg
-#
-# #Electrical
-# W_elec_lbs = 12.57*(W_av_lbs)**(0.51)
-# W_elec = W_elec_lbs * lbs_kg
-#
-# #Airconditioning and Anti-Icing
-# #N_p personnel
-# N_p = 3
-# #Mach Number
-# Mach = V_cruise/a_cruise
-#
-# W_aircon_ice_lbs = 0.265*W_dg**(0.52)*N_p**(0.68)*W_av_lbs**(0.17)*Mach**(0.08)
-# W_aircon_ice = W_aircon_ice_lbs * lbs_kg
-#
-# #Furnishing
-# W_furnish_lbs = 0.0582*W_dg-65
-# W_furnish = W_furnish_lbs * lbs_kg
-#
-# #Paint
-# W_paint_lbs = 0.0045 * W_dg * 0
-# W_paint = W_paint_lbs * lbs_kg
+H_t_H_v = 1.                # T tail or not, if T tail = 1 , if not = 0
+S_vt = Sv/(ft_m)**2
+K_z = 1                     #aircraft yawing radius of gyration, ft ( = L,)
+W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(0)**(-1) * Av**0.35 * t_cw**(-0.5)
+W_ver_tail = W_ver_tail_lbs *lbs_kg
 
+#Fuselage
+K_door = 1                  # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
+K_lg =  1                   # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
+L_f = l_f * (1/ft_m)
+K_ws = 0.75 * ((1+2*taperw)/(1+taperw)) * (bw * np.tan(np.radians(Sweep_quarterchordw)/L_f))
+S_f = 1                     # Fuselage wetted area [ft^2]
+D_f = d_f_outer * (1/ft_m)   # Fuselage Depth/diameter [ft]
+L_D = L_f / D_f
+W_fus_lbs = 0.3280 * K_door * K_lg * (Wdg*Nz)**0.5 * L_f ** 0.25 * S_f **0.302 * (1 + K_ws)** 0.04 * (L_D)**0.10
+W_fus = W_fus_lbs * lbs_kg
+
+# # #Main Landing Gear
+K_mp = 1.0                      #Kneeling gear or not, 1 if not , if so 1.126
+W_l = Wdg                       #landing design gross weight, lb
+N_gear = (CL_MaxLand*1/2 *rho_5000 *V_approach**2 * S_w)/(m_mto* g) #Landing load factor
+N_l = N_gear * 1.5              #ultimate landing load factor; = Ngear X 1.5
+L_m = 3.5 * m_inches            #length of main landing gear [inches] 1.8m in belly/ 3.5m in nacelle
+N_mw = 4                        #length of main landing gear
+N_mss = 2                       #number of main wheels
+V_stall = V_approach/1.23       #V_stall at landing
+W_mainlg_lbs = 0.0106 * K_mp * W_l ** 0.888 * N_l ** 0.25 * L_m ** 0.4 * N_mw **0.321 * N_mss ** (-0.5) * V_stall ** 0.1
+W_mainlg = W_mainlg_lbs * lbs_kg
+
+# #Nose Landing Gear
+K_np = 1.15                     #Kneeling gear or not, 1 if not , if so 1.15
+L_n = 1.2 * m_inches            #Nose gear length [inches]  [1.2m]
+N_nw = 2                        # Number of nose wheels
+W_noselg_lbs = 0.032 * K_np * W_l ** 0.646 * N_l ** 0.2 * L_n** 0.5 * N_nw**0.45
+W_noselg = W_noselg_lbs * lbs_kg
+
+# # Nacelle Group
+power_req = m_mto * g / W_P_design
+Eng_W_kg = 200*10**3 / 13 #Check Later
+Engine_weight = power_req / eta_EM / Eng_W_kg + (power_req / eta_EM / eta_wire / eta_inverter) / inverter_power_density / 10**3
+K_ng = 1.017                                #Pylon mounted nacelle or not, if not 1, if so 1.017
+N_lt = 1                                    #Nacelle Length [ft]
+N_w = 1                                     #Nacelle Width [ft]
+K_p = 1.4
+W_ec = 2.331 * (Engine_weight/4 * (1/lbs_kg))**0.901 * K_p         #Weight of engine and content [lbs]
+N_en = 4                                    #Number of engines
+S_n = 1                                     #Nacelle wetted area [ft^2]
+W_nacelle_lbs = 0.6724 * K_ng * N_lt**0.10 * N_w**0.294 * Nz**0.119 * W_ec**0.611 * N_en**0.984 * S_n**0.224
+W_nacelle = W_nacelle_lbs * lbs_kg
+
+# Engine Controls
+L_ec = 1                                    #length from engine front to cockpit-total if multiengine [ft]
+W_engine_control_lbs = 5 * N_en + 0.8 * L_ec
+W_engine_control = W_engine_control_lbs * lbs_kg
+
+# Starter/ Pneumatics
+W_en = Engine_weight/4 * (1/lbs_kg)
+W_starter_lbs = 49.19 * ((N_en * W_en)/1000)**0.541
+W_starter = W_starter_lbs * lbs_kg
+
+#Flight Controls
+N_f = 4
+N_m = 2
+S_cs = 1
+I_y =  1                #yawing moment of inertia
+W_flight_controls_lbs = 145.9 * N_f**0.554 * (1+N_m/N_f)**(-1) * S_cs **0.20 * (I_y * 10**(-6))**0.07
+W_flight_controls = W_flight_controls_lbs * lbs_kg
+
+#Instrument
+Kr = 1                  # Reciprocating engine or not
+Nc = 3                  # Number of crew
+W_instrument_lbs = 4.509 * Kr * K_p * Nc**0.541 * N_en * (L_f + bw)**0.5
+W_hydraulics = W_instrument_lbs * lbs_kg
+
+#Hydraulics
+W_hydraulics_lbs = 0.2673 * N_f * (l_f + bw)**0.937
+W_hydraulics = W_hydraulics_lbs * lbs_kg
+
+#Electrical
+R_kva = 60                      #system electrical rating, kv · A (typically 40-60 for transports)
+L_a = 1                         #electrical routing distance, generators to avionics to cockpit [ft]
+N_gen = N_en                       #Number of Generator (typically the same as N_en)
+W_electrical_lbs = 7.291 * R_kva**0.782 * L_a**0.346 * N_gen**0.10
+W_electrical = W_electrical_lbs * lbs_kg
+
+#Avionics
+W_uav = 1400                    #Typically around 800- 1400 lbs
+W_avionics_lbs = 1.73 * W_uav**0.983
+W_avionics = W_avionics_lbs * lbs_kg
+
+#Furnishing
+W_c = m_pldes * (1/lbs_kg)
+W_furnishing_lbs = 0.0577*Nc**0.1 * W_c**0.393 * S_f**0.75
+W_furnishing = W_furnishing_lbs * lbs_kg
+
+#Air conditioning
+N_p = 51
+V_pr = 1                    #Volume of presurried section [ft^3]
+W_airconditioning_lbs = 62.36 * N_p**0.25 * (V_pr/1000)**0.604 * W_uav**0.10
+W_airconditioning = W_airconditioning_lbs * lbs_kg
+
+#Anti-Icing
+W_antiice_lbs = 0.002 * Wdg
+W_antiice = W_antiice_lbs * lbs_kg
+
+#Handling Gear
+W_handling_gear_lbs = 3.0 * 10**(-4) * Wdg
+W_handling_gear = W_handling_gear_lbs * lbs_kg
 #Results:
 
 #Things to be reconsidered later before iteration etc:
@@ -154,14 +164,14 @@ W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 *
 
 print('Results Start Here:')
 print('Weight Storage System LH2 =', LH2_system_tank)
-print('Weight Engines =', Engine_weight)
 print('Weight Fuel Cell = ', Fuel_Cell_Weight)
 print('Weight Wing =', W_wing)
-# print('Weight Horizontal Tail = ', W_hor_tail)
-# print('Weight Vertical Tail = ', W_ver_tail)
-# print('Weight Fuselage =', W_fus)
-# print('Weight Main Landing Gear =', W_land_main)
-# print('Weight Nose Landing Gear =', W_land_nose)
+print('Weight Horizontal Tail = ', W_hor_tail)
+print('Weight Vertical Tail = ', W_ver_tail)
+print('Weight Fuselage =', W_fus)
+print('Weight Main Landing Gear =', W_mainlg)
+print('Weight Nose Landing Gear =', W_noselg)
+print('Weight Engine Group =', W_nacelle)
 # print('Weight Flight Controls =', W_flight_controls)
 # print('Weight Hydraulics =', W_hydraulics)
 # print('Weight Avionics =', W_av)
@@ -170,7 +180,7 @@ print('Weight Wing =', W_wing)
 # print('Weight Furnishing =', W_furnish)
 # print("Weight Installed Engines =", W_installed_eng)
 # print("Weight Paint =", W_paint)
-# all_masses = [LH2_system_tank, Engine_weight, Fuel_Cell_Weight, W_wing, W_hor_tail, W_ver_tail, W_fus, W_land_main, W_land_nose, W_flight_controls, W_hydraulics, W_av, W_elec, W_aircon_ice, W_furnish, W_installed_eng, W_paint]
+# all_masses = [LH2_system_tank, W_nacelle, Fuel_Cell_Weight, W_wing, W_hor_tail, W_ver_tail, W_fus, W_land_main, W_land_nose, W_flight_controls, W_hydraulics, W_av, W_elec, W_aircon_ice, W_furnish, W_installed_eng, W_paint]
 # print("Fuel Mass", m_f)
 # print("MTOM", m_mto)
 # print('Class II Weight Estimation =', LH2_system_tank+Engine_weight+Fuel_Cell_Weight+W_wing+W_hor_tail+W_ver_tail+W_fus+W_land_main+W_land_nose+W_flight_controls+W_hydraulics+W_av+W_elec+W_aircon_ice+W_furnish+W_installed_eng+W_paint)
