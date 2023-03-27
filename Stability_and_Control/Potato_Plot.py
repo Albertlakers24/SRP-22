@@ -4,7 +4,6 @@ import numpy as np
 from Constants.Masses_Locations import m_oem, m_f, cg_tank, m_mto
 from Constants.AircraftGeometry import c_mac_w,l_f, d_f_outer, w_door_front,w_lav,l_tank,l_seat,n_row
 
-
 # Some parameters
 M_Dive = M_cruise + 0.09     # Diving mach number
 VDive = a_cruise * M_Dive
