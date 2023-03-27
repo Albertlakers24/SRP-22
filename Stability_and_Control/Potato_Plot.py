@@ -4,7 +4,7 @@ import numpy as np
 from Constants.Masses_Locations import m_oem, m_f, cg_tank
 from Constants.AircraftGeometry import c_mac_w
 
-cg_start = 12.33#475                                         #OEW center of gravity from nose (m)
+cg_start = 12.33#475                                    #OEW center of gravity from nose (m)
 cargo_front = 123                                       #Front cargo position from the nose (m)
 cargo_aft = 13                                          #Aft cargo position from the nose (m)
 l_cabin = 13.0                                          #Cabin length (m)
