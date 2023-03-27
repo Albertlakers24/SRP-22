@@ -49,7 +49,8 @@ W_hor_tail = W_hor_tail_lbs * lbs_kg
 H_t_H_v = 1.                # T tail or not, if T tail = 1 , if not = 0
 S_vt = Sv/(ft_m)**2
 K_z = 1                     #aircraft yawing radius of gyration, ft ( = L,)
-W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(0)**(-1) * Av**0.35 * t_cw**(-0.5)
+t_c_v = 0.12 
+W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(0)**(-1) * Av**0.35 * t_c_v**(-0.5)
 W_ver_tail = W_ver_tail_lbs *lbs_kg
 
 #Fuselage
