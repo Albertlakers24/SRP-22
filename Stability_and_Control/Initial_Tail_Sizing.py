@@ -18,6 +18,7 @@ taperh = 0.75                   # HT taper ratio            [-]     -> 0.3-1
 Kc = 1.4
 Sh_newvalue = 11.376            # HT surface area           [m^2]
 Sv_newvalue = 13.96             # VT surface area           [m^2]
+Sweepquarterchord_h = 0         # HT c/4 sweep              [rad]
 
 # Intermediate Calculations
 l_v = x_v - xcg_aft_potato      # VT location               [m]
@@ -56,6 +57,7 @@ def Geometry_VT():
 
 print("-----------Horizontal Tail Sizing------------")
 print("Sh =", Sh, "m^2")
+print("Ah =", Ah)
 print("bh =", Geometry_HT()[0], "m")
 print("cr_h =", Geometry_HT()[1], "m")
 print("ct_h =", Geometry_HT()[2], "m")
@@ -64,12 +66,13 @@ print("y_machh =", Geometry_HT()[4],"m")
 print("ratio wing areas =", Sh / S_w)
 print("tail_arm_h=", x_h - xcg_aft_potato, "m")
 
-print("-----------Horizontal Tail Sizing------------")
-print("Sh =", Sv, "m^2")
-print("bh =", Geometry_VT()[0], "m")
-print("cr_h =", Geometry_VT()[1], "m")
-print("ct_h =", Geometry_VT()[2], "m")
-print("c_mach =", Geometry_VT()[3],"m")
-print("y_machh =", Geometry_VT()[4],"m")
-print("ratio wing areas =", Sv / S_w)
-print("tail_arm_h=", x_v - xcg_aft_potato, "m")
+print("-----------Vertical Tail Sizing------------")
+print("Sv =", Sv, "m^2")
+print("Av =", Av)
+print("bv =", Geometry_VT()[0], "m")
+print("cr_v =", Geometry_VT()[1], "m")
+print("ct_v =", Geometry_VT()[2], "m")
+print("c_macv =", Geometry_VT()[3],"m")
+print("y_machv =", Geometry_VT()[4],"m")
+print("ratio wing areas_v =", Sv / S_w)
+print("tail_arm_v=", x_v - xcg_aft_potato, "m")
