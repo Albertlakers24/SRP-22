@@ -1,16 +1,16 @@
 ''' AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 27/03/22 '''
 
 '''To Be Added:'''
-R_lfus = 111301293.64412345 # Fuselage Reynolds number              [-]
+R_lfus = 111301293.64412345  # Fuselage Reynolds number              [-]
 CL_Alpha_VT =  4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
 CL_Alpha_VT_eff = 3.77      # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
-Cl_Alpha_VT_Airfoil = 5.841193106203845     # VT :  cl over alpha airfoil of VT     [rad^-1]
+Cl_Alpha_VT_Airfoil = 5.841193106203845      # VT :  cl over alpha airfoil of VT     [rad^-1]
 downwash = 0.00571439       # Downwash gradient                     [-]             FILE: TODO: Update/Check
 CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT  TODO: Check
-Cl_Alpha_HT_Airfoil = 5.841193106203845     # VT :  cl over alpha airfoil of VT     [rad^-1]
+Cl_Alpha_HT_Airfoil = 5.841193106203845      # VT :  cl over alpha airfoil of VT     [rad^-1]
 CLH_adj = -0.8                  # HT: CL for an adjustable tail         [-]
 CD0_tailhCR = 0.09292522985159975 # HT: CD0 for cruise condition     [-]
-CLwf = 0.8                  # Cruise: wing and fuselage lift coefficient    [-] TODO: Update
+CLwf = 0.63369832                  # Cruise: wing and fuselage lift coefficient - steady state lift coeff at 1g flight   [-]
 
 ''' Zero-Drag estimations '''
 CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
