@@ -51,6 +51,7 @@ w_lav = 0.914           # lavatory width    [m]
 l_galley = 0.762        # galley length     [m]
 w_galley = 0.914        # galley width      [m]
 l_seat = 0.76           # seat pitch        [m]
+l_tank = 0              #
 
 '''High Lift Devices and Aileron'''
 SwfS_flap = 0.600451            # Wing area by flaps area (Swf/S)           [-]
