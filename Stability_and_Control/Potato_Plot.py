@@ -1,10 +1,40 @@
-from Constants.MissionInputs import m_pax_baggage,vol_pax_baggage,PAX,m_pax
+from Constants.MissionInputs import m_pax_baggage,vol_pax_baggage,PAX,m_pax,M_cruise, a_cruise
 from matplotlib import pyplot as plt
 import numpy as np
-from Constants.Masses_Locations import m_oem, m_f, cg_tank
-from Constants.AircraftGeometry import c_mac_w
+from Constants.Masses_Locations import m_oem, m_f, cg_tank, m_mto
+from Constants.AircraftGeometry import c_mac_w,l_f, d_f_outer, w_door_front,w_lav,l_tank,l_seat,n_row
 
-cg_start = 12.33#475                                    #OEW center of gravity from nose (m)
+# Some parameters
+M_Dive = M_cruise + 0.09     # Diving mach number
+VDive = a_cruise * M_Dive
+w_f = d_f_outer                # Width of fuselage
+h_f = w_f                    # Height of fuselage, assumed to be a circular fuselage
+x_cg_LEMAC = 0.35 * c_mac_w  # (predetermined value)
+#distance of fuselage group components w.r.t. datum
+x_fuselage = 0.4 * l_f
+x_empennage = 0.9 * l_f
+x_sys = 0.4 * l_f
+x_wing = 0.4 * c_mac_w
+x_prop_wing = -0.2 * c_mac_w
+l_nc = 1.2 * d_f_outer
+l_pax = n_row * l_seat
+x_hydrogen_tank = l_nc + w_door_front + l_pax + w_lav + l_tank/2
+Mf_fuselage = 0.12  # Mass fraction of components w.r.t MTOM
+Mf_prop = 0.07
+Mf_empennage = 0.07
+Mf_sys = 0.18
+Mf_wing = 0.11
+Mf_tank = 0.09    # Mass fraction of the tank to be updated
+print("======================================")
+print("For hydrogen fuel cell architecture: ")
+print("hydrogen tank placement", x_hydrogen_tank/l_f)
+M_fg_frac = Mf_fuselage + Mf_empennage + Mf_sys + Mf_tank  # sum of mass of the fuselage group
+M_wg_frac = Mf_wing + Mf_prop  # sum of mass of the wing group
+x_fg = (Mf_fuselage * x_fuselage + Mf_empennage * x_empennage + Mf_sys * x_sys + Mf_tank * x_hydrogen_tank) / M_fg_frac  # c.g. of the fuselage group
+x_wg_LEMAC = (Mf_wing * x_wing + Mf_prop * x_prop_wing) / M_wg_frac
+x_LEMAC = x_fg - x_cg_LEMAC + M_wg_frac / M_fg_frac * (x_wg_LEMAC - x_cg_LEMAC) # The distance from nose to LEMAC.
+x_oewcg = x_LEMAC + x_cg_LEMAC
+cg_start = x_oewcg                                      #OEW center of gravity from nose (m)
 cargo_front = 123                                       #Front cargo position from the nose (m)
 cargo_aft = 13                                          #Aft cargo position from the nose (m)
 l_cabin = 13.0                                          #Cabin length (m)
@@ -129,14 +159,14 @@ plt.annotate('MZFM', xy=(11.5, masses_3[12] + 100))
 plt.annotate('m_oem + Max Fuel', xy=(11.5, fuel_only()[1] + 100))
 plt.xlabel("xcg [MAC]")
 plt.ylabel("Mass (kg)")
-plt.ylim(m_oem, 19000)
+plt.ylim(m_oem, m_mto+200)
 plt.xlim(min(cgs_3) - 0.05, cg_fuel_only + 0.05)
 plt.legend()
 plt.show()
-print(cgs_1)
-print(cgs_2)
-print(masses_1)
-print(masses_2)
-print(len_front_storage)
-#PRINT AFT AND FRONT CG
-print(cg_fuel_only, cgs_3[12])
+# print(cgs_1)
+# print(cgs_2)
+# print(masses_1)
+# print(masses_2)
+# print(len_front_storage)
+# #PRINT AFT AND FRONT CG
+# print(cg_fuel_only, cgs_3[12])
