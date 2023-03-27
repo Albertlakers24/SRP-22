@@ -58,7 +58,7 @@ K_door = 1                  # 1.0 if no cargo door; = 1.06 if one side cargo doo
 K_lg =  1                   # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
 L_f = l_f * (1/ft_m)
 K_ws = 0.75 * ((1+2*taperw)/(1+taperw)) * (bw * np.tan(np.radians(Sweep_quarterchordw)/L_f))
-S_f = 1                     # Fuselage wetted area [ft^2]
+S_f = 105.5 * (1/ft_m)**2                     # Fuselage wetted area [ft^2]
 D_f = d_f_outer * (1/ft_m)   # Fuselage Depth/diameter [ft]
 L_D = L_f / D_f
 W_fus_lbs = 0.3280 * K_door * K_lg * (Wdg*Nz)**0.5 * L_f ** 0.25 * S_f **0.302 * (1 + K_ws)** 0.04 * (L_D)**0.10
@@ -144,7 +144,7 @@ W_furnishing = W_furnishing_lbs * lbs_kg
 
 #Air conditioning
 N_p = 51
-V_pr = 1                    #Volume of presurried section [ft^3]
+V_pr = 88.5 * (1/ft_m)**3                    #Volume of presurried section [ft^3]
 W_airconditioning_lbs = 62.36 * N_p**0.25 * (V_pr/1000)**0.604 * W_uav**0.10
 W_airconditioning = W_airconditioning_lbs * lbs_kg
 

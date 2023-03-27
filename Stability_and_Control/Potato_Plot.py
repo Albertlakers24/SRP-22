@@ -1,7 +1,7 @@
 from Constants.MissionInputs import m_pax_baggage,vol_pax_baggage,PAX,m_pax
 from matplotlib import pyplot as plt
 import numpy as np
-from Constants.Masses_Locations import m_oem, m_f, cg_tank
+from Constants.Masses_Locations import m_oem, m_f
 from Constants.AircraftGeometry import c_mac_w
 
 cg_start = 12.33#475                                    #OEW center of gravity from nose (m)
