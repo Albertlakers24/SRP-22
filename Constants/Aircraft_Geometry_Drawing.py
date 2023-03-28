@@ -8,6 +8,7 @@ Geometry calculated using the drawing:
 
 """To be updated/added:"""
 center_S_BS = 11            # Center location Side area aircraft    [m]
+vol_pressurized_cabin = 95.36 #Pressurised cabin volume m3
 
 
 
