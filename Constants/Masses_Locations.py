@@ -22,3 +22,4 @@ LEMAC = 11.507              # LEMAC position                    [m]
 xcg_gear = 13.4             # Location landing gear             [m]
 xcg_aft_potato = 12.6       # Aft cg location (potato plot)     [m]
 xcg_front_potato = 11.7     # Front cg location (potato plot)   [m]
+cg_tank = 1.3

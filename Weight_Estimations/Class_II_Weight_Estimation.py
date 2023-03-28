@@ -1,7 +1,6 @@
-from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,FL_ft,V_cruise,dt_cruise,Aw,m_inches,rho_5000,V_approach
-from Constants.Masses_Locations import W_P_design,m_f,m_oem,m_pldes
+from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,Aw,m_inches,rho_5000,V_approach
+from Constants.Masses_Locations import W_P_design,m_f,m_pldes, m_mto
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
-from Constants.Aerodynamics import CL_CD_DesCruise
 from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap, d_f_outer
 from Constants.Empennage_LandingGear import Sh,lh,A_h,bh,taperh, Sv, taperv, x_h, Av, tc_tail, Sweep_quarter_chord_H #, Sweep_quarter_chord_VT
 from Constants.Aerodynamics import CL_MaxLand
@@ -10,7 +9,6 @@ import numpy as np
 
 
 T_cruise, p_cruise, rho_cruise, a_cruise = ISA_calculator(h_cruise,0)
-m_mto = 20000
 no_fc = 11
 m_tanks = 850
 #all the equations from Raymer
@@ -58,7 +56,7 @@ K_door = 1                  # 1.0 if no cargo door; = 1.06 if one side cargo doo
 K_lg =  1                   # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
 L_f = l_f * (1/ft_m)
 K_ws = 0.75 * ((1+2*taperw)/(1+taperw)) * (bw * np.tan(np.radians(Sweep_quarterchordw)/L_f))
-S_f = 1                     # Fuselage wetted area [ft^2]
+S_f = 105.5 * (1/ft_m)**2                     # Fuselage wetted area [ft^2]
 D_f = d_f_outer * (1/ft_m)   # Fuselage Depth/diameter [ft]
 L_D = L_f / D_f
 W_fus_lbs = 0.3280 * K_door * K_lg * (Wdg*Nz)**0.5 * L_f ** 0.25 * S_f **0.302 * (1 + K_ws)** 0.04 * (L_D)**0.10
@@ -119,7 +117,7 @@ W_flight_controls = W_flight_controls_lbs * lbs_kg
 Kr = 1                  # Reciprocating engine or not
 Nc = 3                  # Number of crew
 W_instrument_lbs = 4.509 * Kr * K_p * Nc**0.541 * N_en * (L_f + bw)**0.5
-W_hydraulics = W_instrument_lbs * lbs_kg
+W_instrument = W_instrument_lbs * lbs_kg
 
 #Hydraulics
 W_hydraulics_lbs = 0.2673 * N_f * (l_f + bw)**0.937
@@ -144,7 +142,7 @@ W_furnishing = W_furnishing_lbs * lbs_kg
 
 #Air conditioning
 N_p = 51
-V_pr = 1                    #Volume of presurried section [ft^3]
+V_pr = 88.5 * (1/ft_m)**3                    #Volume of presurried section [ft^3]
 W_airconditioning_lbs = 62.36 * N_p**0.25 * (V_pr/1000)**0.604 * W_uav**0.10
 W_airconditioning = W_airconditioning_lbs * lbs_kg
 
@@ -173,18 +171,17 @@ print('Weight Fuselage =', W_fus)
 print('Weight Main Landing Gear =', W_mainlg)
 print('Weight Nose Landing Gear =', W_noselg)
 print('Weight Engine Group =', W_nacelle)
-# print('Weight Flight Controls =', W_flight_controls)
-# print('Weight Hydraulics =', W_hydraulics)
-# print('Weight Avionics =', W_av)
-# print('Weight Electronics =', W_elec)
-# print('Weight Aircon and De-Icing', W_aircon_ice)
-# print('Weight Furnishing =', W_furnish)
-# print("Weight Installed Engines =", W_installed_eng)
-# print("Weight Paint =", W_paint)
-# all_masses = [LH2_system_tank, W_nacelle, Fuel_Cell_Weight, W_wing, W_hor_tail, W_ver_tail, W_fus, W_land_main, W_land_nose, W_flight_controls, W_hydraulics, W_av, W_elec, W_aircon_ice, W_furnish, W_installed_eng, W_paint]
-# print("Fuel Mass", m_f)
-# print("MTOM", m_mto)
-# print('Class II Weight Estimation =', LH2_system_tank+Engine_weight+Fuel_Cell_Weight+W_wing+W_hor_tail+W_ver_tail+W_fus+W_land_main+W_land_nose+W_flight_controls+W_hydraulics+W_av+W_elec+W_aircon_ice+W_furnish+W_installed_eng+W_paint)
-# print('Class I OEM =', m_oem)
-# print(sum(all_masses))
-# print(all_masses)
+print('Weight Engine Controls =', W_engine_control)
+print('Weight Flight Control =', W_flight_controls)
+print('Weight Instrument =', W_instrument)
+print('Weight Hydraulics =', W_hydraulics)
+print('Weight Electrical', W_electrical)
+print('Weight Avionics', W_avionics)
+print('Weight Furnishing =', W_furnishing)
+print("Weight Air Conditioning =", W_airconditioning)
+print("Weight Anti-Icing =", W_antiice)
+print("Weight Handling Gear =", W_handling_gear)
+all_masses = [LH2_system_tank, Fuel_Cell_Weight,W_wing,W_hor_tail,W_ver_tail,W_fus,W_mainlg,W_noselg,W_nacelle,W_engine_control,W_starter,W_flight_controls,W_instrument, W_hydraulics,W_electrical,W_avionics,W_furnishing,W_airconditioning,W_antiice,W_handling_gear]
+print("Fuel Mass", m_f)
+print("MTOM", m_mto)
+print('Class II Weight Estimation =', sum(all_masses))

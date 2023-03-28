@@ -8,6 +8,8 @@ n_ult_neg = -1.24796708 * 1.5
 ''' PROPULSION SYSTEM '''
 
 ''' Power '''
+Power_tot = 2455 * 10**3        # Total required power [W]
+Voltage_cell = 0.7              # Cell volatge [V]
 
 ''' Hydrogen tank '''
 
