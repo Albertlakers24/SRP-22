@@ -1,6 +1,6 @@
 from Constants.FlightPerformance_Propulsion import eta_EM, eta_wire, eta_fuelcell, eta_inverter, Power_tot, Voltage_cell
-from Constants.MissionInputs import PAX, V_cruise, rho_cruise
-
+from Constants.MissionInputs import PAX, V_cruise, rho_cruise, V_approach
+import numpy as np
 # Imports
 eta_tot = eta_fuelcell * eta_inverter * eta_wire * eta_EM
 
@@ -16,7 +16,7 @@ lambda_O2 = 2.8
 mdot_cabin = 0.25 * (PAX+3)  / 60
 
 # Mass flow of Air
-mdot_O2 = MM_O2 * Power_tot/ n_electrons/ Faraday/ Voltage_cell
+mdot_O2 = MM_O2 * Power_tot/ n_electrons/ Faraday/ Voltage_cell # todo: Take off/cruise differences
 mdot_air = mdot_O2 * lambda_O2 /g_O2/ eta_tot/1000
 
 # Mass flow for cooling
@@ -25,13 +25,22 @@ mdot_cooling = 0
 # Total Mass flow
 mdot_total = mdot_air + mdot_cabin + mdot_cooling
 
-# Area of inlet - free stream velocity as it in front of fuselage
+# Velocity - free stream velocity as it in front of fuselage
 prodruding_ratio = 1
-V_boundary =  V_cruise  # IFF there is a protrusion, Use: (7/8)*prodruding_ratio**(8/7)*V_cruise
+V_boundary = [V_approach, V_cruise]  # todo: check for take off etc
+FlightPhases = ["Approach", "Cruise"]
+# IFF there is a protrusion, Use: (7/8)*prodruding_ratio**(8/7)*V_cruise
 
-A_inlet = mdot_total / (V_cruise * rho_cruise)
+# Area of inlet
+A_inlet = []
+for i in range(len(V_boundary)):
+    A = mdot_total / (V_boundary[i] * rho_cruise)
+    A_inlet.append(A)
+
+A_inlet_critical = max(A_inlet)
+FlightCondition = FlightPhases[A_inlet.index(max(A_inlet))]
 
 # PRINT STATEMENTS
 print("Total mass flow", mdot_total, "kg/s")
-print("Inlet area", A_inlet, "m^2")
-
+print("Inlet area options", A_inlet, "m^2")
+print("Inlet area maximum required", A_inlet_critical, "m^2", "during", FlightCondition)
