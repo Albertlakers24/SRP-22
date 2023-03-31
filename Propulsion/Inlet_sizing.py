@@ -17,7 +17,7 @@ n_electrons = 4
 Faraday = 96485
 g_O2 = 0.23133
 lambda_O2 = 2.8
-
+print(V_TakeOff_5000, V_TakeOff_0)
 #Cabin Pressurization  #FAA: 0.25kg/min/pax of air  https://www.faa.gov/newsroom/cabin-air-quality#:~:text=FAA%20regulations%20require%20airliners'%20ventilation,consistent%20with%20other%20public%20environments.
 
 mdot_cabin = 0.25 * (PAX+3)  / 60
