@@ -13,19 +13,18 @@ CD0_tailhCR = 0.09292522985159975 # HT: CD0 for cruise condition     [-]
 CLwf = 0.63369832                  # Cruise: wing and fuselage lift coefficient - steady state lift coeff at 1g flight   [-]
 
 ''' Zero-Drag estimations '''
-CD0_CR =  0.021106443565976893      # CD0 Clean/Cruise [-]
+CD0_CR = 0.021106443565976893      # CD0 Clean/Cruise [-]
 CD0_15 = 0.04030446169943226        # CD0 Flap deflection 15 deg [-]
 CD0_40 = 0.07520760765686323        # CD0 Flap deflection 40 def [-]
 
 ''' Cruise data '''
 CL_DesCruise = 0.63369832                 # CL Design Cruise [-]
-CD_DesCruise = 0.03323038                # CD Design Cruise [-]
 CL_CD_DesCruise = 18.31272406 #19.06985102             # CL/CD Design Cruise [-]
-Alpha_DesCruise = 4                       # Angle of attack Cruise [deg]
+Alpha_DesCruise = 3.962389                # Angle of attack Cruise [deg]
 CL_Max_Clean =  1.3499704142011835        # CL max wing clean configuration [-]
 
 '''Take-off data --> 40 deg flap deflection'''
-CL_DesTakeOff = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
+CL_DesTakeOff = 1.9              # CL max 40 deg deflection/1.13 [-]
 CD_DesTakeOff = 0.17041399                # CD at 40 deg flap deflection [-]
 CL_CD_TakeOff = 12.428740               # CL/CD at 40 deg flap deflection [-]
 Alpha_DesTakeOff = 11.0923                # Alpha at 40 deg flap deflection [-]

@@ -35,8 +35,6 @@ x_wg_LEMAC = (Mf_wing * x_wing + Mf_prop * x_prop_wing) / M_wg_frac
 x_LEMAC = x_fg - x_cg_LEMAC + M_wg_frac / M_fg_frac * (x_wg_LEMAC - x_cg_LEMAC) # The distance from nose to LEMAC.
 x_oewcg = x_LEMAC + x_cg_LEMAC
 cg_start = x_oewcg                                      #OEW center of gravity from nose (m)
-cargo_front = 123                                       #Front cargo position from the nose (m)
-cargo_aft = 13                                          #Aft cargo position from the nose (m)
 l_cabin = 13.0                                          #Cabin length (m)
 overhead_surface = 0.1508                               #Surface area per overhead bin (m^2)
 overhead_volume = overhead_surface * 2 * l_cabin        #Overhead volume available
@@ -163,10 +161,3 @@ plt.ylim(m_oem, m_mto+200)
 plt.xlim(min(cgs_3) - 0.05, cg_fuel_only + 0.05)
 plt.legend()
 plt.show()
-# print(cgs_1)
-# print(cgs_2)
-# print(masses_1)
-# print(masses_2)
-# print(len_front_storage)
-# #PRINT AFT AND FRONT CG
-# print(cg_fuel_only, cgs_3[12])

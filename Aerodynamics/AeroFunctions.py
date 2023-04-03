@@ -1,5 +1,5 @@
 from Constants.MissionInputs import M_cruise
-from Constants.AircraftGeometry import S_w, taperw, c_mac_w, t_c_ratio_w, Aw
+from Constants.AircraftGeometry import S_w, Aw, cf_cmac, SwfS_flap #, taperw, c_mac_w, t_c_ratio_w,
 import pandas as pd
 import numpy as np
 
@@ -29,6 +29,7 @@ def Calculate_alpha_stall(CL_max, CL_alpha, alpha_0L, delta_alpha_CLMax):
 def Calculate_alpha_trim(CL_des, CL_alpha, Alpha0):
     alpha_trim = CL_des/CL_alpha + Alpha0
     return alpha_trim
+
 
 def Making_labels(filename):
     with open(filename) as f:
@@ -95,7 +96,7 @@ def Calculate_cd_lg(d_tire, w_tire, S_A, wheel_well):
     cd_lg = delta_cds * d_tire*w_tire/S_w
     return cd_lg
 
-def Calculate_cd_flap(flap_type, c_f, S_flap, delta_f):
+def Calculate_cd_flap(flap_type, delta_f):
     if flap_type == 0:
         F_flap = 0.0144
     if flap_type == 1:
@@ -103,5 +104,19 @@ def Calculate_cd_flap(flap_type, c_f, S_flap, delta_f):
     # else:
     #     print("Error, Invalid flap type")
 
-    cd_flap = F_flap * c_f/c_mac * S_flap/S_w *(delta_f - 10)
+    cd_flap = F_flap * cf_cmac* SwfS_flap *(delta_f - 10)
     return cd_flap
+
+def Calculate_interference_drag(wing_type):
+
+    if wing_type == 0:  # HIGH WING
+        interference_wing = 1  # Interference for high wing
+    if wing_type==1:    # LOW WING
+        interference_wing = 1.2      # Interference for low wing
+    interference_tail = 1.04
+    interference_lg = 1.1
+    interference_nacelle = 1.3
+    interference_fuse_belly = 1 # depends on main landing gear stowing bulge
+    return interference_wing, interference_tail, interference_lg, interference_nacelle, interference_fuse_belly
+
+
