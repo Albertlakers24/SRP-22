@@ -2,7 +2,7 @@ from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,Aw,m_i
 from Constants.Masses_Locations import W_P_design,m_f,m_pldes, m_mto
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
 from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap, d_f_outer
-from Constants.Empennage_LandingGear import Sh,lh,A_h,bh,taperh, Sv, taperv, x_h, Av, tc_tail, Sweep_quarter_chord_H #, Sweep_quarter_chord_VT
+from Constants.Empennage_LandingGear import Sh,lh,A_h,bh,taperh, Sv, taperv, lh, Av, tc_tail, Sweep_quarter_chord_H #, Sweep_quarter_chord_VT
 from Constants.Aerodynamics import CL_MaxLand
 import numpy as np
 
@@ -36,28 +36,28 @@ W_wing = W_wing_lbs * lbs_kg
 K_uht = 1.143
 F_w = 1                     #fuselage width at horizontal tail intersection [ft] #TODO
 B_h = bh * 1/ft_m           #horizontal tail span [ft]
-L_t = 1                     #tail length; wing quarter-MAC to tail quarter-MAC [ft] #TODO
-K_y = 1                     #aircraft pitching radius of gyration [ft] ( = 0.3Lt) #TODO
+L_t = lh                    #tail length; wing quarter-MAC to tail quarter-MAC [ft] #TODO
+K_y = 0.3 * L_t             #aircraft pitching radius of gyration [ft] ( = 0.3Lt) #TODO
 S_e = 1                     #elevator area [ft^2] #TODO
 Sht = Sh * (1/ft_m)**2      #Horizontal Tail area [ft^2]
 W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sh**0.75 * lh**(-1) * K_y* np.cos(Sweep_quarter_chord_H)**(-1) * A_h**0.166 * (1+S_e/Sht)**0.1
 W_hor_tail = W_hor_tail_lbs * lbs_kg
 
 # #Vertical Tail
-H_t_H_v = 1.                # T tail or not, if T tail = 1 , if not = 0
+H_t_H_v = 1                # T tail or not, if T tail = 1 , if not = 0
 S_vt = Sv/(ft_m)**2
-K_z = 1                     #aircraft yawing radius of gyration, ft ( = L,)
+K_z = L_t                     #aircraft yawing radius of gyration, ft ( = Lt)
 t_c_v = 0.12 
 W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(0)**(-1) * Av**0.35 * t_c_v**(-0.5)
 W_ver_tail = W_ver_tail_lbs *lbs_kg
 
 #Fuselage
-K_door = 1                  # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
-K_lg =  1                   # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
+K_door = 1.06               # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
+K_lg = 1                    # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
 L_f = l_f * (1/ft_m)
 K_ws = 0.75 * ((1+2*taperw)/(1+taperw)) * (bw * np.tan(np.radians(Sweep_quarterchordw)/L_f))
-S_f = 105.5 * (1/ft_m)**2                     # Fuselage wetted area [ft^2]
-D_f = d_f_outer * (1/ft_m)   # Fuselage Depth/diameter [ft]
+S_f = 105.5 * (1/ft_m)**2                 # Fuselage wetted area [ft^2]
+D_f = d_f_outer * (1/ft_m)                # Fuselage Depth/diameter [ft]
 L_D = L_f / D_f
 W_fus_lbs = 0.3280 * K_door * K_lg * (Wdg*Nz)**0.5 * L_f ** 0.25 * S_f **0.302 * (1 + K_ws)** 0.04 * (L_D)**0.10
 W_fus = W_fus_lbs * lbs_kg
