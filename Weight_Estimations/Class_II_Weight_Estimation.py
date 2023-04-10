@@ -2,7 +2,7 @@ from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,Aw,m_i
 from Constants.Masses_Locations import W_P_design,m_f,m_pldes, m_mto
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
 from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap, d_f_outer
-from Constants.Empennage_LandingGear import Sh,lh,A_h,bh,taperh, Sv, taperv, lh, Av, tc_tail, Sweep_quarter_chord_H #, Sweep_quarter_chord_VT
+from Constants.Empennage_LandingGear import Sh,A_h,bh, Sv, lh, Av, Sweep_quarter_chord_H, Sweep_halfchord_VT
 from Constants.Aerodynamics import CL_MaxLand
 import numpy as np
 
@@ -28,28 +28,30 @@ Nz = n_ult_pos
 t_cw = t_c_ratio_w
 lambda_ = taperw
 Lambda = Sweep_quarterchordw
-S_csw = S_flap * (1/ft_m)**2
-W_wing_lbs = 0.0051 * (Wdg*Nz)**0.557 * S_W**0.649 * Aw **0.5 * t_cw**(-0.4) * (1+lambda_)**0.1 * np.cos(Lambda)**(-1) * S_csw**0.1
+S_csw = (S_flap + 5) * (1/ft_m)**2
+W_wing_lbs = 0.0051 * (Wdg*Nz)**0.557 * S_W**0.649 * Aw**0.5 * t_cw**(-0.4) * (1+lambda_)**0.1 * np.cos(np.radians(Lambda))**(-1) * S_csw**0.1
 W_wing = W_wing_lbs * lbs_kg
 
 #Horizontal Tail
 K_uht = 1.143
-F_w = 1                     #fuselage width at horizontal tail intersection [ft] #TODO
-B_h = bh * 1/ft_m           #horizontal tail span [ft]
-L_t = lh                    #tail length; wing quarter-MAC to tail quarter-MAC [ft] #TODO
-K_y = 0.3 * L_t             #aircraft pitching radius of gyration [ft] ( = 0.3Lt) #TODO
-S_e = 1                     #elevator area [ft^2] #TODO
-Sht = Sh * (1/ft_m)**2      #Horizontal Tail area [ft^2]
-W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sh**0.75 * lh**(-1) * K_y* np.cos(Sweep_quarter_chord_H)**(-1) * A_h**0.166 * (1+S_e/Sht)**0.1
+F_w = 0 * (1/ft_m)                     #fuselage width at horizontal tail intersection [ft]
+B_h = bh * (1/ft_m)                    #horizontal tail span [ft]
+L_t = lh * (1/ft_m)                    #tail length; wing quarter-MAC to tail quarter-MAC [ft]
+K_y = 0.3 * L_t                        #aircraft pitching radius of gyration [ft] ( = 0.3Lt)
+S_e = 1.35 * (1/ft_m)**2               #elevator area [ft^2]
+Sht = Sh * (1/ft_m)**2                 #Horizontal Tail area [ft^2]
+W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sht**0.75 * L_t**(-1.0) * K_y**0.704 * np.cos(Sweep_quarter_chord_H)**(-1) * A_h**0.166 * (1+S_e/Sht)**0.1
 W_hor_tail = W_hor_tail_lbs * lbs_kg
-
+print(bh)
+print(lh)
+print(Sh)
 # #Vertical Tail
 H_t_H_v = 1                # T tail or not, if T tail = 1 , if not = 0
-S_vt = Sv/(ft_m)**2
+S_vt = Sv * (1/ft_m)**2
 K_z = L_t                     #aircraft yawing radius of gyration, ft ( = Lt)
-t_c_v = 0.12 
-W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(0)**(-1) * Av**0.35 * t_c_v**(-0.5)
-W_ver_tail = W_ver_tail_lbs *lbs_kg
+t_c_v = 0.18
+W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(Sweep_halfchord_VT)**(-1) * Av**0.35 * t_c_v**(-0.5)
+W_ver_tail = W_ver_tail_lbs * lbs_kg
 
 #Fuselage
 K_door = 1.06               # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
@@ -77,7 +79,7 @@ W_mainlg = W_mainlg_lbs * lbs_kg
 # #Nose Landing Gear
 K_np = 1.15                     #Kneeling gear or not, 1 if not , if so 1.15
 L_n = 1.2 * m_inches            #Nose gear length [inches]  [1.2m]
-N_nw = 2                        # Number of nose wheels
+N_nw = 2                        #Number of nose wheels
 W_noselg_lbs = 0.032 * K_np * W_l ** 0.646 * N_l ** 0.2 * L_n** 0.5 * N_nw**0.45
 W_noselg = W_noselg_lbs * lbs_kg
 
@@ -86,17 +88,17 @@ power_req = m_mto * g / W_P_design
 Eng_W_kg = 200*10**3 / 13 #Check Later
 Engine_weight = power_req / eta_EM / Eng_W_kg + (power_req / eta_EM / eta_wire / eta_inverter) / inverter_power_density / 10**3
 K_ng = 1.017                                #Pylon mounted nacelle or not, if not 1, if so 1.017
-N_lt = 1                                    #Nacelle Length [ft]
-N_w = 1                                     #Nacelle Width [ft]
+N_lt = 5.14 * (1/ft_m)                       #Nacelle Length [ft]
+N_w = 1 * (1/ft_m)                           #Nacelle Width [ft]
 K_p = 1.4
 W_ec = 2.331 * (Engine_weight/4 * (1/lbs_kg))**0.901 * K_p         #Weight of engine and content [lbs]
 N_en = 4                                    #Number of engines
-S_n = 1                                     #Nacelle wetted area [ft^2]
+S_n = 22.76 * (1/ft_m)**2                                     #Nacelle wetted area [ft^2]
 W_nacelle_lbs = 0.6724 * K_ng * N_lt**0.10 * N_w**0.294 * Nz**0.119 * W_ec**0.611 * N_en**0.984 * S_n**0.224
 W_nacelle = W_nacelle_lbs * lbs_kg
 
 # Engine Controls
-L_ec = 1                                    #length from engine front to cockpit-total if multiengine [ft]
+L_ec = 10.127 * (1/ft_m) * 4 * 1.25                         #length from engine front to cockpit-total if multiengine [ft]
 W_engine_control_lbs = 5 * N_en + 0.8 * L_ec
 W_engine_control = W_engine_control_lbs * lbs_kg
 
@@ -124,8 +126,8 @@ W_hydraulics_lbs = 0.2673 * N_f * (l_f + bw)**0.937
 W_hydraulics = W_hydraulics_lbs * lbs_kg
 
 #Electrical
-R_kva = 60                      #system electrical rating, kv · A (typically 40-60 for transports)
-L_a = 1                         #electrical routing distance, generators to avionics to cockpit [ft]
+R_kva = 60                         #system electrical rating, kv · A (typically 40-60 for transports)
+L_a = 100 * (1/ft_m)               #electrical routing distance, generators to avionics to cockpit [ft]
 N_gen = N_en                       #Number of Generator (typically the same as N_en)
 W_electrical_lbs = 7.291 * R_kva**0.782 * L_a**0.346 * N_gen**0.10
 W_electrical = W_electrical_lbs * lbs_kg
