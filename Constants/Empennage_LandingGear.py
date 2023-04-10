@@ -4,6 +4,8 @@ import numpy as np
 '''To be updated:'''
 Av_eff = 3.5                    # VT: effective Aspect Ratio    [-]         FILE: Sizing_Vertical_Tail
 xc_m_tail = 0.29                # (x/c)_m Position of max thickness - 0.3 for low speed, 0.5 for high speed
+t_over_c_HT = 0.21              # HT : t/c                      [-]
+
 
 ''''First Fidelity: TAILARM'''
 Vh_V = 1                        # Volume fraction for T-tail    [-]

@@ -1,6 +1,8 @@
 ''' AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 27/03/22 '''
 
 '''To Be Added:'''
+R_HT =7.5*10**6                     # Reynolds number of the HT
+Cmac = -0.6926729205077256          # Cmac                          [-]             FILE: ScissorPlot_HT
 R_lfus = 111301293.64412345  # Fuselage Reynolds number              [-]
 CL_Alpha_VT =  4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
 CL_Alpha_VT_eff = 3.77      # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
