@@ -141,11 +141,14 @@ def Plot_Graph(crh, cth,bh,Sweep_LE_HT,Sweep_half_HT,real, colour1,colour2, trim
     plt.vlines(x=x2, ymin=y3, ymax=y2, color=colour2, alpha=1)
     plt.vlines(x=x1, ymin=y4, ymax=y1, color=colour2, alpha=1)
     plt.fill_between(xlower, ylower, yupper, color=colour2, alpha=0.1,label=label)
+    plt.xlim(-5,5)
+    plt.ylim(-1.5,1.5)
+    plt.axis('equal')
     plt.legend(loc="upper left")
     return
 
-# 1st Fidelity; Initial Sizing
-Plot_Graph(crh=2.0464, cth=1.53,bh=7.3,Sweep_LE_HT=10*np.pi/180,Sweep_half_HT=5*np.pi/180,real=1, colour1="#728FCE", colour2="#98AFC7", trimtab=1,elevator=1,x_inboard_e=1,x_outboard_e=6,x_inboard_t=2,x_outboard_t=5,ce_c=0.3,cf_c=0.1,horn=1,w_horn=0.4,h_horn=0.8, label="1st Fidelity")
+# 1st Fidelity; Initial Sizing - DONE
+Plot_Graph(crh=2.25, cth=1.69,bh=7.9,Sweep_LE_HT=3.94*np.pi/180,Sweep_half_HT=-2.73*np.pi/180,real=1, colour1="#728FCE", colour2="#98AFC7", trimtab=1,elevator=1,x_inboard_e=1,x_outboard_e=6,x_inboard_t=2,x_outboard_t=5,ce_c=0.3,cf_c=0.1,horn=1,w_horn=0.4,h_horn=0.8, label="1st Fidelity")
 
 # 2nd Fidelity; Second Sizing (elevator)
 Plot_Graph(crh=1.8,cth=1.3,bh=7.16,Sweep_LE_HT=10*np.pi/180,Sweep_half_HT=5*np.pi/180,real=1, colour1="#FA8072", colour2="#CD5C5C", trimtab=1,elevator=0,x_inboard_e=1,x_outboard_e=3.58,x_inboard_t=1.5,x_outboard_t=5,ce_c=0.3,cf_c=0.1,horn=1,w_horn=0.4,h_horn=0.8,label="2nd Fidelity")

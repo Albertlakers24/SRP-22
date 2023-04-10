@@ -2,32 +2,35 @@ import numpy as np
 import math as m
 import matplotlib.pyplot as plt
 from Constants.AircraftGeometry import S_w, Aw, c_mac_w,c_rw, Sweep_quarterchordw, Sweep_halfchordw, SweepLE, d_f_outer, SwfS_flap, c_accent_c_flap, b_flap, bw, taperw, l_f, cf_over_cprime_flap
-from Constants.Empennage_LandingGear import A_h, lh, Vh_V, lambdahalf_h, Sh, cmac_h, Av, Sweep_halfchord_VT, Av_eff
+from Constants.Empennage_LandingGear import taperh, A_h, lh, Vh_V, lambdahalf_h, Sh, cmac_h, Av, Sweep_halfchord_VT, Av_eff
 from Constants.Aircraft_Geometry_Drawing import ln1, ln2, bn1,bn2,l_fn
 from Constants.Masses_Locations import LEMAC, xcg_gear,xcg_front_potato, xcg_aft_potato
 from Constants.Aerodynamics import Cm0_airfoil, CL0_Land, DeltaCLflaps, CL_DesCruise,CL_Alpha_Wing, CL_Max_Clean, CL_MaxLand, DeltaClmax
 from Constants.MissionInputs import M_cruise, ISA_calculator, h_cruise, dt_cruise, V_approach, g, landing_critical, dt_land
 from Constants.Masses_Locations import m_mto
+from Stability_and_Control.Initial_Tail_Sizing import Geometry_HT
 #TODO:  revisit xac location ? TOTAL
 
 # Imported Variables :  Aircraft Geometry Drawings to do
 v_t_w = 4.166                   # Vertical distance HT and wing     [m]
-beta_s_land_fc = 1              # Wing loading diagram              [?]
+W_landing = 200000              # Landing weight                    [N]     -> Wing loading diagram     TODO: determine
+
+# Inputs for Geometry of HT: TO BE CHANGED IF NECESSARY
+Sh = Sh
+Ah = A_h
+taperh = taperh
 
 # Inputs : Constants
 SM = 0.05                       # Stability Margin                  [-]
 eta = 0.95                      # Airfoil Efficiency Factor         [-]
 kn = -0.4                       # Number                            [-]     -> nacelle mounted in front of LE
 C_L_h_adj = -0.8                # CL for adjustable tail            [-]
-C_L_h_mov = -1                  # CL for movable tail               [-]
 
 #Supporting Equations
-beta = np.sqrt(1-M_cruise**2)                  # Compressibility factor    [-]
-cg = S_w/bw                               # Mean geometric chord      [m]
-W_landing = m_mto*beta_s_land_fc*g     # Landing weight            [N]
-C_L_h_fix = -0.35*A_h**(1/3)            # CL for fixed horizontal tail  [-]
-Sweep_beta = (m.atan(np.tan(SweepLE)/beta)/np.pi)*180       # Sweep beta        [degrees]
-rho = ISA_calculator(h = h_cruise, dt=dt_cruise)[2]   # Density     [kg/m3]
+beta = np.sqrt(1-M_cruise**2)                           # Compressibility factor    [-]
+cg = S_w/bw                                             # Mean geometric chord      [m]
+Sweep_beta = (m.atan(np.tan(SweepLE)/beta)/np.pi)*180   # Sweep beta                [deg]
+rho = ISA_calculator(h = h_cruise, dt=dt_cruise)[2]     # Density                   [kg/m3]
 
 print("-----Needed for AC calculations graph (x_ac_w)-------")
 print("beta*A = ", beta*Aw)
@@ -53,7 +56,7 @@ def Location_in_MAC(Location):
     xcg_MAC = (Location-LEMAC)/c_mac_w
     return xcg_MAC
 
-def C_L_alpha(A, lambdahalf):
+def C_L_alpha(A, lambdahalf):           # todo make function for speed!!!!!!
     """ CHECKED
     :param A: Aspect Ratio
     :param lambdahalf: half chord sweep
@@ -62,10 +65,6 @@ def C_L_alpha(A, lambdahalf):
     C_L_alpha = 2 * np.pi * A / (2 + np.sqrt(4 + ((A * beta / eta)**2 * (1 + ((np.tan(lambdahalf)) ** 2 / beta ** 2)))))
     return C_L_alpha
 
-print("CL_alpha_h=", C_L_alpha(A=A_h, lambdahalf=lambdahalf_h), "per rad")
-print("CL_alpha_v=", C_L_alpha(A=Av, lambdahalf=Sweep_halfchord_VT), "per rad")
-print("CL_alpha_veff=", C_L_alpha(A=Av_eff, lambdahalf=Sweep_halfchord_VT), "per rad")
-
 def CL_alpha_Ah():
     """ CHECKED
     :return: CL_alpha_Ah (per rad)
@@ -73,8 +72,6 @@ def CL_alpha_Ah():
     Snet = S_w - c_rw*d_f_outer
     C_L_alpha_Ah = (CL_Alpha_Wing * (1 + (2.15 * (d_f_outer / bw))) * (Snet / S_w)) + ((np.pi / 2) * (d_f_outer ** 2 / S_w))
     return C_L_alpha_Ah
-
-print("CL_alpha_tailless=", CL_alpha_Ah(), "per rad")
 
 def Downwash():
     """
@@ -124,9 +121,6 @@ def flapcont(mu1, mu2, mu3):
     flap_cont = flap_cont_quarter - (CL_Max_Clean-DeltaCLflaps)*(0.25-AC_location())
     return flap_cont
 
-print("flap cont", flapcont(mu1, mu2, mu3))
-print("CL_max_land",CL_MaxLand)
-
 def C_m_AC(mu1, mu2, mu3):
     """
     :param mu1, mu2, mu3 (-) from the graphs
@@ -142,7 +136,7 @@ def C_m_AC(mu1, mu2, mu3):
     """
     C_m_acw = Cm0_airfoil* (Aw*(np.cos(SweepLE)**2))/(Aw+2*np.cos(SweepLE))
     fus_cont = -1.8 * (1 - 2.5*d_f_outer/l_f)*(np.pi * d_f_outer * d_f_outer * l_f * CL0_Land)/(4*S_w*c_mac_w * CL_alpha_Ah())
-    nac_cont = -0.05
+    nac_cont = -0.05                # todo: -0.05 for wing mounted engines, check if times 2 for our aircraft
     C_m_ac = C_m_acw + flapcont(mu1=mu1, mu2=mu2, mu3=mu3) + fus_cont + nac_cont
     #C_m_ac = -0.4
     return C_m_ac
@@ -163,14 +157,14 @@ def C_L_Ah():
     rho_land = ISA_calculator(h=landing_critical, dt=dt_land)[2]
     C_L_Ah = 2*W_landing/(rho_land*S_w*V_approach**2)
     return C_L_Ah
-print("CL for aircraft less tail=",C_L_Ah())
 
+# Range for the locations:
 x = np.arange(-0.5,2,0.01)             #xcg/mac
-#Final equation for STABILITY, presented in the form y = m_s x + c_s
+
+#STABILITY, presented in the form y = m_s x + c_s
 m_s = 1/((C_L_alpha(A = A_h, lambdahalf=lambdahalf_h) /CL_alpha_Ah())* (1-Downwash())* (lh/c_mac_w) * (Vh_V**2))
 c_s = (AC_location()-0.05)*m_s
 c_s_SM = AC_location()*m_s
-print("xbarAC=",AC_location())
 ys = m_s * x - c_s
 ys_SM = m_s*x - c_s_SM
 
@@ -182,13 +176,20 @@ def y_c(C_L_h):
     return yc
 
 # CG location range
-xcg = [Location_in_MAC(xcg_front_potato)-0.05, Location_in_MAC(xcg_aft_potato)+0.05]
+xcg = [Location_in_MAC(xcg_front_potato), Location_in_MAC(xcg_aft_potato)]
+#xcg = [Location_in_MAC(xcg_front_potato)-0.05, Location_in_MAC(xcg_aft_potato)+0.05]       # Including Margin of 0.05
 ycg = [Sh/S_w, Sh/S_w]
 print("------------------------------------------------------")
+print("--------------- VISIBILITY CHECKS ------------------------")
+print("Check Location of the landing gear is behind the cg")
+print("Check the area of the horizontal tail")
 print("--------------- HT Dimensions ------------------------")
-print("Sh =", Sh)                  # TODO: see scissorplot
+print("taperh = ", taperh)
+print("Sh =", Sh, "m^2")
 print("Ah =", A_h)
-print("bh =", np.sqrt(Sh*A_h))
+print("bh =", Geometry_HT(Sh, Ah, taperh)[0], "m")
+print("cr_h =", Geometry_HT(Sh, Ah, taperh)[1], "m")
+print("ct_h =", Geometry_HT(Sh, Ah, taperh)[2], "m")
 
 #Plotting the curves
 plt.plot(x, ys_SM, 'g', linestyle = '--', label='Neutral stability Line')
@@ -198,11 +199,12 @@ plt.plot(x, y_c(C_L_h =C_L_h_adj), 'b', label = 'Controllability, for adjustable
 #plt.plot(x, y_c(C_L_h =C_L_h_mov), 'r', label = 'Controllability, for full moving tail')
 plt.axvline(x=Location_in_MAC(xcg_gear), color="black", label='Location Landing Gear')
 plt.plot(xcg, ycg, 'r', label='CG range')
-# plt.title('Horizontal Tail Sizing with Longitudinal Stability and Control', fontsize=20)
 plt.xlabel('xcg [MAC]', color='#1C2833', weight="bold", fontsize=15)
 plt.ylabel('Sh/S', color='#1C2833', weight="bold", fontsize=15)
 plt.legend(loc='upper left', fontsize=15)
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=15)
+plt.xlim(-0.2,1.0)
+plt.ylim(0,0.6)
 plt.grid(True)
 plt.show()
