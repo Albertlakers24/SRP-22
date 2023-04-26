@@ -20,14 +20,14 @@ Swet_S = 6.1                        #(6.0-6.2) wetted area ratios -> depending o
 e = 1/(np.pi*Aw*Psi+(1/phi))
 #ROC and beta estimates
 ROC = 6                        #Change with CS25 and literature or Requirement (Rate of Climb)
-ROC_OEI = 2
+ROC_OEI = 0.5
 ROC_V = 0.032#0.0032
 ROC_V_OEI = 0.03                     #Change with CS25 and literature or Requirement (Climb Gradient) ROC/V
 V_approach_stall = V_approach /1.23  #CS 25 requirement of V_stall_land = V_approach / 1.23
-beta_V_app_fc = 0.97
-beta_s_land_fc = 0.97
-beta_cruise_fc  = 0.985
-beta_ROC_fc = 0.985
+beta_V_app_fc = 0.985
+beta_s_land_fc = 0.95
+beta_cruise_fc  = 0.99
+beta_ROC_fc = 0.99
 beta_cv = 1
 beta_s_to = 1
 beta_em = 1
@@ -76,7 +76,7 @@ W_S_approach = V_approach_constraint(rho_1524, V_approach_stall, CL_MaxLand, bet
 W_S_land = s_land_constraint(s_landing_1524, C_LFL, rho_1524, CL_MaxLand, beta_s_land_fc)
 W_P_cruise = cruise_contraint(eta_prop,alpha_p_em, CD0_CR, rho_cruise, V_cruise, W_S, Aw, e,beta_cruise_fc)
 W_P_ROC = roc_constraint(eta_prop, alpha_p_em, ROC, CD0_40, rho_1524, Aw, e_to, W_S, beta_ROC_fc, 4, 2)
-W_P_ROC_OEI = roc_constraint(eta_prop, alpha_p_em, ROC_OEI, CD0_40, rho_1524, Aw, e_to, W_S, beta_ROC_fc, 4, 1)
+W_P_ROC_OEI = roc_constraint(eta_prop, alpha_p_em, ROC_OEI, CD0_CR, rho_cruise, Aw, e, W_S, beta_cruise_fc, 4, 1)
 W_P_CV = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V, CD_DesTakeOff, CL_MaxTakeOff, rho_1524, W_S,beta_em, 4, 2)
 W_P_CV_OEI = climb_gradient_constraint(eta_prop, alpha_p_em, ROC_V_OEI, CD_DesTakeOff, CL_MaxTakeOff, rho_1524,W_S, beta_cv, 4, 1)
 W_P_TOP = takeoff_constraint(alpha_p_em, s_takeoff_1524, rho_1524, h2, k_t, 4, 2)
@@ -108,7 +108,7 @@ plt.plot(W_S,W_P_TOP_OEI,'r',label = "Takeoff Constraint (OEI), CL = 1.9")
 plt.vlines(W_S_land,0,100,'c',label ="Landing Constraint, CL = 2.2")
 plt.plot(W_S,W_P_cruise,'m',label = "Cruise Constraint (275kts)")
 plt.plot(W_S,W_P_ROC,'y',label = "Rate of Climb Constraint, ROC = 6")
-plt.plot(W_S,W_P_ROC_OEI,'orange',label = "Rate of Climb Constraint (OEI), ROC = 2")
+plt.plot(W_S,W_P_ROC_OEI,'orange',label = "Rate of Climb Constraint (OEI), ROC = 0.5")
 plt.plot(W_S,W_P_CV,'k',label = "Climb Gradient Constraint, $\gamma=0.032$")
 plt.plot(W_S,W_P_CV_OEI,'indigo',label = "Climb Gradient Constraint (OEI), $\gamma=0.03$")
 plt.plot(WS_42, WP_42, "*", label="Design Point ATR 42", markersize = 7)
