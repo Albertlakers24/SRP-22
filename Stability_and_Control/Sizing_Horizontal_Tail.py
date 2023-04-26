@@ -1,24 +1,24 @@
 import numpy as np
 import math as m
 import matplotlib.pyplot as plt
-from Constants.Empennage_LandingGear import lh, bh, Sh, lambdahalf_h, c_rh, c_th, A_h, Vh_V
+from Constants.Empennage_LandingGear import lh, bh, Sh, lambdahalf_h, c_rh, c_th, A_h, Vh_V, t_over_c_HT, Sweep_quarter_chord_HT
 from Constants.AircraftGeometry import S_w, c_mac_w, Aw, Sweep_quarterchordw
 from Constants.Masses_Locations import m_mto, LEMAC, xcg_aft_potato
 from Constants.MissionInputs import g, ISA_calculator, h_cruise, dt_cruise, M_cruise, V_cruise, V_approach
-from Constants.Aerodynamics import CL_Alpha_Wing, downwash, Cl_Alpha_HT_Airfoil, CL_Alpha_HT, A
+from Constants.Aerodynamics import CL_Alpha_Wing, downwash, Cl_Alpha_HT_Airfoil, CL_Alpha_HT, Cmac, R_HT
 from Constants.Stability_Control import Cmalpha
 
 print("FILE: Horizontal Tail Sizing")
 
-# To be found still :( todo
-Cmac = C_m_AC(mu1=mu1, mu2=mu2, mu3=mu3)                # C_mac                     [-]
-AlphaCL0_CR = np.radians(np.mean(AlphaCL0_CR))          # Angle of attack at CL0    [rad]
-x_ac_w_MAC = x_ac_w                                     # Position ac of the wing   [MAC]   at 0.25c
+
+# To be found still :( todo still to be found
+AlphaCL0_CR = 0.16                                      # Angle of attack at CL0    [rad]
 
 # Variables for this file:
 eta = 0.95                                              #                           [-]
 CNh_delta = 0.024*180/np.pi                             # Normal force gradient     [rad^-1]    Graph (pg. 317 FD reader)
-i_h = -2*np.pi/180                                      # Incidence angle           [rad]       To minimize parasite drag todo: or from HT file?
+i_h = -2*np.pi/180                                      # Incidence angle           [rad]       To minimize parasite drag todo how determined?
+x_ac_w_MAC = 0.25                                       # Position ac of the wing   [MAC]
 
 # Intermediate Equations
 MTOW = m_mto*g                                          # Maximum to weight         [N]
@@ -33,22 +33,20 @@ alpha_trim = np.arange(-10,10, 0.1)                                             
 
 # Design Choices  TODO: to be chosen :)
 deriv_deltae_se = 2.2                                   #                           [rad/m]         normal values: 2.2-26 rad/m (1.25-1.5deg/cm) --- pg 400 FD reader
-delta_te = -11*np.pi/180                                 # For stable stick free aircraft: delta_te > delta_te0          [rad]            Initial: -11 deg
+delta_te = -11*np.pi/180                                # For stable stick free aircraft: delta_te > delta_te0          [rad]            Initial: -11 deg
 cf_over_c = 0.3                                         # Flap chord over chord for elevator    [-]
 ct_over_c = 0.2                                         # Tab chord over chord for elevator     [-]
-outboard = bh/2                                         # outboard location         [m]
+outboard = bh/2                                         # Outboard location         [m]
 inboard = 0.3                                           # Inboard location          [m]
 cb_over_cf = 0.3                                        # Hinge line position       [m]
-outboard_tab = 2.5
-inboard_tab = 0.5
+outboard_tab = 2.5                                      # Outboard location tab     [m]
+inboard_tab = 0.5                                       # Inboard location tab      [m]
 
 # Calculations
 Vtrim = V_approach                                      # Trim speed                [m/s]
-t_c = 0.03                                              # Airfoil design                                        TODO: revisit this
-tc_over_two_cf = 0.2485
-cb_over_c = cb_over_cf*cf_over_c
-cbprime_cprime = cb_over_cf*cf_over_c                   # Wing parameter, cb'/c'
-cfprime_cprime = cb_over_c+cf_over_c                    # Wing paramter, cf'/c'
+cb_over_c = cb_over_cf*cf_over_c                        # Wing parameter, cb/c      [-]
+cbprime_cprime = cb_over_cf*cf_over_c                   # Wing parameter, cb'/c'    [-]
+cfprime_cprime = cb_over_c+cf_over_c                    # Wing paramter, cf'/c'     [-]
 
 # Supporting equations sizing elevator
 angle = m.atan((c_rh-c_th)/(bh/2))                      # Angle                                 [rad]
@@ -58,6 +56,7 @@ MACe = Cr_e*0.75                                        # MAC elevator          
 y = np.tan(angle)*(bh/2 - outboard)                     # Difference change                     [m]
 Ct_e = (c_th+y)*cf_over_c                               # Tip chord elevator                    [m]
 Se = Ct_e*(outboard-inboard)+0.5*(Cr_e-Ct_e)*(outboard-inboard)     # Elevator surface area     [m^2]
+
 print("bh=", bh)
 print("Elevator Sizing:")
 print("Inboard location=",      inboard)
@@ -66,6 +65,7 @@ print("Cr_e=",                  Cr_e)
 print("Ct_e=",                  Ct_e)
 print("Se=",                    Se, "1 elevator")
 print("MACe=", MACe)
+
 # Supporting equations sizing trim tab
 root_H_tab = c_rh-inboard_tab*np.tan(angle)             # Chord of H at start trimtab           [m]
 Cr_tab = root_H_tab*ct_over_c                           # Root chord trim tab                   [m]
@@ -80,31 +80,32 @@ print("Cr_tab=", Cr_tab)
 print("Ct_tab=", Ct_tab)
 print("S_tab=", S_tab, "1 trim tab")
 
-print("Hinge position=",        )
+# Supporting Values from the Graphs for elevator
+cla_over_cla_theory_HT = 0.76                           # Graph 10.64a (p. 501)
+c_accent_alpha_over_chalpha_theory_HT = 0.3             # Graph 10.63a (p. 500)
+chalpha_theory = -0.48                                  # Graph 10.63b (p. 500)
+Ch_alpha_bal_over_Chalpha = 0.85                        # Graph 10.65a (p.503)
+c_accent_delta_over_chdelta_theory_HT = 0.75            # Graph 10.69a (p. 507)
+chdelta_theory_HT = -0.88                               # Graph 10.69b (p. 507)
+Ch_delta_bal_over_Chdelta = 0.75                        # Graph 10.71 (p. 509)
+tc_over_two_cf = 0.2485                                 # tc = thickness chord at hingeline and cf = chord of flap (p. 509)
 
-# Supporting Values from the Graphs for AF calculations for elevator
-cla_over_cla_theory_HT = 0.76                           # Graph 10.64a (p. 501)     CHECKED
-c_accent_alpha_over_chalpha_theory_HT = 0.3             # Graph 10.63a (p. 500)     CHECKED
-chalpha_theory = -0.48                                  # Graph 10.63b (p. 500)     CHECKED
-Ch_alpha_bal_over_Chalpha = 0.85                        # Graph 10.65a (p.503)      CHECKED
-c_accent_delta_over_chdelta_theory_HT = 0.75            # Graph 10.69a (p. 507)     CHECKED
-chdelta_theory_HT = -0.88                               # Graph 10.69b (p. 507)     CHECKED
-Ch_delta_bal_over_Chdelta = 0.75                        # Graph 10.71 (p. 509)      CHECKED
-
-print("Needed for Graphs for Chdelta_cl_delta")
+print("-------Needed for Graphs for Chdelta and Chalpha-------")
 print("cf/c=", cf_over_c)
 print("ct/c=", ct_over_c)
 print("ct/cf=", ct_over_c*(1/cf_over_c))
 print("Needed for Graphs for Chdelta and Chalpha")
-print("Reynolds Number for HT=", 7.5*10**6)
-print("tan(0.5*phi_te)=", 0.21, "=t/c")
+print("Reynolds Number for HT=", R_HT)
+print("tan(0.5*phi_te)=", t_over_c_HT, "=t/c")
 print("cla_over_cla_theory_HT=",cla_over_cla_theory_HT)
-print("cf/c=", cf_over_c)
+print("Determine tc/2cf -> for the balance ratio")
 print("Balance Ratio=", np.sqrt((cb_over_cf)**2-(tc_over_two_cf)**2))
 
 def HingemomentAF_Coefficients():
-    """
-    :return: Chdelta and Chalpha (rad^-1)
+    """ ELEVATOR
+    :return:
+    Chdelta (rad^-1)    p.506
+    Chalpha (rad^-1)    p.499
     """
     c_accent_h_alpha= c_accent_alpha_over_chalpha_theory_HT*chalpha_theory
     Ch_alpha_bal = c_accent_h_alpha*Ch_alpha_bal_over_Chalpha
@@ -117,17 +118,23 @@ def HingemomentAF_Coefficients():
     RatioAF = ChAF_alpha/ChAF_delta
     return ChAF_delta, ChAF_alpha, RatioAF
 
-cla_over_cla_theory_trim = 0.76                           # Graph 10.64a (p. 501)           CHECKED
-c_accent_alpha_over_chalpha_theory_trim = 0.21            # Graph 10.63a (p. 500)           CHECKED
-chalpha_theory_trim = -0.38                               # Graph 10.63b (p. 500)           CHECEKD
-Ch_alpha_bal_over_Chalpha_trim = 0.85                     # Graph 10.65a (p.503)            CHECKED
-Chdeltat_cl_delta = -0.013*180*(1/np.pi)                  # Effect of control surface size, due to tab deflection at constant CL              [rad^-1] for chdelta_t AF
-Chcl_deltat_delta = -0.11                                 # Effect of control surface size, due to tab deflection at constant tab deflection  [-]
+print("-------Needed for Graphs for Chdelta_t-------")
+print("ct/cf_trimtab =", "idk")
+print("cf/c =","idk")
+
+Chdeltat_cl_delta = -0.013*180*(1/np.pi)                  # Graph 10.72  (p.511)        [rad^-1]
+Chcl_deltat_delta = -0.11                                 #
+cla_over_cla_theory_trim = 0.76                           # Graph 10.64a (p.501)
+c_accent_alpha_over_chalpha_theory_trim = 0.21            # Graph 10.63a (p.500)
+chalpha_theory_trim = -0.38                               # Graph 10.63b (p.500)
+Ch_alpha_bal_over_Chalpha_trim = 0.85                     # Graph 10.65a (p.503)
 alpha_delta_cl_delta = -0.5                               # Change in angle of attack due to change in tab deflection                         [-]
 
-def HingemomentAF_Coefficients_trim():
-    """
-    :return: Chdelta and Chalpha (rad^-1)
+def HingemomentAF_Coefficients():
+    """ TRIMTAB
+    :return:
+    Chdelta_t (rad^-1)      p.510
+    Chalpha_t (rad^-1)      p.
     """
     c_accent_h_alpha= c_accent_alpha_over_chalpha_theory_HT*chalpha_theory
     Ch_alpha_bal = c_accent_h_alpha*Ch_alpha_bal_over_Chalpha
@@ -137,34 +144,30 @@ def HingemomentAF_Coefficients_trim():
     RatioAF = ChAF_alpha/Chdelta_t_AF
     return Chdelta_t_AF, ChAF_alpha, RatioAF
 
-# def Chdelta_t():
-#     """ CHECKED
-#     :return: Chdelta_t [rad^-1] used Roskam page 478
-#     """
-#     return Chdelta_t
+Sweep_quarter_h = Sweep_quarter_chord_HT                       # Sweep at quarter chord Htail  [rad]
 
-print("Needed for 3D hingemoment calculations")
-Sweep_quarter_h = 0.1                       # Sweep at quarter chord Htail  [rad]
 # From Graphs
 DeltaCha_over_clalphaBK = 0.01              # Graph 10.77a (p. 515) at A=4
 B2 = 1.25                                   # Graph 10.77c (p. 515)
-print("cb'/cf'=", cbprime_cprime)
-print("cf'/c'=", cfprime_cprime)
-print("cf/c=", cf_over_c)
 Eta_i = inboard/(bh/2)                      # Half span inboard location [-]
 Eta_o = outboard/(bh/2)                     # Half span outboard location [-]
-print("Eta Inboard Location", Eta_i)
-print("Eta Outboard Location,", Eta_o)
 Kalpha_i = 1.1
 Kalpha_o = 4.2
-ch_alpha_M = HingemomentAF_Coefficients_trim()[1]
-ch_delta_M = HingemomentAF_Coefficients_trim()[0]
+ch_alpha_M = HingemomentAF_Coefficients()[1]
+ch_delta_M = HingemomentAF_Coefficients()[0]
 DeltaChd_cldBKd = 0.016                     # Graph 10.78a (p. 517) at A=4
 cl_delta = 5.4                              # Graph 8.14 (p. 260)
 Kdelta_o = 4.2                              # Graph 10.78c (p. 517)             normal 3.5
 Kdelta_i = 1.05                             # Graph 10.78c (p. 517)
 Sweep_hl = 0.2                              # Sweep at the hingline
 alpha_d = 0.51                              # Graph 8.17 (p. 262) at delta_f = 35deg
+
+print("Needed for 3D hingemoment calculations")
+print("cb'/cf'=", cbprime_cprime)
+print("cf'/c'=", cfprime_cprime)
+print("cf/c=", cf_over_c)
+print("Eta Inboard Location", Eta_i)
+print("Eta Outboard Location,", Eta_o)
 
 def Hingemoment_Coefficients():
     Kalpha = Kalpha_i*(1-Eta_i)-Kalpha_o*((1-Eta_o)/(Eta_o-Eta_i))
@@ -209,12 +212,14 @@ def Chdelta_t():
     DeltaCh_delta = DeltaChd_cldBKd_trim * (cl_delta_trim * B2 * Kdelta * np.cos(Sweep_quarter_h_trim) * np.cos(Sweep_hl_trim))
     Chdelta_t = np.cos(Sweep_quarter_h_trim) * np.cos(Sweep_hl_trim) * (ch_delta_M_trim + alpha_d_trim * ch_alpha_M_trim) * ((2 * np.cos(Sweep_quarter_h_trim)) / (A_trim + 2 * np.cos(Sweep_quarter_h_trim))) + DeltaCh_delta
     return Chdelta_t
+
 print("Chdelta_t=", Chdelta_t())
+
 # Supporting Equations
-CNhalpha_free= C_N_alpha_h - CNh_delta*Chalpha_Chdelta                                          # Normal force gradient eq. 7.5 Sam1                [rad^-1]
-x_ac_w_meters = c_mac_w*x_ac_w_MAC+LEMAC                                                        # Location aerodynamic center wing                  [m]
-xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters# Location neutral point stick free eq. 7.7 Sam1    [m]         normal value 0.483*MAC
-Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                 # eq. 5.21 Sam1                                     [rad^-1]
+CNhalpha_free= C_N_alpha_h - CNh_delta*Chalpha_Chdelta                                                          # Normal force gradient eq. 7.5 Sam1                [rad^-1]
+x_ac_w_meters = c_mac_w*x_ac_w_MAC+LEMAC                                                                        # Location aerodynamic center wing                  [m]
+xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters # Location neutral point stick free eq. 7.7 Sam1    [m]         normal value 0.483*MAC
+Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                            # eq. 5.21 Sam1                                     [rad^-1]
 
 if xcg_aft_potato <xnfree:
     print("Aircraft is statically stable as xcg<xnfree")
@@ -252,10 +257,6 @@ def Cmdelta_e():
     """
     Cmdelta_e = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))
     return Cmdelta_e
-
-print("Cmdelta_e=", Cmdelta_e(), "Control derivative is stable as Cmdelta_e < 0")
-if Cmdelta_e() >0:
-    print("Cmdelta_e is positive! Should be negative!!")
 
 def delta_e(V):
     """ CHECKED
@@ -316,7 +317,6 @@ def trimtab_0():
 print("delta_t0=", trimtab_0(), "rad")
 print("delta_te=", delta_te, "rad")
 
-#TODO: Use this equation
 def ControlForce(V, delta_te):
     """ CHECKED
     Control Curve, used for elevator control force stability (dFe/dV)Fe=0 >0
@@ -335,6 +335,10 @@ def deriv_controlForce():
 
 print("------------IMPORTANT OUTPUTS FOR STABILITY-----------")
 print("Stick Fixed Elevator Deflection")
+
+print("Cmdelta_e=", Cmdelta_e(), "Control derivative is stable as Cmdelta_e < 0")
+if Cmdelta_e() >0:
+    print("Cmdelta_e is positive! Should be negative!!")
 
 print((delta_e_alpha(alpha_trim[5])-delta_e_alpha(alpha_trim[4]))/(alpha_trim[5]-alpha_trim[4]))
 print("Slope elevator deflection vs angle =",(delta_e_alpha(alpha_trim[5])-delta_e_alpha(alpha_trim[4]))/(alpha_trim[5]-alpha_trim[4]), "deg/deg")
@@ -363,33 +367,32 @@ if delta_te > trimtab_0():
 else:
     print("Unstable for the trimtab deflection")
 
-
-plt.plot(V_controlforce, delta_e(V=V_controlforce))
-plt.axvline(x=V_cruise, color="black")
-plt.grid(True)
-plt.xlabel("Velocity (m/s)")
-plt.ylabel("Elevator Deflection (degrees)")
-plt.title("Elevator Deflection Curve - Stick Fixed")
-plt.legend(["Elevator Deflection", "Vcruise"])
-plt.show()
-
-plt.plot(alpha_trim, delta_e_alpha(alpha=alpha_trim))
-plt.axvline(x=3.5, color="black")
-plt.grid(True)
-plt.xlabel("Angle of Attack (degrees)")
-plt.ylabel("Elevator Deflection (degrees)")
-plt.title("Elevator Deflection Curve - Stick Fixed")
-plt.legend(["Elevator Deflection", "alpha at cruise"])
-plt.show()
-
-plt.plot(V_controlforce, TailLoad(V = V_controlforce))
-plt.axvline(x=V_cruise, color="black")
-plt.grid(True)
-plt.xlabel("Velocity (m/s)")
-plt.ylabel("Tail Load (N)")
-plt.title("Horizontal tail load curve")
-plt.legend(["Tail loading", "Vcruise"])
-plt.show()
+# plt.plot(V_controlforce, delta_e(V=V_controlforce))
+# plt.axvline(x=V_cruise, color="black")
+# plt.grid(True)
+# plt.xlabel("Velocity (m/s)")
+# plt.ylabel("Elevator Deflection (degrees)")
+# plt.title("Elevator Deflection Curve - Stick Fixed")
+# plt.legend(["Elevator Deflection", "Vcruise"])
+# plt.show()
+#
+# plt.plot(alpha_trim, delta_e_alpha(alpha=alpha_trim))
+# plt.axvline(x=3.5, color="black")
+# plt.grid(True)
+# plt.xlabel("Angle of Attack (degrees)")
+# plt.ylabel("Elevator Deflection (degrees)")
+# plt.title("Elevator Deflection Curve - Stick Fixed")
+# plt.legend(["Elevator Deflection", "alpha at cruise"])
+# plt.show()
+#
+# plt.plot(V_controlforce, TailLoad(V = V_controlforce))
+# plt.axvline(x=V_cruise, color="black")
+# plt.grid(True)
+# plt.xlabel("Velocity (m/s)")
+# plt.ylabel("Tail Load (N)")
+# plt.title("Horizontal tail load curve")
+# plt.legend(["Tail loading", "Vcruise"])
+# plt.show()
 
 plt.plot(V_controlforce, ControlForce(V=V_controlforce, delta_te= delta_te))
 plt.grid(True)

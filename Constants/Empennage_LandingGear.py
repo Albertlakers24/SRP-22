@@ -4,6 +4,8 @@ import numpy as np
 '''To be updated:'''
 Av_eff = 3.5                    # VT: effective Aspect Ratio    [-]         FILE: Sizing_Vertical_Tail
 xc_m_tail = 0.29                # (x/c)_m Position of max thickness - 0.3 for low speed, 0.5 for high speed
+t_over_c_HT = 0.21              # HT : t/c                      [-]
+
 
 ''''First Fidelity: TAILARM'''
 Vh_V = 1                        # Volume fraction for T-tail    [-]
@@ -16,8 +18,10 @@ Sv = 19.33                      # VT: Surface area              [m^2]
 taperv = 0.5                    # VT: Taper                     [-]
 Av = 1.3                        # VT: Aspect ratio              [-]
 tc_tail_vt = 0.18               # VT: t/c ratio                 [-]
-Sweep_quarter_chord_H = 6.64*np.pi/180 # HT: c/4 sweep angle           [rad]
-Sweep_halfchord_VT = 16.1*np.pi/180    # VT: c/2 sweep angle           [rad]
+Sweep_LE_HT = 3.94*np.pi/180    # HT: LE sweep angle            [rad]
+Sweep_LE_VT = 30*np.pi/180      # VT: LE sweep angle            [rad]
+Sweep_quarter_chord_HT = -2.73*np.pi/180 # HT: c/4 sweep angle  [rad]
+Sweep_halfchord_VT = 16.1*np.pi/180     # VT: c/2 sweep angle   [rad]
 lambdahalf_h = 0                # HT: c/2 sweep angle           [rad]
 cmac_h =  1.982                 # HT: MAC                       [m]
 bh = 7.8756                     # HT: Span                      [m]
@@ -27,6 +31,7 @@ cmac_v =  3.817                 # VT: MAC                       [m]
 c_rv = 4.908                    # VT: root chord                [m]
 c_tv = 2.45                     # VT: tip chord                 [m]
 lv = 8.30                       # VT: tail arm                  [m]
+bv = 4.78                       # VT: Span                      [m]
 
 ''' Landing Gear '''
 

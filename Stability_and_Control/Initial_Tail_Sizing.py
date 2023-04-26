@@ -40,7 +40,7 @@ else:
     Sv = Sv_newvalue
 
 # HORIZONTAL TAIL
-def Geometry_HT():
+def Geometry_HT(Sh, Ah, taperh):
     bh = np.sqrt(Sh * Ah)
     c_rh = (2 * Sh) / ((1 + taperh) * bh)
     c_th = c_rh * taperh
@@ -61,14 +61,14 @@ def Geometry_VT():
     return bv,c_rv,c_tv,c_mac_v,y_mach_v,d_LE_v
 
 print("-----------Horizontal Tail Sizing------------")
-print("d_LE_h =", Geometry_HT()[5], "m")
+print("d_LE_h =", Geometry_HT(Sh, Ah, taperh)[5], "m")
 print("Sh =", Sh, "m^2")
 print("Ah =", Ah)
-print("bh =", Geometry_HT()[0], "m")
-print("cr_h =", Geometry_HT()[1], "m")
-print("ct_h =", Geometry_HT()[2], "m")
-print("c_mach =", Geometry_HT()[3],"m")
-print("y_machh =", Geometry_HT()[4],"m")
+print("bh =", Geometry_HT(Sh, Ah, taperh)[0], "m")
+print("cr_h =", Geometry_HT(Sh, Ah, taperh)[1], "m")
+print("ct_h =", Geometry_HT(Sh, Ah, taperh)[2], "m")
+print("c_mach =", Geometry_HT(Sh, Ah, taperh)[3],"m")
+print("y_machh =", Geometry_HT(Sh, Ah, taperh)[4],"m")
 print("ratio wing areas =", Sh / S_w)
 print("tail_arm_h=", x_h - xcg_aft_potato, "m")
 
