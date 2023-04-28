@@ -17,7 +17,8 @@ ln2 = 1.88328   # [m] Longitudinal distance between the small prop to the wing c
 bn1 = 0.77      # [m] Big nacelle width (in y direction)
 bn2 = 0.51      # [m] Small nacelle width (in y direction)
 v_t_w = 3.83079 # [m] Verticl distance (z-direction) from the ac of the HT to the ac of wing (always +ve)
-y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center line to the big engine.
+y_T = 4.05412   # [m] Lateral distance (y-direction) between the fuselage center line to the big engine
+y_T_outboard = 7.1  # [m] Lateral distance center fuselage to outboard engine
 Zw = -1.82253   # [m] Vertical distance (z-direction) between the fuselage
                 # center line to the LE of the wing, assuming no dihedral.
 l_fn = 10.24    # [m] Length nose to LE wing
@@ -52,7 +53,7 @@ S_lg_front = (0.834*0.247)*4 + (0.343*0.108*2)             # Frontal area of lan
 # zv = 3.3026             # Center line fuselage to aerodynamic center VT     [m]
 # y_T = 4                 # Center line fuselage to engine                    [m]
 # Zw = -1.84              # Center line fuselage to wing                      [m] -> negative for high wing
-# center_S_BS = 11        # x center location of the side area                [m]
+center_S_BS = 11        # x center location of the side area                [m]
 # #l_nc    = 3.7           # Length of the nose cone                           [m]
 #
 # '''Area'''
