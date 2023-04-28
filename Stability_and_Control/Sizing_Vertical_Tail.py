@@ -1,6 +1,6 @@
 import numpy as np
 import math as m
-from sympy import symbols, Eq,solve
+from sympy import symbols, Eq,nsolve
 import sympy as sp
 from Constants.AircraftGeometry import l_f, d_f_outer, Aw, S_w, bw, taperw, Sweep_quarterchordw, c_mac_w, t_c_ratio_w
 from Constants.Aircraft_Geometry_Drawing import center_S_BS,y_T_outboard, zv, y_T, Zw, S_BS, center_S_BS
@@ -27,19 +27,19 @@ CheckVT = 0
 CheckR = 0
 
 # Estimated Inputs for VT and Rudder design                                     ITERATIVE PROCESS RESULTS PRESENTED IN THE REPORT
-V_v = 0.08                      # VT : volume fraction              [m^3]
+V_v = 0.07                      # VT : volume fraction              [m^3]
 l_v = 9.4                       # VT : tail arm                     [m]
-Av = 1.3                        # VT : aspect ratio                 [-]
-taperv = 0.5                    # VT : taper ratio                  [-]
+Av = 1.1                        # VT : aspect ratio                 [-]
+taperv = 0.8                    # VT : taper ratio                  [-]
 Sweepv = 26*np.pi/180           # VT : sweep angle                  [rad]
 i_v = 0                         # VT : incidence angle              [rad]       -> Symmetric propulsion
 Dihedral = 0                    # VT : dihedral                     [rad]       -> Symmetric propulsion
-br_bv = 0.8                     # Rudder-to-VT span                 [-]         -> rudder effectiveness, 0.8
-Cr_Cv = 0.2                     # Rudder-to-VT chord                [-]         -> graph 12.12 from book
+br_bv = 0.7                     # Rudder-to-VT span                 [-]         -> rudder effectiveness, 0.8
+Cr_Cv = 0.15                    # Rudder-to-VT chord                [-]         -> graph 12.12 from book
 V_stall_TO = np.sqrt(m_mto*g/(S_w*0.5*rho_5000*CL_MaxTakeOff))
 V_mincont = 0.8 * V_stall_TO    # Min controllable speed            [m/s]       -> See FAR regulations (estimate 80% of stall speed at take off)
 delta_r_max = 30                # Rudder : max allowable deflection [deg]
-Cdy = 0.65                      # Aircraft side drag coefficient    [-]         (0.5-0.8)
+Cdy = 0.8                       # Aircraft side drag coefficient    [-]         (0.5-0.8)
 y_i_rudder = 0                  # Rudder : Inboard location         [m]
 
 # Initial Geometry Calculations for VT
@@ -95,7 +95,7 @@ print("x/cr=", 0.25)
 
 # TODO: read graphs for Cn_beta
 K_N = 0.00175            # Empirical factor     [-]     Fig 10.28 (p.431)
-K_Rl = 1.95              # Factor               [-]     Fig 10.29 (p.432)
+K_Rl = 1.4               # Factor               [-]     Fig 10.29 (p.432)
 kv = 1.0                 # Empirical factor     [-]     Fig 10.12 (p.417)
 alpha_TO = Alpha_DesTakeOff*np.pi/180      # Angle of attack at TO  [rad]
 
@@ -106,13 +106,13 @@ Cnr_CD0 = -0.3           # Fraction             [rad^-1]    Fig 10.45 (p. 466)
 # TODO: read graphs for Cy_delta_r
 k_prime =  0.6                                  # Correction factor     [-]         Fig 8.13 (p. 260)
 K_b = 0.9                                       # Flap-span fraction    [-]         Fig 8.51 (p. 292)
-Cldelta_over_Cldeltatheory  = 1.0               # Fraction              [-]         Fig 8.15 (p. 262)
-Cldeltatheory = 3.5                             # Fraction              [rad-1]     Fig 8.14 (p. 260)
+Cldelta_over_Cldeltatheory  = 0.8               # Fraction              [-]         Fig 8.15 (p. 262)
+Cldeltatheory = 2.8                             # Fraction              [rad-1]     Fig 8.14 (p. 260)
 
 # TODO: read graphs for effective aspect ratio
-A_vf_Av = 1.2             # In isolated tail                            [-]         Fig 10.14 (p.420)
-A_vhf_Avf = 0.9           # In the presence of fuselage alone           [-]         Fig 10.15 (p.420)   -> overdesigned
-K_vh = 0.75               # Factor for relative size Sh and Sv          [-]         Fig 10.16 (p.422)
+A_vf_Av = 1.6             # In isolated tail                            [-]         Fig 10.14 (p.420)
+A_vhf_Avf = 1.5           # In the presence of fuselage alone           [-]         Fig 10.15 (p.420)
+K_vh = 0.9                # Factor for relative size Sh and Sv          [-]         Fig 10.16 (p.422)   -> overdesigned
 Av_eff = A_vf_Av*Av*(1+K_vh*A_vhf_Avf-1)
 
 def Deriv_Directional_Stability():
@@ -159,68 +159,34 @@ Cndelta_r = Deriv_Rudder()[1]
 tau_r = 0.8     # Rudder angle of attack effectiveness (p.682 Mohammed)     [-]
 
 P_engine = Power_tot/4                  # Power per engine (4 motors)       [W]
-T_L = P_engine/V_cruise                 # Force by 1 engine                 [N]
-Vw = 52.37                              # Maximum cross-wind speed          [m/s]       -> FAR regulations
+T_L = 2*P_engine/V_cruise               # Force by 1 engine                 [N]
+Vw =  52.37                             # Maximum cross-wind speed          [m/s]       -> FAR regulations
 V_T = np.sqrt(V_approach**2 + Vw**2)    # Total airspeed                    [m/s]
 beta = m.atan(Vw/V_approach)            # Side slip angle                   [rad]
 Fw = 0.5*rho*(Vw**2)*S_BS*Cdy           # Force generated by cross wind     [N]
 N_A = -T_L * y_T_outboard               # Yawing moment for outboard engine inoperative        [N]
 Cnzero = 0                              # Cn0                               [-]
 
-print("Side slip angle =", beta, "should be > 0 for a mean positive rudder deflection")
-
-def crab_angle(xcg):
-    """crab angle calculations [rad] ;
-    :param dc :  distance center side area to xcg aft or front depending on what is critical [m]"""
-    dc = xcg - center_S_BS
-    sigma = m.acos(-N_A / (Fw * dc))
-    sigma = 0.316
-    return sigma
+print("Side slip angle =", beta*180/np.pi, "deg -> should be > 0 for a mean positive rudder deflection")
 
 "ASYMMETRIC THRUST REQUIREMENT OUTPUT"
 delta_r_assym = (2*T_L*y_T_outboard)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
 
 "CROSS WIND REQUIREMENT OUTPUT"
 beta_speed = m.atan(Vw/V_approach)              # [rad]
-dc = center_S_BS-xcg_aft_potato
+dc = center_S_BS-xcg_aft_potato               # [m]
 Cyzero = 0
-Cybeta =-1.1
+Cybeta =-1.5
 
-rho = 1.225
-V_T = 44.92
-S_w = 32
-bw = 8
-Cnzero = 0
-Cn_beta = 0.1
-beta_speed = 0.351
-Cndelta_r = -0.08
-Fw = 2976
-dc = 1.8
-Vw = 30
-Cyzero = 0
-Cybeta = -0.6
-Cydelta_r =0.15
-Cn_beta = 0.1
-Cndelta_r = -0.08
+sigma,delta_r_crosswind = symbols('sigma,delta_r_crosswind')
+eq1 = Eq(0.5*rho*(V_T**2)*S_w*bw*(Cnzero+Cn_beta*(beta_speed-sigma) +Cndelta_r*delta_r_crosswind)+Fw*dc*sp.cos(sigma),0)
+eq2 = Eq(Fw,0.5*rho*(V_T**2)*S_w*(Cyzero+Cybeta*(beta_speed-sigma)+Cydelta_r*delta_r_crosswind))
 
-sigma, delta_r_crosswind = symbols('sigma,delta_r_crosswind')
-# eq1 = Eq(0.5*rho*(V_T**2)*S_w*bw*(Cnzero+Cn_beta*(beta_speed-sigma) +Cndelta_r*delta_r_crosswind) + Fw*dc*sp.cos(sigma),0)
-# eq2 = Eq(Fw,0.5*rho*(V_T**2)*S_w*(Cyzero+Cybeta*(beta_speed-sigma)+Cydelta_r*delta_r_crosswind))
-
-eq1 = Eq(0.5*1.225*(44.92*0.514)**2*32*8*(0.1*(0.351-sigma) - 0.08*delta_r_crosswind) + 2976*1.8*sp.cos(sigma),0)
-eq2 = Eq(0.5*1.225*(44.92*0.514)**2*32*(-0.6*(0.351-sigma)+0.15*delta_r_crosswind)-2976, 0)
-
-solve((eq2,eq1), (sigma,delta_r_crosswind))
-sol_dict = solve((eq1,eq2), (sigma,delta_r_crosswind))
-print("Crab Angle = Sigma",f'sigma = {sol_dict[sigma]}', "rad")
-print("Crosswind Angle = ",f'delta_r_crosswind = {sol_dict[delta_r_crosswind]}', "rad")
-
-delta_r_crosswind_front = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(xcg_front_potato)))*(1/Cndelta_r)    # Rudder deflection angle for front cg      [rad]
-delta_r_crosswind_aft = ((N_A/(0.5*rho*V_T**2*S_w*bw)) - Cnzero  -Cn_beta*(beta-crab_angle(xcg_aft_potato)))*(1/Cndelta_r)        # Rudder deflection angle for aft cg        [rad]
-if abs(delta_r_crosswind_aft) > abs(delta_r_crosswind_front):                                                                     # ex.12.2 [p.721 Mohammed]
-    delta_r_crosswind = delta_r_crosswind_aft
-else:
-    delta_r_crosswind = delta_r_crosswind_front
+sol_dict = nsolve((eq1,eq2),(sigma,delta_r_crosswind), (1,1))
+delta_r_crosswind = sol_dict[1]*180/np.pi
+crab_angle = sol_dict[0]*180/np.pi
+print("crab angle=", crab_angle, "deg")
+print("Delta_r_crosswind=", delta_r_crosswind, "deg")
 
 print("----- Directional Stability Requirements ------")
 if Cn_beta < 0:
@@ -244,16 +210,16 @@ if tau_r > 1:
     print("As tau_r = ", tau_r , "> 1")
 else:
     print("VT meets requirement for rudder directional control/trim requirement: tau_r = ", tau_r, "< 1")
-    if abs(delta_r_crosswind) > 30*0.01745:
+    if abs(delta_r_crosswind) > 30:
         print("Rudder does NOT meet crosswind requirement")
-        print("delta_r_crosswind = ", delta_r_crosswind*180/np.pi,"> 30 deg")
+        print("delta_r_crosswind = ", delta_r_crosswind,"> 30 deg")
     else:
         if abs(delta_r_assym) > 30*0.01745:
             print("Rudder does NOT meet asymmetric thrust requirement")
             print("delta_r_assym = ", delta_r_assym*180/np.pi, "> 30 deg")
         else:
             print("Rudder meets crosswind and asymmetric thrust requirements:")
-            print("delta_r_crosswind = ", delta_r_crosswind*180/np.pi, "deg")
+            print("delta_r_crosswind = ", delta_r_crosswind, "deg")
             print("delta_r_asymm = ", delta_r_assym*180/np.pi, "deg")
             print("Rudder effectiveness = ", tau_r)
             CheckR = 1

@@ -7,7 +7,7 @@ from Constants.Stability_Control import Cybeta_v, x_AC, Cnbeta, Clbeta, Cn_r, Cy
 from Constants.Masses_Locations import xcg_front_potato
 from Constants.Aircraft_Geometry_Drawing import zv, zw
 from Constants.AircraftGeometry import d_f_outer
-from Constants.Empennage_LandingGear import Sweep_quarter_chord_H, Sv, lv, A_h, taperh, lambdahalf_h, bh, Sh
+from Constants.Empennage_LandingGear import Sv, lv, A_h, taperh, lambdahalf_h, bh, Sh, Sweep_quarter_chord_HT
 
 print("FILE: Static Derivatives")
 
@@ -48,19 +48,19 @@ Cnp_epsilont = 0.0075                               # Effect of wing twist      
 DeltaCnp_alpha_deltaf = 0.0012                      # Effect of symmetrical flap deflection     [(rad*deg)^-1]  Graph 10.38 (p.455)
 
 # 13 Graph Values for the Sideslip Derivatives      TODO: find graph SIDESLIP
-Ki = 1.7                                            # Factor                                    [-]     Graph 10.8  (p.416)
-kv = 0.95                                           # Empirical Factor for side-force           [-]     Graph 10.12 (p.417)
-Wing_sweep_contribution = -0.00025                  # Wing sweep contribution                   [deg]   Graph 10.20 (p.425)
+Ki = 1.9                                            # Factor                                    [-]     Graph 10.8  (p.416)
+kv = 1.00                                           # Empirical Factor for side-force           [-]     Graph 10.12 (p.417)
+Wing_sweep_contribution = 0                         # Wing sweep contribution                   [deg]   Graph 10.20 (p.425)
 K_M = 1.15                                          # Compressibility correction to sweep       [-]     Graph 10.21 (p.426)
-K_f = 0.7                                           # Fuselage correction                       [-]     Graph 10.22 (p.426)
-Clb_CLA = -0.005                                    # Aspect ratio contribution                 [deg^-1]Graph 10.23 (p.426)
-Clb_dihedral = -0.00015                             # Wing dihedral contribution                [deg^-2]Graph 10.24 (p.427)
-KM_dihedral = 1.15                                  # Compressibility correction to dihedral    [-]     Graph 10.25 (p.428)
-DeltaClb_st_tan = -0.000035                         # Wing twist correction                     [deg^-2]Graph 10.26 (p.428)
-HT_sweep_contribution= -0.004                       # HT sweep contribution                     [deg]   Graph 10.20 (p.425)
-K_M_HT= 1.4                                         # HT Compressibility correction to sweep    [-]     Graph 10.21 (p.426)
-K_f_HT = 0.8                                        # HT fuselage correction                    [-]     Graph 10.22 (p.426)
-Clb_CLA_HT= -0.006                                  # Aspect ratio contribution                 [deg^-1]Graph 10.23 (p.426)
+K_f = 0.85                                          # Fuselage correction                       [-]     Graph 10.22 (p.426)
+Clb_CLA = 0                                         # Aspect ratio contribution                 [deg^-1]Graph 10.23 (p.426)
+Clb_dihedral = -0.00025                             # Wing dihedral contribution                [deg^-2]Graph 10.24 (p.427)
+KM_dihedral = 1.1                                   # Compressibility correction to dihedral    [-]     Graph 10.25 (p.428)
+DeltaClb_st_tan = -0.000045                         # Wing twist correction                     [deg^-2]Graph 10.26 (p.428)
+HT_sweep_contribution= 0                            # HT sweep contribution                     [deg]   Graph 10.20 (p.425)
+K_M_HT= 1.06                                        # HT Compressibility correction to sweep    [-]     Graph 10.21 (p.426)
+K_f_HT = 1.0                                        # HT fuselage correction                    [-]     Graph 10.22 (p.426)
+Clb_CLA_HT= -0.002                                  # Aspect ratio contribution                 [deg^-1]Graph 10.23 (p.426)
 
 # Intermediate equations AILERON
 Cl_alpha_M = Cl_Alpha_WingAirfoil                   # Airfoil lift curve at any Moment          [rad^-1]
@@ -166,8 +166,8 @@ print("for wing: Sweep_Beta =", m.atan(np.tan(Sweep_quarterchordw)/beta)*180/np.
 print("For HT parameters:")
 print("taperH =", taperh)
 print("for H-tail: beta*A/k =", (beta*A_h)/k_roll_H)
-print('Quarter chord sweep Htail=', Sweep_quarter_chord_H*180/np.pi, "deg")
-print("for H-tail: Sweep_Beta =", m.atan(np.tan(Sweep_quarter_chord_H)/beta)*180/np.pi, "deg")
+print('Quarter chord sweep Htail=', Sweep_quarter_chord_HT*180/np.pi, "deg")
+print("for H-tail: Sweep_Beta =", m.atan(np.tan(Sweep_quarter_chord_HT)/beta)*180/np.pi, "deg")
 print('Ah=', A_h)
 
 def RollRate_Coefficient(roll_damping_parameter, k_roll, CL_alpha_i_CL, CL_alpha_i_CL0, Delta_Clp_drag_i, Dihedraleffect):
@@ -295,16 +295,3 @@ print("Cn_deltar = ", Rudder()[2], "rudder control power")
 
 print("Lateral Control Department Parameters")
 print("LCDP=", LCDP)
-
-
-# from Initial_Aircraft_Sizing.Wing_planform import M_cruise, A, taper, b, c_mac, Sw
-# from Aerodynamic_characteristics.HLD_design_decision import cf_over_cprime, c_prime_over_c_to, ld, lm, DCL,Cf_C
-# from Initial_Aircraft_Sizing.Empennage_Design import l_v, Sh, bh, Ah, taperh
-# from Control_and_Stability.Scissorplot import AC_location, Sweep_beta
-# #from Control_and_Stability.Lateral_Control_derivatives import Cybeta_v
-# from Initial_Aircraft_Sizing.Fuselage import D_outer
-# #from Control_and_Stability.Lateral_Control_derivatives import Cldelta_over_Cldeltatheory, Clbeta, Cn_beta
-# from Aerodynamic_characteristics.AeroData import Cl_alpha_AF, CL_Des_CR, CL_alpha, Cl_alpha_AFtail, CL_alpha_htail, CL_HTail_CR
-# from Aerodynamic_characteristics.Aileron_design import aileron_dA_lower, aileron_dA_upper, aileron_lm, aileron_l1, aileron_Ca_c
-# from Aerodynamic_characteristics.Wing_lift_estimation import Calculate_wingsweep
-# from Stability_and_Control.Vertical_Tail import Deriv_Rudder
