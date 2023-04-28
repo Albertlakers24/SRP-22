@@ -11,7 +11,7 @@ b_regression = 1199.7           #- Regression value
 total_eff = eta_fuelcell * eta_inverter * eta_wire * eta_EM * eta_prop          #[-]
 m_f_extra = 0.03                #-
 fuel_mass_ref = 669             #kg
-m_tanks = 1.4 * fuel_mass_ref   #kg
+m_tanks = fuel_mass_ref/0.2     #kg
 CL_CD = CL_CD_DesCruise         #[-]
 
 
@@ -32,7 +32,7 @@ m_crew_total = m_crew + m_crew_baggage                  #[kg]
 m_payload = m_pax + m_pax_baggage + m_crew_total        #[kg]
 
 def mtom(oew_ratio):
-    mtom = (m_payload) / (1 - mf_mMTO("full")[0] * (1 + m_res) - oew_ratio)         #[-]
+    mtom = (m_payload + 12402.219695693011) / (1 - mf_mMTO("full")[0] * (1 + m_res))         #[-]
     return mtom
 def fuel_mass(oew_ratio, range):
     if range == "full":
@@ -43,15 +43,15 @@ def fuel_mass(oew_ratio, range):
         m_f = mtom(oew_ratio) * (mf_mMTO(range))[0] * (1 + m_f_extra)                       #[kg]
     return m_f
 
-oew_mtom = 12770 / 18650
+oew_mtom = 12402.219695693011 / 18536.35322811106
 m_mto = mtom(oew_mtom)
-m_f = fuel_mass(oew_mtom, 1000)
+m_f = fuel_mass(oew_mtom, "full")
 oem = oew_mtom * m_mto  #+ m_f * 1.4
 m_zf = m_mto - m_f
-m_tanks = 1.4 * m_f
+m_tanks = m_f/0.2
 print("MTOM:", m_mto)
 print("OEM:", oem, oew_mtom)
-print("Fuel mass:", fuel_mass(oew_mtom, 1000))
+print("Fuel mass:", fuel_mass(oew_mtom, "full"))
 print("Payload:", m_payload)
 print("Tank mass:", m_tanks)
 print("ZFM:", m_zf)

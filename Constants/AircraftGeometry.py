@@ -41,6 +41,7 @@ l_t     = 8.46208       # fuselage tail length [m]
 l_cp            = 3.71091       # Length of the cockpit [m]
 l_cylindrical   = 11.24491      # Length of the cylindrical section of the fuselage [m]
 l_cabin = 11.79101      # length of cabin [m]
+l_nc = 3.7              # length of nosecone [m]
 n_row = 12              # Number of rows of Seat
 skin_thickness = 0.105  # Fuselage skin thickness [m]
 
@@ -52,6 +53,7 @@ l_galley = 0.762        # galley length     [m]
 w_galley = 0.914        # galley width      [m]
 l_seat = 0.76           # seat pitch        [m]
 l_tank = 0              #
+l_pax = l_seat * n_row
 
 '''High Lift Devices and Aileron'''
 SwfS_flap = 0.600451            # Wing area by flaps area (Swf/S)           [-]
