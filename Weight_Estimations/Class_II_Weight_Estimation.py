@@ -1,8 +1,8 @@
 from Constants.MissionInputs import ISA_calculator,h_cruise,lbs_kg,ft_m,g,Aw,m_inches,rho_5000,V_approach
-from Constants.Masses_Locations import W_P_design,m_f,m_pldes, m_mto
+from Constants.Masses_Locations import W_P_design,m_f,m_pldes, m_mto, m_oem
 from Constants.FlightPerformance_Propulsion import eta_inverter,eta_EM,eta_wire,inverter_power_density, n_ult_pos
 from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_quarterchordw, S_flap, d_f_outer
-from Constants.Empennage_LandingGear import Sh,A_h,bh, Sv, lh, Av, Sweep_quarter_chord_H, Sweep_halfchord_VT
+from Constants.Empennage_LandingGear import Sh,A_h,bh, Sv, lh, Av, Sweep_quarter_chord_HT, Sweep_halfchord_VT, lv
 from Constants.Aerodynamics import CL_MaxLand
 import numpy as np
 
@@ -22,7 +22,7 @@ LH2_system_tank = m_tanks       #Must be done, thus change
 Fuel_Cell_Weight = no_fc * 80
 
 #Wing
-Wdg = m_mto/ lbs_kg
+Wdg = m_mto * (1 / lbs_kg)
 S_W = S_w * (1/ft_m)**2
 Nz = n_ult_pos
 t_cw = t_c_ratio_w
@@ -40,19 +40,18 @@ L_t = lh * (1/ft_m)                    #tail length; wing quarter-MAC to tail qu
 K_y = 0.3 * L_t                        #aircraft pitching radius of gyration [ft] ( = 0.3Lt)
 S_e = 1.35 * (1/ft_m)**2               #elevator area [ft^2]
 Sht = Sh * (1/ft_m)**2                 #Horizontal Tail area [ft^2]
-W_hor_tail_lbs = 0.0379 * K_uht *(1+ F_w/B_h)**(-0.25) * Wdg**0.639 * Nz**0.10 * Sht**0.75 * L_t**(-1.0) * K_y**0.704 * np.cos(Sweep_quarter_chord_H)**(-1) * A_h**0.166 * (1+S_e/Sht)**0.1
+W_hor_tail_lbs = 0.0379 * K_uht * (1+F_w/B_h)**(-0.25) * Wdg**(0.639) * Nz**(0.10) * Sht**(0.75) * L_t**(-1.0) * K_y**(0.704) * np.cos(Sweep_quarter_chord_HT)**(-1.0) * A_h**(0.166) * (1+S_e/Sht)**(0.1)
 W_hor_tail = W_hor_tail_lbs * lbs_kg
-print(bh)
-print(lh)
-print(Sh)
+print(L_t)
 # #Vertical Tail
 H_t_H_v = 1                # T tail or not, if T tail = 1 , if not = 0
 S_vt = Sv * (1/ft_m)**2
-K_z = L_t                     #aircraft yawing radius of gyration, ft ( = Lt)
+L_v = lv * (1/ft_m)
+K_z = L_v                     #aircraft yawing radius of gyration, ft ( = Lt)
 t_c_v = 0.18
-W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_t**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(Sweep_halfchord_VT)**(-1) * Av**0.35 * t_c_v**(-0.5)
+W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_v**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(Sweep_halfchord_VT)**(-1) * Av**0.35 * t_c_v**(-0.5)
 W_ver_tail = W_ver_tail_lbs * lbs_kg
-
+print(S_vt)
 #Fuselage
 K_door = 1.06               # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
 K_lg = 1                    # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
@@ -187,3 +186,4 @@ all_masses = [LH2_system_tank, Fuel_Cell_Weight,W_wing,W_hor_tail,W_ver_tail,W_f
 print("Fuel Mass", m_f)
 print("MTOM", m_mto)
 print('Class II Weight Estimation =', sum(all_masses))
+print('Class I OEM =', m_oem)
