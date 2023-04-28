@@ -10,13 +10,13 @@ import numpy as np
 
 T_cruise, p_cruise, rho_cruise, a_cruise = ISA_calculator(h_cruise,0)
 no_fc = 11
-m_tanks = 850
+m_tanks = m_f/0.2
 #all the equations from Raymer
 #Calculated seperaterly:
 
 #LH2 Storage/Fuel System
 #Estimated at 1.4 grav index, add more detail later I would say
-LH2_system_tank = m_tanks       #Must be done, thus change
+LH2_system_tank = m_tanks      #Must be done, thus change
 
 #Fuel Cell
 Fuel_Cell_Weight = no_fc * 80
@@ -42,7 +42,7 @@ S_e = 1.35 * (1/ft_m)**2               #elevator area [ft^2]
 Sht = Sh * (1/ft_m)**2                 #Horizontal Tail area [ft^2]
 W_hor_tail_lbs = 0.0379 * K_uht * (1+F_w/B_h)**(-0.25) * Wdg**(0.639) * Nz**(0.10) * Sht**(0.75) * L_t**(-1.0) * K_y**(0.704) * np.cos(Sweep_quarter_chord_HT)**(-1.0) * A_h**(0.166) * (1+S_e/Sht)**(0.1)
 W_hor_tail = W_hor_tail_lbs * lbs_kg
-print(L_t)
+
 # #Vertical Tail
 H_t_H_v = 1                # T tail or not, if T tail = 1 , if not = 0
 S_vt = Sv * (1/ft_m)**2
@@ -51,7 +51,7 @@ K_z = L_v                     #aircraft yawing radius of gyration, ft ( = Lt)
 t_c_v = 0.18
 W_ver_tail_lbs = 0.0026 * (1+ H_t_H_v)**0.225 * Wdg**0.556 * Nz **0.536 * L_v**(-0.5) * S_vt**0.5 * K_z**0.875 * np.cos(Sweep_halfchord_VT)**(-1) * Av**0.35 * t_c_v**(-0.5)
 W_ver_tail = W_ver_tail_lbs * lbs_kg
-print(S_vt)
+
 #Fuselage
 K_door = 1.06               # 1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
 K_lg = 1                    # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
@@ -84,7 +84,7 @@ W_noselg = W_noselg_lbs * lbs_kg
 
 # # Nacelle Group
 power_req = m_mto * g / W_P_design
-Eng_W_kg = 200*10**3 / 13 #Check Later
+Eng_W_kg = 5.5 * 10**3 #Check Later
 Engine_weight = power_req / eta_EM / Eng_W_kg + (power_req / eta_EM / eta_wire / eta_inverter) / inverter_power_density / 10**3
 K_ng = 1.017                                #Pylon mounted nacelle or not, if not 1, if so 1.017
 N_lt = 5.14 * (1/ft_m)                       #Nacelle Length [ft]
@@ -97,7 +97,7 @@ W_nacelle_lbs = 0.6724 * K_ng * N_lt**0.10 * N_w**0.294 * Nz**0.119 * W_ec**0.61
 W_nacelle = W_nacelle_lbs * lbs_kg
 
 # Engine Controls
-L_ec = 10.127 * (1/ft_m) * 4 * 1.25                         #length from engine front to cockpit-total if multiengine [ft]
+L_ec = 14.3 * (1/ft_m) * 4 * 1.5                         #length from engine front to cockpit-total if multiengine [ft]
 W_engine_control_lbs = 5 * N_en + 0.8 * L_ec
 W_engine_control = W_engine_control_lbs * lbs_kg
 

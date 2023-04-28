@@ -11,7 +11,7 @@ rho_cruise = ISA_calculator(h_cruise,dt_cruise)[2]
 W_S = np.arange(1,6000,1)
 s_takeoff_1524 = s_takeoff
 s_landing_1524 = s_landing
-W_S = np.arange(1,6000,1)
+W_S = np.arange(1,6000,0.01)
 Psi = 0.0075                        #Parasite drag dependent on the lift coefficient (value based on Roelof reader p.46)
 phi = 0.97                          #span efficiency factor (value based on Roelof reader p.46)
 Cfe = 0.0030                        #equivalent skin friction coefficient -> depending on aircraft from empirical estimation
@@ -125,9 +125,9 @@ plt.axvspan(W_S_land, 6000, color="red", alpha=0.1)
 plt.fill_between(W_S, W_P_cruise, 1, color="red", alpha=0.1)
 plt.fill_between(W_S, W_P_CV_OEI, 1, color="red", alpha=0.1)
 plt.fill_between(W_S, W_P_ROC, 1, color="red", alpha=0.1)
-plt.plot(W_S[2999], W_P_ROC[2999], 'o',label = "Design Point SRP-22", markersize = 7)
+plt.plot(W_S[278349], W_P_ROC[278349], 'o',label = "Design Point SRP-22", markersize = 7)
 plt.legend(loc = "upper right")
 plt.grid()
 plt.show()
-print(W_S[2999])
-print(W_P_ROC[2999])
+print(W_S[278349])
+print(W_P_ROC[278349])

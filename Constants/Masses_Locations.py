@@ -1,16 +1,16 @@
 ''' AIRCRAFT MASSES & LOCATIONS OUTPUTS --> ALBERT  ---> Last Update - 08/03/23 '''
 
 ''' Overall system masses '''
-m_f = 662.4319284750928
+m_f = 627.6644615905865
 trip_fuel = 419.97377851582326
 reserve_fuel = 242.45814995926958
-m_oem = 13395.226919847259
-m_mto = 19563.115274483273
-m_zf = 18900.68334600818
+m_oem = 12486.183948942687
+m_mto = 18623.171638281416
+m_zf = 17908.688766520474
 eta_eng = 0.6 * 0.97 * 0.995 * 0.95
 m_pldes = 5524.75056
-W_S_design = 3000
-W_P_design = 0.07755015218235134
+W_S_design = 2784.49
+W_P_design = 0.07839191985909619
 beta_s_land_fc = m_zf / m_mto
 
 ''' Subsystem masses '''
