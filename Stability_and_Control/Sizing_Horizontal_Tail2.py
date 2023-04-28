@@ -113,7 +113,7 @@ def Hingemoment_Coefficients_elevator():
     Kdelta = Kdelta_i*(1-Eta_i)-Kdelta_o*((1-Eta_o)/(Eta_o-Eta_i))
     DeltaCh_delta =DeltaChd_cldBKd*(cl_delta*B2*Kdelta*np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl))
     Ch_delta = np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl)*(ch_delta_M +alpha_d*ch_alpha_M)*((2*np.cos(Sweep_quarter_chord_HT))/(A_h+2*np.cos(Sweep_quarter_chord_HT)))+DeltaCh_delta
-    Ch_delta_horn = Ch_delta*0.26
+    Ch_delta_horn = Ch_delta*0.2
 
     Ch_delta_t = -0.0906472545474966
 
@@ -184,3 +184,7 @@ def ControlForceGraph(delta_te):
     return
 
 ControlForceGraph(delta_te)
+
+print("Chdelta", Hingemoment_Coefficients_elevator()[0])
+print("Chalpha", Hingemoment_Coefficients_elevator()[1])
+print("Cnhalpha_free", CNhalpha_free)
