@@ -17,8 +17,9 @@ CNh_delta = 0.024*180/np.pi                 # Normal force gradient         [rad
 x_ac_w_MAC = 0.25                           # Location ac of the main wing  [MAC]
 
 # DESIGN CHOICES ELEVATOR
-delta_te = -11*np.pi/180                    # For stable stick free aircraft: delta_te > delta_te0          [rad]            Initial: -11 deg
+delta_te = -9*np.pi/180                     # For stable stick free aircraft: delta_te > delta_te0          [rad]            Initial: -11 deg
 deriv_deltae_se = 2.2                       #                               [rad/m]         normal values: 2.2-26 rad/m (1.25-1.5deg/cm) --- pg 400 FD reader
+deriv_deltae_se_horn = 2.0                  # Influence of the horn         [rad/m]
 inboard_elevator = 0.3                      # Inboard location elevator     [m]
 outboard_elevator = bh/2                    # Outboard location elevator    [m]
 cb_over_cf = 0.3                            # Hinge line position elevator  [-]
@@ -124,11 +125,12 @@ def Hingemoment_Coefficients_elevator():
     Kalpha = Kalpha_i*(1-Eta_i)-Kalpha_o*((1-Eta_o)/(Eta_o-Eta_i))
     DeltaC_h_alpha = DeltaCha_over_clalphaBK*(Cl_Alpha_HT_Airfoil*B2*Kalpha*np.cos(Sweep_quarter_chord_HT))
     Ch_alpha = ((A_h*np.cos(Sweep_quarter_chord_HT))/(A_h+2*np.cos(Sweep_quarter_chord_HT)))*ch_alpha_M + DeltaC_h_alpha
+    Ch_alpha = Ch_alpha
 
     Kdelta = Kdelta_i*(1-Eta_i)-Kdelta_o*((1-Eta_o)/(Eta_o-Eta_i))
     DeltaCh_delta =DeltaChd_cldBKd*(cl_delta*B2*Kdelta*np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl))
     Ch_delta = np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl)*(ch_delta_M +alpha_d*ch_alpha_M)*((2*np.cos(Sweep_quarter_chord_HT))/(A_h+2*np.cos(Sweep_quarter_chord_HT)))+DeltaCh_delta
-    Ch_delta_horn = Ch_delta*0.2
+    Ch_delta_horn = Ch_delta*0.9
 
     Ch_delta_t = np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl)*(ch_delta_t_M+alpha_dt*ch_alpha_M*(2*np.cos(Sweep_quarter_chord_HT)/(A_h+2*np.cos(Sweep_quarter_chord_HT))))+DeltaCh_delta
     # Ch_delta_t = -0.0906472545474966
@@ -137,6 +139,7 @@ def Hingemoment_Coefficients_elevator():
 
 def Cmdelta_e():
     """
+    Elevator efficiency - CNh_delta increases for horn cases
     Control derivative due to elevator deflection equations from FD reader p. 196
     :param CNh_delta: (rad^-1)
     :return: Cmdelta_e: (rad^-1)
@@ -150,11 +153,14 @@ def trimtab_0():
     """ CHECKED
     :return: delta_te0  (rad)
     """
+    Ch_delta_nohorn = Hingemoment_Coefficients_elevator()[2]
+    Ch_delta_horn = Hingemoment_Coefficients_elevator()[0]
 
-    Ch_delta = Hingemoment_Coefficients_elevator()[2]
     Ch_delta_t = Hingemoment_Coefficients_elevator()[3]
-    delta_te0 = ((Ch_delta /Cmdelta)*Cmac) + ((Ch_delta/CNh_delta)*CNhalpha_free*(AlphaCL0_CR+i_h)) / Ch_delta_t
-    return delta_te0
+    delta_te0 = ((Ch_delta_nohorn /Cmdelta)*Cmac) + ((Ch_delta_nohorn/CNh_delta)*CNhalpha_free*(AlphaCL0_CR+i_h)) / Ch_delta_t
+
+    delta_te0_horn = ((Ch_delta_horn /Cmdelta)*Cmac) + ((Ch_delta_horn/CNh_delta)*CNhalpha_free*(AlphaCL0_CR+i_h)) / Ch_delta_t
+    return delta_te0, delta_te0_horn
 
 # SUPPORTING EQUATIONS
 MTOW = m_mto * g
@@ -175,32 +181,42 @@ def ControlForce_HT(V,delta_te):
     :return: Tail Load (N)
     """
     Ch_delta = Hingemoment_Coefficients_elevator()[0]
-    Chdelta_t = Hingemoment_Coefficients_elevator()[3]          # To be written still!
+    Ch_delta_nohorn = Hingemoment_Coefficients_elevator()[2]
+    Chdelta_t = Hingemoment_Coefficients_elevator()[3]
 
-    F_velocity_independent = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft_potato -xnfree)/c_mac_w)
-    F_velocity_dependent= 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0())
-    a = deriv_deltae_se*Se*MACe*(Vh_V)**2
-    Fe = a*(F_velocity_independent - F_velocity_dependent)
-    Fe_ex_trimtab = a*F_velocity_independent
-    return Fe, Fe_ex_trimtab
+    F_velocity_independent_horn = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft_potato -xnfree)/c_mac_w)
+    F_velocity_independent_nohorn = (MTOW/S_w)*(Ch_delta_nohorn/(Cmdelta_e()*0.8))*((xcg_aft_potato -xnfree)/c_mac_w)
+
+    F_velocity_dependent_horn= 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0()[1])
+    F_velocity_dependent_nohorn = 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0()[0])
+
+    a_nohorn = deriv_deltae_se*Se*MACe*(Vh_V)**2
+    a_horn = deriv_deltae_se_horn*Se*MACe*(Vh_V)**2
+
+    Fe_horn = a_horn*(F_velocity_independent_horn - F_velocity_dependent_horn)
+    Fe_ex_trimtab = a_horn*F_velocity_independent_horn
+    Fe_nohorn = a_nohorn*(F_velocity_independent_nohorn - F_velocity_dependent_nohorn)
+
+    return Fe_horn, Fe_ex_trimtab, Fe_nohorn
 
 def ControlForceGraph(delta_te):
     V_controlforce = np.arange(0,250,0.1)
     plt.plot(V_controlforce, ControlForce_HT(V = V_controlforce,delta_te=delta_te)[0])
+    plt.plot(V_controlforce, ControlForce_HT(V=V_controlforce, delta_te=delta_te)[2])
     plt.grid(True)
     plt.xlabel("Velocity (m/s)")
     plt.ylabel("Control Force (N)")
     plt.axvline(x=V_cruise, color="black")
     plt.axvline(x=V_approach, color="g")
     plt.axvline(x=V_max, color="r")
-    plt.axhline(y=35*g, color="r")
-    plt.axhline(y=-35*g,color="r")
+    plt.axhline(y=22.5*g, color="r")
+    plt.axhline(y=-22.5*g,color="r")
     plt.axvspan(V_max,V_max+30,alpha=0.2, color="r")
-    plt.axhspan(-35*g, -400, alpha=0.2, color="r")
-    plt.axhspan(35*g,400, alpha=0.2,color="r")
+    plt.axhspan(-22.5*g, -400, alpha=0.2, color="r")
+    plt.axhspan(22.5*g,400, alpha=0.2,color="r")
     plt.xlim(0, V_max+30)
-    plt.ylim(-400,100)
-    plt.legend(["Elevator control force", "Vcruise", "V_approach", "Limits"])
+    plt.ylim(-250,100)
+    plt.legend(["Elevator control force (Horn)", "Elevator control force","V_cruise", "V_approach", "Limits"])
     plt.show()
     return
 
@@ -214,6 +230,9 @@ print("Chalpha =", Hingemoment_Coefficients_elevator()[1])
 print("Chdelta_t =", Hingemoment_Coefficients_elevator()[3])
 print("Cnhalpha_free =", CNhalpha_free)
 print("Cmdelta =", Cmdelta)
+print("delte_t =", delta_te)
+print("delta_t0_nohorn =", trimtab_0()[0])
+print("delta_t0_horn =", trimtab_0()[1])
 
 print("--------- Elevator Requirements ----------")
 if Cmdelta < 0:
