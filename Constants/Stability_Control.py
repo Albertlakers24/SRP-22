@@ -13,9 +13,9 @@ Clbeta = -0.031725211066274815          # Clbeta                [-]             
 Cn_delta_a = 1                          # Cn_delta_a            [rad^-1]        FILE: ??
 Cl_delta_a =1                           # Cl_delta_a            [rad^-1]        FILE: ??
 CNh_delta = 0.024*180/np.pi             # Normal force gradient [rad^-1]        FILE: Sizing_Horizontal_Tail2
-Chdelta = -0.020525670157042666         # Ch_delta              [rad^-1]        FILE: Sizing_Horizontal_Tail2
-Chalpha = -0.017860003939365404         # Ch_alpha              [rad^-1]        FILE: Sizing_Horizontal_Tail2
-CNhalpha_free = 1.3534851890535113      # Cnhalpha_free         [rad^-1]        FILE: Sizing_Horizontal_Tail2
+Chdelta = -0.073                        # Ch_delta              [rad^-1]        FILE: Sizing_Horizontal_Tail2
+Chalpha = -0.022660754006932418         # Ch_alpha              [rad^-1]        FILE: Sizing_Horizontal_Tail2
+CNhalpha_free = 2.1234332654360015      # Cnhalpha_free         [rad^-1]        FILE: Sizing_Horizontal_Tail2
 
 '''INPUTS FOR THE SYMMETRIC DYNAMIC MOTIONS'''
 CZadot =1                               # CZadot                [

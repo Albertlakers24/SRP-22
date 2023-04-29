@@ -1,6 +1,6 @@
 import numpy as np
 import math as m
-from Constants.MissionInputs import rho_0, g, V_cruise
+from Constants.MissionInputs import rho_0, g, V_cruise, phi, Psi
 from Constants.Masses_Locations import m_mto, xcg_aft_potato, LEMAC
 from Constants.AircraftGeometry import S_w, Aw, c_mac_w, bw
 from Constants.Aerodynamics import CL_DesCruise, CL_Alpha_Wing, downwash, CL_Alpha_HT
@@ -10,9 +10,8 @@ from Constants.Stability_Control import CNh_delta, Chdelta, Chalpha, CNhalpha_fr
 print("FILE: Derivative_Calculations_Dynamic")
 gamma0 =0                               # Steady horizontal flight FD p163
 
-## IMPORTED FROM OTHER FILES todo import
-Oswald = 1
-# Oswald = 1/((np.pi)*A*Psi+(1/phi))      #-      Oswald Efficiency Factor
+## IMPORTED FROM OTHER FILES todo import Oswald factor from somewhere
+Oswald = 1/((np.pi)*Aw*Psi+(1/phi))      #-      Oswald Efficiency Factor
 
 def Zero_Derivatives():
     """Derivatives in Steady Flight
@@ -75,9 +74,7 @@ print("CZq    =", Pitch_Derivative()[1])
 print("Cmu    =", Velocity_Derivatives()[2])
 print("Cmadot =", Attack_Derivative()[4])
 print("Cmq    =", Pitch_Derivative()[2])
-print('Cm alpha = ', Attack_Derivative()[2])
-# print('Cm alpha 1 =', Attack_Derivative()[6])
-# print('Cm alpha 2 =', Attack_Derivative()[7])
+print("Cm alpha =", Attack_Derivative()[2])
 
 print("muc =", m_mto/(rho_0 * S_w * c_mac_w) )
 print("mub = ",m_mto/(rho_0 * S_w * bw) )
