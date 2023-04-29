@@ -25,27 +25,27 @@ These are listed in the following order
 """Calculation for the AILERON derivatives:"""
 
 # 5 Graph Values for the Aileron Derivatives        TODO: find graph AILERON
-beta_Cl_accent_delta_k = 0.6                        # Rolling moment effectiveness parameter    [rad^-1]        Graph 10.46 (p. 476)
-Cl_delta_CL_deltatheory = 1                         # Correction factor for plain flap lift     [-]             Graph 8.15 (p. 262)
-Cl_deltatheory = 5.2                                # Lift effectiveness of a plain flap        [rad^-1]        Graph 8.14 (p. 260)
-k_a = -0.05                                         # Correlation Constant                      [-]             Graph 10.48 (p. 480)
+beta_Cl_accent_delta_k = 0.73-0.3                   # Rolling moment effectiveness parameter    [rad^-1]        Graph 10.46 (p. 476)
+Cl_delta_CL_deltatheory = 1                         # Correction factor for plain flap lift     [-]             Graph 8.15  (p. 262)
+Cl_deltatheory = 4.8                                # Lift effectiveness of a plain flap        [rad^-1]        Graph 8.14  (p. 260)
+k_a = -0.1                                          # Correlation Constant                      [-]             Graph 10.48 (p. 480)
 
 # 6 Graph Values for the Yaw rate Derivatives       TODO: find graph YAW RATE
-Delta_Clr_alpha_delta_f_outer = 0.0078              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p.463)
+Delta_Clr_alpha_delta_f_outer = 0.0075              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p.463)
 Delta_Clr_alpha_delta_f_inner = 0.0030              # Effect of symmetric flap deflection       [1/(rad-deg)]   Graph 10.43 (p.463)
-Cnr_CL2 = -0.02                                     # Wing Yaw Damping derivative               [rad^-1]        Graph 10.44 (p.465)
-Cnr_CD0 =-0.3                                       # Drag effect                               [rad^-1]        Graph 10.45 (p.466)
+Cnr_CL2 = -0.04                                     # Wing Yaw Damping derivative               [rad^-1]        Graph 10.44 (p.465)
+Cnr_CD0 =-0.37                                      # Drag effect                               [rad^-1]        Graph 10.45 (p.466)
 Clr_CL_CL0_M0 =0.25                                 # Lifting effect                            [rad^-1]        Graph 10.41 (p.462)
 Delta_lr_epsilont = -0.017                          # Effect of wing twist                      [1/(rad-deg)]   Graph 10.42 (p.462)
-alpha_d = 0.4                                       # Lift effectiveness of a single slotted flap [-]           Graph 8.17  (p.262)
+alpha_d = 0.38                                      # Lift effectiveness of a single slotted flap [-]           Graph 8.17  (p.262)
 
 # 6 Graph Values for the Roll rate Derivatives      TODO: find graph ROLL RATE
 roll_damping_parameter_w = -0.54                    # Wing roll damping parameter               [-]             Graph 10.35 (p.450)
-roll_damping_parameter_H = -0.325                   # HT roll damping parameter                 [-]             Graph 10.35 (p.450)
+roll_damping_parameter_H = -0.5                     # HT roll damping parameter                 [-]             Graph 10.35 (p.450)
 drag_dueto_lift_roll_damping_parameter_w = -0.01    # Wing roll damping parameter D-L           [rad^-1]        Graph 10.36 (p.452)
-drag_dueto_lift_roll_damping_parameter_H = -0.0125  # HT roll damping parameter D-L             [rad^-1]        Graph 10.36 (p.452)
-Cnp_epsilont = 0.0075                               # Effect of wing twist                      [(rad*deg)^-1]  Graph 10.37 (p.452)
-DeltaCnp_alpha_deltaf = 0.0012                      # Effect of symmetrical flap deflection     [(rad*deg)^-1]  Graph 10.38 (p.455)
+drag_dueto_lift_roll_damping_parameter_H = -0.02    # HT roll damping parameter D-L             [rad^-1]        Graph 10.36 (p.452)
+Cnp_epsilont = 0.00075                              # Effect of wing twist                      [(rad*deg)^-1]  Graph 10.37 (p.452)
+DeltaCnp_alpha_deltaf = 0.001                       # Effect of symmetrical flap deflection     [(rad*deg)^-1]  Graph 10.38 (p.455)
 
 # 13 Graph Values for the Sideslip Derivatives      TODO: find graph SIDESLIP
 Ki = 1.9                                            # Factor                                    [-]     Graph 10.8  (p.416)
@@ -124,7 +124,7 @@ def YawRate():
         Cy_r (p. 460)
         Cl_r (p. 460)
         Cn_r (p. 464)"""
-    Cy_r = -2*Cybeta_v*(lv*np.cos(alpha)+zv*np.sin(alpha))/bw
+    Cy_r = -2*Cybeta_v*(lv*np.cos(alpha_cr_rad)+zv*np.sin(alpha_cr_rad))/bw
 
     B = (1-(M_cruise**2)*(np.cos(Sweep_quarterchordw))**2)**(1/2)
     num = 1 + ((Aw*1-B**2)/(2*B*(Aw*B + 2*np.cos(Sweep_quarterchordw)))) + (((Aw*B + 2*np.cos(Sweep_quarterchordw))/(Aw*B + 4*np.cos(Sweep_quarterchordw)))*(np.tan(Sweep_quarterchordw))**2)
@@ -132,7 +132,7 @@ def YawRate():
 
     Clr_CL_CL0 = Clr_CL_CL0_M0 *num/den
     Clrw =CL_DesCruise*Clr_CL_CL0 + 0 + Delta_lr_epsilont*twist + Delta_Clr_alpha_delta_f*alpha_deltaf*delta_f_deg
-    Clrv = -(2/bw**2)*(lv*np.cos(alpha)+zv*np.sin(alpha))*(zv*np.cos(alpha)-lv*np.sin(alpha))*Cybeta_v
+    Clrv = -(2/bw**2)*(lv*np.cos(alpha_cr_rad)+zv*np.sin(alpha_cr_rad))*(zv*np.cos(alpha_cr_rad)-lv*np.sin(alpha_cr_rad))*Cybeta_v
     Cl_r = Clrw + Clrv
 
     # Cnr_w = Cnr_CL2*CL_DesCruise**2 + Cnr_CD0*CD0_CR
@@ -150,7 +150,7 @@ k_roll_w = CL_Alpha_Wing*beta/(2*np.pi)                                         
 k_roll_H = CL_Alpha_HT*(beta/(2*np.pi))                                                     # Eq 10.54 (p.451)
 Delta_Clp_drag_w = drag_dueto_lift_roll_damping_parameter_w*(CL_DesCruise**2)-0.125*CD0_CR  # Eq 10.56 (p.451)
 Delta_Clp_drag_H = drag_dueto_lift_roll_damping_parameter_H*(CLH_adj**2)-0.125*CD0_tailhCR  # Eq 10.56 (p.451)
-Dihedraleffect_w = 1-(4*zw/(bw*np.sin(dihedralw)))+12*((zw/bw)**2)*(np.sin(dihedralw))**2   # Eq 10.44 (p.451)
+Dihedraleffect_w = 1#-(4*zw/(bw*np.sin(dihedralw)))+12*((zw/bw)**2)*(np.sin(dihedralw))**2   # Eq 10.44 (p.451) NO DIHEDRAL
 Dihedraleffect_HT = 1                                                                       # Eq 10.55 (p.451)
 
 print("------------Needed to find graph coefficients for Roll Rate derivatives ---------------")
@@ -177,9 +177,9 @@ def RollRate_Coefficient(roll_damping_parameter, k_roll, CL_alpha_i_CL, CL_alpha
 
 def RollRate():
     """Roskam Book:
-            Cy_p (p. ??)
-            Cl_p (p. ??)
-            Cn_p (p. ??)"""
+            Cy_p (p. 449)
+            Cl_p (p. 449)
+            Cn_p (p. 453)"""
     Cy_p = 2*Cybeta_v*(zv*np.cos(alpha)-lv*np.sin(alpha))/bw
 
     Clpw = RollRate_Coefficient(roll_damping_parameter=roll_damping_parameter_w, k_roll=k_roll_w, CL_alpha_i_CL=CL_Alpha_Wing, CL_alpha_i_CL0= CL_Alpha_Wing, Delta_Clp_drag_i=Delta_Clp_drag_w, Dihedraleffect=Dihedraleffect_w)
@@ -201,7 +201,7 @@ def RollRate():
     #alpha_deltaf = deltacl/cl_alpha*delta_f
 
     Cnpw =Cnp_CL_CL0*CL_DesCruise + Cnp_epsilont*twist + DeltaCnp_alpha_deltaf*alpha_deltaf*delta_f_deg
-    Cnpv = -(2/bw**2)*(lv*np.cos(alpha) + zv*np.sin(alpha))*(zv*np.cos(alpha)-lv*np.sin(alpha)-zv)*Cybeta_v
+    Cnpv = -(2/bw**2)*(lv*np.cos(alpha_cr_rad) + zv*np.sin(alpha_cr_rad))*(zv*np.cos(alpha_cr_rad)-lv*np.sin(alpha_cr_rad)-zv)*Cybeta_v
     Cn_p = Cnpw+Cnpv
     return Cy_p, Cl_p, Cn_p
 
