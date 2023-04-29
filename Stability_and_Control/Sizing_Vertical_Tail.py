@@ -27,7 +27,7 @@ CheckVT = 0
 CheckR = 0
 
 # Estimated Inputs for VT and Rudder design                                     ITERATIVE PROCESS RESULTS PRESENTED IN THE REPORT
-V_v = 0.07                      # VT : volume fraction              [m^3]
+V_v = 0.05                      # VT : volume fraction              [m^3]
 l_v = 9.4                       # VT : tail arm                     [m]
 Av = 1.1                        # VT : aspect ratio                 [-]
 taperv = 0.8                    # VT : taper ratio                  [-]
@@ -82,7 +82,7 @@ print("AR_wing =", Aw)
 print("----------------- NEEDED TO CALCULATE Cy_delta_r -----------")
 print("Clalpha/Clalpha_theory = ", Cl_Alpha_VT_Airfoil /(2*np.pi))
 print("Cf/C = ", Cr_Cv)
-print("t/c =", t_c_ratio_w)
+print("t/c_VT =", 0.18)
 print("eta_i = ", y_i_rudder/bv, "m")
 print("eta_o = ", y_o_rudder/bv, "m")
 print("taper ratio VT =", taperv)
@@ -105,7 +105,7 @@ Cnr_CD0 = -0.3           # Fraction             [rad^-1]    Fig 10.45 (p. 466)
 
 # TODO: read graphs for Cy_delta_r
 k_prime =  0.6                                  # Correction factor     [-]         Fig 8.13 (p. 260)
-K_b = 0.9                                       # Flap-span fraction    [-]         Fig 8.51 (p. 292)
+K_b = 0.8-0.1                                   # Flap-span fraction    [-]         Fig 8.51 (p. 292)
 Cldelta_over_Cldeltatheory  = 0.8               # Fraction              [-]         Fig 8.15 (p. 262)
 Cldeltatheory = 2.8                             # Fraction              [rad-1]     Fig 8.14 (p. 260)
 
@@ -270,7 +270,7 @@ rho = 1.225
 
 # Written Variables
 Y_e = 4  #m
-P_eq = 3138  #Horsepower   #To be imported from Tims code
+P_eq = 3138  #Horsepower   
 C_lmax = 2.1
 k_dr = 1.1  #Obtained from graph
 k_v = 1.1   #Preset value for our configuration
