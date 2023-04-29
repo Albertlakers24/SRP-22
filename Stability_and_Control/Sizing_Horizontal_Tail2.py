@@ -7,8 +7,6 @@ from Constants.AircraftGeometry import S_w, c_mac_w
 from Constants.Empennage_LandingGear import lh,Sh,Vh_V, A_h, Sweep_quarter_chord_HT, bh, t_over_c_HT, c_th,c_rh
 from Constants.Aerodynamics import Cl_Alpha_HT_Airfoil, R_HT, CL_Alpha_Wing, downwash, CL_Alpha_HT, Cmac
 
-# todo add equation for Chdelta_t see code!
-
 # To be imported from somewhere todo to be determined
 V_max = 178
 AlphaCL0_CR = 2*np.pi/180                   # Angle of attack at CL0        [rad]
@@ -80,11 +78,23 @@ print("cla_over_cla_theory_HT=",cla_over_cla_theory_HT)
 print("cf/c =", cf_over_c)
 print("t/c =", t_over_c_HT)
 
+cf_c_tab = 0.1                              # ct/cf, compared to flap
+
+print("Needed for Airfoil hingemoment claculation of the TRIMTAB")
+print("cf/c_tab = ", cf_c_tab)
+print("cf/c =", cf_over_c)
+
+chdeltat = -0.009                           # Graph 10.72   (p.511)
+ch_cl_t = -0.058                            # Graph 10.73   (p.511)
+cla_dt = Cl_Alpha_HT_Airfoil                # 8.1.1.2
+alpha_dt = -0.6                             # Graph 10.74   (p.512)
+
 def HingemomentAF_Coefficients():
     """ TRIMTAB
     :return:
     Ch_alpha_AF (p.499)
     Ch_delta_AF (p.506)
+    Ch_delta_t_AF (p.510)
     """
     c_accent_h_alpha = c_accent_alpha_over_chalpha_theory_HT * chalpha_theory
     Ch_alpha_bal = c_accent_h_alpha * Ch_alpha_bal_over_Chalpha
@@ -93,7 +103,10 @@ def HingemomentAF_Coefficients():
     c_accent_h_delta = c_accent_h_over_ch_delta_theory*ch_delta_theory
     Ch_delta_bal = c_accent_h_delta*Ch_delta_bal_over_Chdelta
     Ch_delta_AF =Ch_delta_bal/((1-M_cruise**2)**0.5)
-    return Ch_alpha_AF, Ch_delta_AF
+
+    Ch_delta_t_AF= chdeltat-ch_cl_t*cla_dt*alpha_dt
+
+    return Ch_alpha_AF, Ch_delta_AF, Ch_delta_t_AF
 
 def Hingemoment_Coefficients_elevator():
     """
@@ -101,10 +114,12 @@ def Hingemoment_Coefficients_elevator():
     Ch_alpha (p.513)
     Ch_delta (p.516)
     Ch_delta can be reduced to the correct horn design. The number 0.26 is based on literature research from NASA
+    Ch_delta_t (p.517) -> previously calculated
     """
 
     ch_alpha_M = HingemomentAF_Coefficients()[0]
     ch_delta_M = HingemomentAF_Coefficients()[1]
+    ch_delta_t_M = HingemomentAF_Coefficients()[2]
 
     Kalpha = Kalpha_i*(1-Eta_i)-Kalpha_o*((1-Eta_o)/(Eta_o-Eta_i))
     DeltaC_h_alpha = DeltaCha_over_clalphaBK*(Cl_Alpha_HT_Airfoil*B2*Kalpha*np.cos(Sweep_quarter_chord_HT))
@@ -115,7 +130,8 @@ def Hingemoment_Coefficients_elevator():
     Ch_delta = np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl)*(ch_delta_M +alpha_d*ch_alpha_M)*((2*np.cos(Sweep_quarter_chord_HT))/(A_h+2*np.cos(Sweep_quarter_chord_HT)))+DeltaCh_delta
     Ch_delta_horn = Ch_delta*0.2
 
-    Ch_delta_t = -0.0906472545474966
+    Ch_delta_t = np.cos(Sweep_quarter_chord_HT)*np.cos(Sweep_hl)*(ch_delta_t_M+alpha_dt*ch_alpha_M*(2*np.cos(Sweep_quarter_chord_HT)/(A_h+2*np.cos(Sweep_quarter_chord_HT))))+DeltaCh_delta
+    # Ch_delta_t = -0.0906472545474966
 
     return Ch_delta_horn, Ch_alpha, Ch_delta, Ch_delta_t
 
@@ -151,7 +167,6 @@ CNhalpha_free= CL_Alpha_HT - CNh_delta*Chalpha_Chdelta                          
 xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters
 Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                            # eq. 5.21 Sam1                                     [rad^-1]
 
-
 def ControlForce_HT(V,delta_te):
     """ For Cruise Conditions
     Control Force should be between the following values: XX < Fe < XX
@@ -166,25 +181,50 @@ def ControlForce_HT(V,delta_te):
     F_velocity_dependent= 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0())
     a = deriv_deltae_se*Se*MACe*(Vh_V)**2
     Fe = a*(F_velocity_independent - F_velocity_dependent)
-    return Fe
+    Fe_ex_trimtab = a*F_velocity_independent
+    return Fe, Fe_ex_trimtab
 
 def ControlForceGraph(delta_te):
     V_controlforce = np.arange(0,250,0.1)
-
-    plt.plot(V_controlforce, ControlForce_HT(V = V_controlforce,delta_te=delta_te))
+    plt.plot(V_controlforce, ControlForce_HT(V = V_controlforce,delta_te=delta_te)[0])
     plt.grid(True)
     plt.xlabel("Velocity (m/s)")
     plt.ylabel("Control Force (N)")
     plt.axvline(x=V_cruise, color="black")
     plt.axvline(x=V_approach, color="g")
     plt.axvline(x=V_max, color="r")
+    plt.axhline(y=35*g, color="r")
+    plt.axhline(y=-35*g,color="r")
+    plt.axvspan(V_max,V_max+30,alpha=0.2, color="r")
+    plt.axhspan(-35*g, -400, alpha=0.2, color="r")
+    plt.axhspan(35*g,400, alpha=0.2,color="r")
     plt.xlim(0, V_max+30)
-    plt.legend(["Elevator control force", "Vcruise", "Vtrim", "Vmax"])
+    plt.ylim(-400,100)
+    plt.legend(["Elevator control force", "Vcruise", "V_approach", "Limits"])
     plt.show()
     return
 
 ControlForceGraph(delta_te)
 
-print("Chdelta", Hingemoment_Coefficients_elevator()[0])
-print("Chalpha", Hingemoment_Coefficients_elevator()[1])
-print("Cnhalpha_free", CNhalpha_free)
+
+print("------------------------ Printed Derivatives ------------------------")
+print("Chdelta =", Hingemoment_Coefficients_elevator()[0])
+print("Chdelta (before horn) = ", Hingemoment_Coefficients_elevator()[2])
+print("Chalpha =", Hingemoment_Coefficients_elevator()[1])
+print("Chdelta_t =", Hingemoment_Coefficients_elevator()[3])
+print("Cnhalpha_free =", CNhalpha_free)
+print("Cmdelta =", Cmdelta)
+
+print("--------- Elevator Requirements ----------")
+if Cmdelta < 0:
+    print("Elevator efficiency requirement met:")
+    print("Cmdelta =", Cmdelta, "<0")
+else:
+    print("Elevator efficiency NOT met: Cmdelta = ", Cmdelta, "<0")
+
+if Hingemoment_Coefficients_elevator()[0] < 0:
+    print("Hinge moment derivative met:")
+    print("Chdelta =", Hingemoment_Coefficients_elevator()[0],"<0")
+else:
+    print("Hinge moment derivative NOT met:")
+    print("Chdelta =", Hingemoment_Coefficients_elevator()[0], ">0")
