@@ -229,6 +229,7 @@ print("Cndelta_r =", Cndelta_r)
 print("Cydelta_r =", Cydelta_r)
 print("Cnbeta =", Cn_beta)
 print("Cnr =", Cn_r)
+print("A_eff =", Av_eff)
 
 if CheckVT == 1 and CheckR ==1:
     print("---------------------------------------------------------")

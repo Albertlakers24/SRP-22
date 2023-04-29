@@ -2,7 +2,7 @@ import numpy as np
 import math as m
 import matplotlib.pyplot as plt
 from Constants.AircraftGeometry import S_w, Aw, c_mac_w,c_rw, Sweep_quarterchordw, Sweep_halfchordw, SweepLE, d_f_outer, SwfS_flap, c_accent_c_flap, b_flap, bw, taperw, l_f, cf_over_cprime_flap
-from Constants.Empennage_LandingGear import taperh, A_h, lh, Vh_V, lambdahalf_h, Sh, cmac_h, Av, Sweep_halfchord_VT, Av_eff
+from Constants.Empennage_LandingGear import lh, Vh_V, lambdahalf_h, cmac_h, Av, Sweep_halfchord_VT, Av_eff
 from Constants.Aircraft_Geometry_Drawing import ln1, ln2, bn1,bn2,l_fn
 from Constants.Masses_Locations import LEMAC, xcg_gear,xcg_front_potato, xcg_aft_potato
 from Constants.Aerodynamics import Cm0_airfoil, CL0_Land, DeltaCLflaps, CL_DesCruise,CL_Alpha_Wing, CL_Max_Clean, CL_MaxLand, DeltaClmax
@@ -12,13 +12,13 @@ from Stability_and_Control.Initial_Tail_Sizing import Geometry_HT
 #TODO:  revisit xac location ? TOTAL
 
 # Imported Variables :  Aircraft Geometry Drawings to do
-v_t_w = 4.166                   # Vertical distance HT and wing     [m]
-W_landing = 200000              # Landing weight                    [N]     -> Wing loading diagram     TODO: determine
+v_t_w = 3.3                     # Vertical distance HT and wing     [m]
+W_landing = m_mto*g             # Landing weight                    [N]
 
 # Inputs for Geometry of HT: TO BE CHANGED IF NECESSARY
-Sh = Sh
-Ah = A_h
-taperh = taperh
+Sh = 15.0
+A_h = 4.7
+taperh = 0.75
 
 # Inputs : Constants
 SM = 0.05                       # Stability Margin                  [-]
@@ -45,9 +45,9 @@ print("cf/c'=", cf_over_cprime_flap)
 
 # Graph Variables       TODO: TO BE FILLED IN
 x_ac_w = 0.25                   # Wing contribution to ac           [MAC]   Lecture 7 (SEAD), Slide 31 (Torenbeek)
-mu1 =0.205                      # Lecture 8, Slide 20               [-]     Lecture 7 (SEAD) (Torenbeek)
-mu2 =0.65                       # Lecture 8, Slide 21               [-]     Lecture 7 (SEAD) (Torenbeek)
-mu3 =0.06                       # Lecture 8, Slide 21               [-]     Lecture 7 (SEAD) (Torenbeek)
+mu1 =0.20                       # Lecture 8, Slide 20               [-]     Lecture 8 (SEAD) (Torenbeek)
+mu2 =0.58                       # Lecture 8, Slide 21               [-]     Lecture 8 (SEAD) (Torenbeek)
+mu3 =0.058                      # Lecture 8, Slide 21               [-]     Lecture 8 (SEAD) (Torenbeek)
 
 def Location_in_MAC(Location):
     """
@@ -56,7 +56,7 @@ def Location_in_MAC(Location):
     xcg_MAC = (Location-LEMAC)/c_mac_w
     return xcg_MAC
 
-def C_L_alpha(A, lambdahalf):           # todo make function for speed!!!!!!
+def C_L_alpha(A, lambdahalf):
     """ CHECKED
     :param A: Aspect Ratio
     :param lambdahalf: half chord sweep
@@ -79,7 +79,7 @@ def Downwash():
     :return: Downwash gradient (-)
     """
     r = lh/(bw/2)
-    mtv = v_t_w/(bw/2)              # todo: check if this is still correct, because before, mtv=v_t_w in Alvaros code
+    mtv = v_t_w/(bw/2)
     K_EA = ((0.1124 + 0.1265 * Sweep_quarterchordw + 0.1766 * Sweep_quarterchordw ** 2) / r ** 2) + 0.1024 / r + 2
     K_EA0 = (0.1124 / r ** 2) + (0.1024 / r) + 2
     downwash = (K_EA/K_EA0)*(r/(r**2+mtv**2) * (0.4876/np.sqrt(r**2+0.6319+mtv**2)) +(1+(r**2/(r**2+0.7915+5.0734*mtv**2))**0.3113)*(1-np.sqrt(mtv**2/(1+mtv**2))))*(CL_Alpha_Wing/(np.pi*Aw))
@@ -136,14 +136,12 @@ def C_m_AC(mu1, mu2, mu3):
     """
     C_m_acw = Cm0_airfoil* (Aw*(np.cos(SweepLE)**2))/(Aw+2*np.cos(SweepLE))
     fus_cont = -1.8 * (1 - 2.5*d_f_outer/l_f)*(np.pi * d_f_outer * d_f_outer * l_f * CL0_Land)/(4*S_w*c_mac_w * CL_alpha_Ah())
-    nac_cont = -0.05                # todo: -0.05 for wing mounted engines, check if times 2 for our aircraft
+    nac_cont = -0.05
     C_m_ac = C_m_acw + flapcont(mu1=mu1, mu2=mu2, mu3=mu3) + fus_cont + nac_cont
     #C_m_ac = -0.4
     return C_m_ac
 
 print("Cmac=", C_m_AC(mu1=mu1, mu2=mu2, mu3=mu3))
-
-
 
 def C_L_Ah():
     """
@@ -187,9 +185,9 @@ print("--------------- HT Dimensions ------------------------")
 print("taperh = ", taperh)
 print("Sh =", Sh, "m^2")
 print("Ah =", A_h)
-print("bh =", Geometry_HT(Sh, Ah, taperh)[0], "m")
-print("cr_h =", Geometry_HT(Sh, Ah, taperh)[1], "m")
-print("ct_h =", Geometry_HT(Sh, Ah, taperh)[2], "m")
+print("bh =", Geometry_HT(Sh, A_h, taperh)[0], "m")
+print("cr_h =", Geometry_HT(Sh, A_h, taperh)[1], "m")
+print("ct_h =", Geometry_HT(Sh, A_h, taperh)[2], "m")
 
 #Plotting the curves
 plt.plot(x, ys_SM, 'g', linestyle = '--', label='Neutral stability Line')
