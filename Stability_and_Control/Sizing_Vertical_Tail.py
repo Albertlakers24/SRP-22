@@ -28,14 +28,14 @@ CheckR = 0
 
 # Estimated Inputs for VT and Rudder design                                     ITERATIVE PROCESS RESULTS PRESENTED IN THE REPORT
 V_v = 0.05                      # VT : volume fraction              [m^3]
-l_v = 9.4                       # VT : tail arm                     [m]
-Av = 1.1                        # VT : aspect ratio                 [-]
-taperv = 0.8                    # VT : taper ratio                  [-]
+l_v = 8.3                       # VT : tail arm                     [m]
+Av = 1.5                        # VT : aspect ratio                 [-]
+taperv = 0.6                    # VT : taper ratio                  [-]
 Sweepv = 26*np.pi/180           # VT : sweep angle                  [rad]
 i_v = 0                         # VT : incidence angle              [rad]       -> Symmetric propulsion
 Dihedral = 0                    # VT : dihedral                     [rad]       -> Symmetric propulsion
 br_bv = 0.7                     # Rudder-to-VT span                 [-]         -> rudder effectiveness, 0.8
-Cr_Cv = 0.15                    # Rudder-to-VT chord                [-]         -> graph 12.12 from book
+Cr_Cv = 0.3                     # Rudder-to-VT chord                [-]         -> graph 12.12 from book
 V_stall_TO = np.sqrt(m_mto*g/(S_w*0.5*rho_5000*CL_MaxTakeOff))
 V_mincont = 0.8 * V_stall_TO    # Min controllable speed            [m/s]       -> See FAR regulations (estimate 80% of stall speed at take off)
 delta_r_max = 30                # Rudder : max allowable deflection [deg]
@@ -139,6 +139,8 @@ def Deriv_Directional_Stability():
 Cn_beta = Deriv_Directional_Stability()[0]
 Cn_r = Deriv_Directional_Stability()[1]
 
+tau_r = 0.5     # Rudder angle of attack effectiveness (p.682 Mohammed)     [-]
+
 # R.1. One Engine Inoperative AND R.2. Cross-Wind Landing calculations
 # R.1 most crictical case at TO
 def Deriv_Rudder():
@@ -149,17 +151,20 @@ def Deriv_Rudder():
     Cydelta_r = CL_Alpha_VT*(k_prime*K_b)*Cldelta_over_Cldeltatheory*Cldeltatheory*(Sv/S_w)         # eq.10.123 (p.493)
     #Cydelta_r = 0.25
 
-    Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha_TO) + zv * np.sin(alpha_TO)) / bw                       # eq.10.125 (p.494)
+    # todo : fix this (lateral position of propulsion system) - conservative: 5inboard, 8.5outboard
+    # Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha_TO) + zv * np.sin(alpha_TO)) / bw                       # eq.10.125 (p.494)
+    eta_v = 0.9
+    Cndelta_r = -CL_Alpha_VT*V_v*0.9*(tau_r)*0.7
     #Cndelta_r = -0.09
     return Cydelta_r, Cndelta_r
 
 Cydelta_r = Deriv_Rudder()[0]
 Cndelta_r = Deriv_Rudder()[1]
 
-tau_r = 0.8     # Rudder angle of attack effectiveness (p.682 Mohammed)     [-]
+print("Cndelta_r =", Cndelta_r)
 
 P_engine = Power_tot/4                  # Power per engine (4 motors)       [W]
-T_L = 2*P_engine/V_cruise               # Force by 1 engine                 [N]
+T_L = P_engine/V_cruise                 # Force by 1 engine                 [N]
 Vw =  52.37                             # Maximum cross-wind speed          [m/s]       -> FAR regulations
 V_T = np.sqrt(V_approach**2 + Vw**2)    # Total airspeed                    [m/s]
 beta = m.atan(Vw/V_approach)            # Side slip angle                   [rad]
@@ -169,11 +174,11 @@ Cnzero = 0                              # Cn0                               [-]
 
 print("Side slip angle =", beta*180/np.pi, "deg -> should be > 0 for a mean positive rudder deflection")
 
-"ASYMMETRIC THRUST REQUIREMENT OUTPUT"
-delta_r_assym = (2*T_L*y_T_outboard)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
+"ASYMMETRIC THRUST REQUIREMENT OUTPUT" #todo work this!!!!! Recalculated Cndelta_R
+delta_r_assym = (T_L*4+T_L*8.5)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
 
 "CROSS WIND REQUIREMENT OUTPUT"
-beta_speed = m.atan(Vw/V_approach)              # [rad]
+beta_speed = m.atan(Vw/V_approach)            # [rad]
 dc = center_S_BS-xcg_aft_potato               # [m]
 Cyzero = 0
 Cybeta =-1.5
@@ -253,7 +258,7 @@ if CheckVT == 1 and CheckR ==1:
     Sr = br *  MACr
 
     print("br =", br)
-    print("Croot =", Crroot)
+    print("Croot =", Crroot)            # around 1, Multiple Engine Inoperative (MEI)
     print("Crtip =", Crtip)
     print("taperr", taper_r)
     print("MAC =", MACr)
@@ -321,21 +326,3 @@ print("SWEEP", sweep)
 
 print(l_v)
 """
-
-
-# Imported Variables : Aircraft Geometry
-# l_f = 23.9                  # Fuselage : length                     [m]
-# d_f_outer = 3.0             # Fuselage : outer diameter             [m]
-# Sw = 59.9                   # Wing : surface area                   [m^2]
-# bw = 26.8                   # Wing : span                           [m]
-# taperw = 1                  # Wing : taper ratio                    [-]
-# Sweep_quarterchordw = 0     # Wing : sweep at c/4                   [rad]
-# c_mac_w = 2.3               # Wing : MAC                            [m]
-# Aw = 14                     # Wing : aspect ratio                   [-]
-# t_over_c_vtail = 0.15       # VT : Thickness over chord ratio       [-]
-# Imported Variables : Aircraft Geometry Drawing
-# zv = 3.3026                 # Vertical distance body axis to ac VT  [m]
-# y_T = 4                     # Distance center line fuselage-engine  [m]
-# Zw = -1.84                  # Distance center line fuselage-wing    [m]         -> Negative for high wing   (p. 416)
-# S_BS = 63.89                # Body side area                        [m^2]
-# center_S_BS = 11            # Center location Side area aircraft    [m]

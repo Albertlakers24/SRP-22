@@ -7,6 +7,9 @@ from Constants.AircraftGeometry import S_w, c_mac_w
 from Constants.Empennage_LandingGear import lh,Sh,Vh_V, A_h, Sweep_quarter_chord_HT, bh, t_over_c_HT, c_th,c_rh
 from Constants.Aerodynamics import Cl_Alpha_HT_Airfoil, R_HT, CL_Alpha_Wing, downwash, CL_Alpha_HT, Cmac
 
+#LE tip of VT at 22m
+#LE sweep of VT -> 30deg
+
 # To be imported from somewhere todo to be determined
 V_max = 178
 AlphaCL0_CR = 2*np.pi/180                   # Angle of attack at CL0        [rad]
