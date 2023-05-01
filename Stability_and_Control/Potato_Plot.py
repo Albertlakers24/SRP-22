@@ -9,22 +9,22 @@ M_Dive = M_cruise + 0.09     # Diving mach number
 VDive = a_cruise * M_Dive
 w_f = d_f_outer                # Width of fuselage
 h_f = w_f                    # Height of fuselage, assumed to be a circular fuselage
-x_cg_LEMAC = 0.35 * c_mac_w  # (predetermined value)
+x_cg_LEMAC = 0.40 * c_mac_w  # (predetermined value)
 #distance of fuselage group components w.r.t. datum
-x_fuselage = 0.4 * l_f
+x_fuselage = 0.42 * l_f
 x_empennage = 0.9 * l_f
-x_sys = 0.4 * l_f
+x_sys = 0.38 * l_f
 x_wing = 0.4 * c_mac_w
 x_prop_wing = -0.2 * c_mac_w
 l_nc = 1.2 * d_f_outer
 l_pax = n_row * l_seat
-x_hydrogen_tank = l_nc + w_door_front + l_pax + w_lav + l_tank/2
-Mf_fuselage = 0.12  # Mass fraction of components w.r.t MTOM
-Mf_prop = 0.07
-Mf_empennage = 0.07
-Mf_sys = 0.18
-Mf_wing = 0.11
-Mf_tank = 0.09    # Mass fraction of the tank to be updated
+x_hydrogen_tank = 0.7 * l_f
+Mf_fuselage = 0.116  # Mass fraction of components w.r.t MTOM
+Mf_prop = 0.0238
+Mf_empennage = 0.02
+Mf_sys = 0.14
+Mf_wing = 0.087
+Mf_tank = 0.216    # Mass fraction of the tank to be updated
 print("======================================")
 print("For hydrogen fuel cell architecture: ")
 print("hydrogen tank placement", x_hydrogen_tank/l_f)
@@ -84,7 +84,7 @@ def seating(where, start_cg, start_mass):
     if where == "front":
         for i in range(0, 12):
             if i == 0:
-                x_cg = x_cabin_start + 0.5 * seat_incr * (i + 0.5)
+                x_cg = x_cabin_start + seat_incr * (i + 0.5)
                 x_cg_new, mass_new = cg_shift(cgs[i], masses[i], x_cg, loading_pax)
             else:
                 x_cg = x_cabin_start + seat_incr * (i + 0.5)
@@ -113,7 +113,7 @@ tank_mass = m_f #*2.4
 cg_tank_total = x_cabin_start + l_cabin + cg_tank
 cg_end, mass_end = cg_shift(cgs_3[12], masses_3[12], cg_tank_total, tank_mass)
 
-LEMAC =11.507
+LEMAC = x_LEMAC
 c_bar = c_mac_w
 def Location_in_MAC(Location):
     """
@@ -121,10 +121,8 @@ def Location_in_MAC(Location):
     """
     xcg_MAC = (Location-LEMAC)/c_bar
     return xcg_MAC
-print("OLD VALS", x_vals)
 for i in np.arange(0, len(x_vals)):
     x_vals[i] = Location_in_MAC(x_vals[i])
-print("NEW VALS", x_vals)
 for i in np.arange(0, len(cgs_1)):
     cgs_1[i] = Location_in_MAC(cgs_1[i])
 for i in np.arange(0, len(cgs_2)):
@@ -138,8 +136,7 @@ cg_end = Location_in_MAC(cg_end)
 cg_fuel_only = Location_in_MAC(fuel_only()[0])
 
 
-plt.figure()
-plt.plot([Location_in_MAC(cg_start), cg_fuel_only], [m_oem, fuel_only()[1]], "hotpink", label="Fuel First", marker="s")
+#plt.plot([Location_in_MAC(cg_start), cg_fuel_only], [m_oem, fuel_only()[1]], "hotpink", label="Fuel First", marker="s")
 plt.plot([0, cg_fuel_only], [fuel_only()[1], fuel_only()[1]], 'grey', linestyle='--')
 plt.plot([x_vals[0], x_vals[1]], [y_vals[0], y_vals[1]], "black", label="Cargo")
 plt.plot([x_vals[0], x_vals[2]], [y_vals[0], y_vals[2]], "black")
@@ -161,3 +158,7 @@ plt.ylim(m_oem, m_mto+200)
 plt.xlim(min(cgs_3) - 0.05, cg_fuel_only + 0.05)
 plt.legend()
 plt.show()
+print(x_LEMAC)
+#print("Most Forward C.G.", min(min(cgs_1),min(cgs_2),min(cgs_3),min(cgs_4)))
+print("Most Forward C.G.", min(min(cgs_1),min(cgs_2),min(cgs_4)))
+print("Most Aft C.G.", max(max(cgs_1),max(cgs_2),max(cgs_3),max(cgs_4),0.4))

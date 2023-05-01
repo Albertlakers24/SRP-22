@@ -183,7 +183,17 @@ print("Weight Air Conditioning =", W_airconditioning)
 print("Weight Anti-Icing =", W_antiice)
 print("Weight Handling Gear =", W_handling_gear)
 all_masses = [LH2_system_tank, Fuel_Cell_Weight,W_wing,W_hor_tail,W_ver_tail,W_fus,W_mainlg,W_noselg,W_nacelle,W_engine_control,W_starter,W_flight_controls,W_instrument, W_hydraulics,W_electrical,W_avionics,W_furnishing,W_airconditioning,W_antiice,W_handling_gear]
+system_masses = [W_engine_control,W_flight_controls,W_instrument,W_hydraulics,W_electrical,W_avionics,W_furnishing,W_airconditioning,W_antiice,W_handling_gear]
+hydrogen_system = [LH2_system_tank,Fuel_Cell_Weight]
 print("Fuel Mass", m_f)
 print("MTOM", m_mto)
 print('Class II Weight Estimation =', sum(all_masses))
 print('Class I OEM =', m_oem)
+print("---------------------------------")
+print(W_wing/m_mto)
+print(W_hor_tail/m_mto)
+print(W_ver_tail/m_mto)
+print(W_fus/m_mto)
+print(W_nacelle/m_mto)
+print(sum(system_masses)/m_mto)
+print(sum(hydrogen_system)/m_mto)
