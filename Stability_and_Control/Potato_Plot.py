@@ -21,9 +21,9 @@ l_pax = n_row * l_seat
 x_hydrogen_tank = 0.7 * l_f
 Mf_fuselage = 0.116  # Mass fraction of components w.r.t MTOM
 Mf_prop = 0.0238
-Mf_empennage = 0.02
+Mf_empennage = 0.016
 Mf_sys = 0.14
-Mf_wing = 0.087
+Mf_wing = 0.104
 Mf_tank = 0.216    # Mass fraction of the tank to be updated
 print("======================================")
 print("For hydrogen fuel cell architecture: ")
@@ -162,3 +162,5 @@ print(x_LEMAC)
 #print("Most Forward C.G.", min(min(cgs_1),min(cgs_2),min(cgs_3),min(cgs_4)))
 print("Most Forward C.G.", min(min(cgs_1),min(cgs_2),min(cgs_4)))
 print("Most Aft C.G.", max(max(cgs_1),max(cgs_2),max(cgs_3),max(cgs_4),0.4))
+print(x_LEMAC+min(min(cgs_1),min(cgs_2),min(cgs_4))*c_mac_w)
+print(x_LEMAC+max(max(cgs_1),max(cgs_2),max(cgs_3),max(cgs_4),0.4)*c_mac_w)
