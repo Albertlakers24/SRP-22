@@ -153,7 +153,7 @@ def Deriv_Rudder():
 
     # todo : fix this (lateral position of propulsion system) - conservative: 5inboard, 8.5outboard
     # Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha_TO) + zv * np.sin(alpha_TO)) / bw                       # eq.10.125 (p.494)
-    eta_v = 0.97
+    # eta_v = 0.97
     Cndelta_r = -CL_Alpha_VT*V_v*0.9*(tau_r)*0.7
     #Cndelta_r = -0.09
     return Cydelta_r, Cndelta_r

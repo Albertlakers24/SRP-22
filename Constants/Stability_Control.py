@@ -35,3 +35,13 @@ Cmq=1
 CXde=1
 CZde=1
 Cmde =1
+
+Clp=1
+mub=1
+KX2=1
+CL = 1
+Clbeta =1
+Clr=1
+Cnp =1
+Cybeta = 1
+KZ2 = 1

@@ -1,8 +1,8 @@
 import control
 import numpy as np
 import matplotlib.pyplot as plt
-from Constants.AircraftGeometry import S_w , c_mac_w
-from Constants.Stability_Control import CZadot, Cmadot, KY2, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmde
+from Constants.AircraftGeometry import S_w , c_mac_w, bw
+from Constants.Stability_Control import Cnp,Clr,Clbeta,CL,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmde
 from Constants.MissionInputs import rho_0, g, V_cruise, ISA_calculator, h_cruise,dt_cruise
 from Constants.Masses_Locations import m_mto
 
@@ -43,13 +43,18 @@ Imag_ph = eigenvalue2_FM.imag
 DampingRatio_ph = - (Real_ph/np.sqrt(Real_ph**2+Imag_ph**2))
 
 # Aperiodic Rolling Motion
-Clp
-mub
-KX2
+eigenvalue_ARM = (Clp/(4*mub*KX2))*(V0/bw)
 
-eigenvalue_ARM = (Clp/
+# Dutch Roll
+a = 8*mub ** 2 * KZ2
+b1 = -2*mub * (Cn_r + 2 * KZ2 * Cybeta)
+c = 4*mub * Cnbeta + Cybeta * Cn_r
 
+eigenvalue1_DR = (complex(-b1/ (2*a), np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
+eigenvalue2_DR = (complex(-b1 / (2*a), -np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 
+# Aperiodic Spiral Motion
+eigenvalue_ASM= (2*CL*(Clbeta*Cn_r-Cnbeta*Clr))/(Clp*(Cybeta*Cn_r+4*mub*Cnbeta)-Cnp*(Cybeta*Clr+4*mub*Clbeta))
 
 # Add Labels and sizing nicely for Symmetric Cases
 plt.xlabel("Real")
