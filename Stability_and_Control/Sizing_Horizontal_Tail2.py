@@ -9,9 +9,10 @@ from Constants.Aerodynamics import Cl_Alpha_HT_Airfoil, R_HT, CL_Alpha_Wing, dow
 
 #LE tip of VT at 22m
 #LE sweep of VT -> 30deg
+#Current HT: Sh=15, Sv=11
 
 # To be imported from somewhere todo to be determined
-V_max = 178
+V_max = 178                                 # Maximum operational speed
 AlphaCL0_CR = 2*np.pi/180                   # Angle of attack at CL0        [rad]
 i_h = -2*np.pi/180                          # Indince angle                 [rad]
 

@@ -42,6 +42,15 @@ Real_ph = eigenvalue2_FM.real
 Imag_ph = eigenvalue2_FM.imag
 DampingRatio_ph = - (Real_ph/np.sqrt(Real_ph**2+Imag_ph**2))
 
+# Aperiodic Rolling Motion
+Clp
+mub
+KX2
+
+eigenvalue_ARM = (Clp/
+
+
+
 # Add Labels and sizing nicely for Symmetric Cases
 plt.xlabel("Real")
 plt.ylabel("Imaginary")
