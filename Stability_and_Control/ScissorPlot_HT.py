@@ -173,8 +173,7 @@ def y_c(C_L_h):
     return yc
 
 # CG location range
-# xcg = [Location_in_MAC(xcg_front_potato), Location_in_MAC(xcg_aft_potato)]
-xcg = [Location_in_MAC(12.2),Location_in_MAC(13.1)]
+xcg = [Location_in_MAC(xcg_front_potato), Location_in_MAC(xcg_aft_potato)]
 #xcg = [Location_in_MAC(xcg_front_potato)-0.05, Location_in_MAC(xcg_aft_potato)+0.05]       # Including Margin of 0.05
 
 ycg = [Sh/S_w, Sh/S_w]
