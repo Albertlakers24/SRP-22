@@ -32,7 +32,7 @@ m_crew_total = m_crew + m_crew_baggage                  #[kg]
 m_payload = m_pax + m_pax_baggage + m_crew_total        #[kg]
 
 def mtom(oew_ratio):
-    mtom = (m_payload + 12402.219695693011) / (1 - mf_mMTO("full")[0] * (1 + m_res))         #[-]
+    mtom = (m_payload + 12634.92498884976) / (1 - mf_mMTO("full")[0] * (1 + m_res))         #[-]
     return mtom
 def fuel_mass(oew_ratio, range):
     if range == "full":
@@ -43,7 +43,7 @@ def fuel_mass(oew_ratio, range):
         m_f = mtom(oew_ratio) * (mf_mMTO(range))[0] * (1 + m_f_extra)                       #[kg]
     return m_f
 
-oew_mtom = 12402.219695693011 / 18536.35322811106
+oew_mtom = 12634.92498884976 / 18776.968761605054
 m_mto = mtom(oew_mtom)
 m_f = fuel_mass(oew_mtom, "full")
 oem = oew_mtom * m_mto  #+ m_f * 1.4

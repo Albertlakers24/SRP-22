@@ -9,16 +9,15 @@ from Constants.Aerodynamics import Cm0_airfoil, CL0_Land, DeltaCLflaps, CL_DesCr
 from Constants.MissionInputs import M_cruise, ISA_calculator, h_cruise, dt_cruise, V_approach, g, landing_critical, dt_land
 from Constants.Masses_Locations import m_mto
 from Stability_and_Control.Initial_Tail_Sizing import Geometry_HT
-#TODO:  revisit xac location ? TOTAL
 
 # Imported Variables :  Aircraft Geometry Drawings to do
 v_t_w = 3.3                     # Vertical distance HT and wing     [m]
 W_landing = m_mto*g             # Landing weight                    [N]
 
 # Inputs for Geometry of HT: TO BE CHANGED IF NECESSARY
-Sh = 15.0
-A_h = 4.7
-taperh = 0.75
+Sh = 15.0                       # HT : Surface area                 [m^2]
+A_h = 4.7                       # HT : Aspect ratio                 [-]
+taperh = 0.75                   # HT : Taper ratio                  [-]
 
 # Inputs : Constants
 SM = 0.05                       # Stability Margin                  [-]
@@ -176,6 +175,7 @@ def y_c(C_L_h):
 # CG location range
 xcg = [Location_in_MAC(xcg_front_potato), Location_in_MAC(xcg_aft_potato)]
 #xcg = [Location_in_MAC(xcg_front_potato)-0.05, Location_in_MAC(xcg_aft_potato)+0.05]       # Including Margin of 0.05
+
 ycg = [Sh/S_w, Sh/S_w]
 print("------------------------------------------------------")
 print("--------------- VISIBILITY CHECKS ------------------------")

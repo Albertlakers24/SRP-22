@@ -29,7 +29,7 @@ t_cw = t_c_ratio_w
 lambda_ = taperw
 Lambda = Sweep_quarterchordw
 S_csw = (S_flap + 5) * (1/ft_m)**2
-W_wing_lbs = 0.0051 * (Wdg*Nz)**0.557 * S_W**0.649 * Aw**0.5 * t_cw**(-0.4) * (1+lambda_)**0.1 * np.cos(np.radians(Lambda))**(-1) * S_csw**0.1
+W_wing_lbs = 0.0051 * (Wdg*Nz)**0.557 * S_W**0.649 * Aw**0.5 * t_cw**(-0.4) * (1+lambda_)**0.1 * np.cos(np.radians(Lambda))**(-1) * S_csw**0.1 * 1.2
 W_wing = W_wing_lbs * lbs_kg
 
 #Horizontal Tail
@@ -97,7 +97,7 @@ W_nacelle_lbs = 0.6724 * K_ng * N_lt**0.10 * N_w**0.294 * Nz**0.119 * W_ec**0.61
 W_nacelle = W_nacelle_lbs * lbs_kg
 
 # Engine Controls
-L_ec = 14.3 * (1/ft_m) * 4 * 1.5                         #length from engine front to cockpit-total if multiengine [ft]
+L_ec = 14.3 * (1/ft_m) * 4 * 1.25                         #length from engine front to cockpit-total if multiengine [ft]
 W_engine_control_lbs = 5 * N_en + 0.8 * L_ec
 W_engine_control = W_engine_control_lbs * lbs_kg
 
@@ -183,7 +183,17 @@ print("Weight Air Conditioning =", W_airconditioning)
 print("Weight Anti-Icing =", W_antiice)
 print("Weight Handling Gear =", W_handling_gear)
 all_masses = [LH2_system_tank, Fuel_Cell_Weight,W_wing,W_hor_tail,W_ver_tail,W_fus,W_mainlg,W_noselg,W_nacelle,W_engine_control,W_starter,W_flight_controls,W_instrument, W_hydraulics,W_electrical,W_avionics,W_furnishing,W_airconditioning,W_antiice,W_handling_gear]
+system_masses = [W_engine_control,W_flight_controls,W_instrument,W_hydraulics,W_electrical,W_avionics,W_furnishing,W_airconditioning,W_antiice,W_handling_gear]
+hydrogen_system = [LH2_system_tank,Fuel_Cell_Weight]
+empennage_system = [W_hor_tail,W_ver_tail]
 print("Fuel Mass", m_f)
 print("MTOM", m_mto)
 print('Class II Weight Estimation =', sum(all_masses))
 print('Class I OEM =', m_oem)
+print("---------------------------------")
+print(W_fus/m_mto)
+print(W_nacelle/m_mto)
+print(sum(empennage_system)/m_mto)
+print(sum(system_masses)/m_mto)
+print(W_wing/m_mto)
+print(sum(hydrogen_system)/m_mto)

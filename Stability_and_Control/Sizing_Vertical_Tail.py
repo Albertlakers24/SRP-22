@@ -145,7 +145,7 @@ tau_r = 0.5     # Rudder angle of attack effectiveness (p.682 Mohammed)     [-]
 # R.1 most crictical case at TO
 def Deriv_Rudder():
     """
-    Cydelta_r    (p.493)    []
+    Cydelta_r    (p.493)    [rad^-1]
     Cndelta_r    (p.494)    [rad^-1]
     """
     Cydelta_r = CL_Alpha_VT*(k_prime*K_b)*Cldelta_over_Cldeltatheory*Cldeltatheory*(Sv/S_w)         # eq.10.123 (p.493)
@@ -153,7 +153,7 @@ def Deriv_Rudder():
 
     # todo : fix this (lateral position of propulsion system) - conservative: 5inboard, 8.5outboard
     # Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha_TO) + zv * np.sin(alpha_TO)) / bw                       # eq.10.125 (p.494)
-    eta_v = 0.9
+    # eta_v = 0.97
     Cndelta_r = -CL_Alpha_VT*V_v*0.9*(tau_r)*0.7
     #Cndelta_r = -0.09
     return Cydelta_r, Cndelta_r

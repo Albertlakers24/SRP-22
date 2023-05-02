@@ -54,6 +54,19 @@ def Delta_e_Derivatives(): #CHECKED
     Cmde = -1.11
     return CXde, CZde, Cmde
 
+xcg_aircraft = xcg_aft_potato       # m
+zcg_aircraft = 3.302                # m
+
+def Iyy(mass,xcg,zcg):
+    Iyy = mass*((xcg-xcg_aircraft)**2+(zcg-zcg_aircraft))
+    return Iyy
+
+total_Iyy = 1
+
+Ky_total = np.sqrt(total_Iyy/m_mto)
+KY = Ky_total/2.34
+
+
 print("--------Important Print Statements---------")
 
 print("Oswald factor=",Oswald)
@@ -78,10 +91,14 @@ print("Cm alpha =", Attack_Derivative()[2])
 
 print("muc =", m_mto/(rho_0 * S_w * c_mac_w) )
 print("mub = ",m_mto/(rho_0 * S_w * bw) )
-print("KX2 = ",0.019 , "TBD")                          # squared Non-dimensional radius of gyration about the X-axis   [-]
-print("KY2 = ",1.25 * 1.114, "TBD")                    # squared Non-dimensional radius of gyration about the Y-axis   [-]
-print("KZ2 = ",0.042 , "TBD")                          # squared Non-dimensional radius of gyration about the Z-axis   [-]
-print("KXZ = ",0.002  , "TBD")                         # Non-dimensional product of inertia                            [-]
+
+KY2 = KY**2
+KX2 = 0.002
+KZ2 = 0.042
+# print("KX2 = ",0.019 , "TBD")                          # squared Non-dimensional radius of gyration about the X-axis   [-]
+# print("KY2 = ",1.25 * 1.114, "TBD")                    # squared Non-dimensional radius of gyration about the Y-axis   [-]
+# print("KZ2 = ",0.042 , "TBD")                          # squared Non-dimensional radius of gyration about the Z-axis   [-]
+# print("KXZ = ",0.002  , "TBD")                         # Non-dimensional product of inertia                            [-]
 
 print("CXde =", Delta_e_Derivatives()[0])
 print("CZde =", Delta_e_Derivatives()[1])
