@@ -10,7 +10,6 @@ from Constants.Stability_Control import CNh_delta, Chdelta, Chalpha, CNhalpha_fr
 print("FILE: Derivative_Calculations_Dynamic")
 gamma0 =0                               # Steady horizontal flight FD p163
 
-## IMPORTED FROM OTHER FILES todo import Oswald factor from somewhere
 Oswald = 1/((np.pi)*Aw*Psi+(1/phi))      #-      Oswald Efficiency Factor
 
 def Zero_Derivatives():

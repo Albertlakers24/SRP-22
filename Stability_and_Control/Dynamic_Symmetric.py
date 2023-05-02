@@ -2,9 +2,10 @@ import control
 import numpy as np
 import matplotlib.pyplot as plt
 from Constants.AircraftGeometry import S_w , c_mac_w, bw
-from Constants.Stability_Control import Cnp,Clr,Clbeta,CL,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmde
+from Constants.Stability_Control import Cnp,Clr,Clbeta,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmdelta
 from Constants.MissionInputs import rho_0, g, V_cruise, ISA_calculator, h_cruise,dt_cruise
 from Constants.Masses_Locations import m_mto
+from Constants.Aerodynamics import CL_DesCruise
 
 alpha0 = 1
 theta0 = 0
@@ -54,7 +55,7 @@ eigenvalue1_DR = (complex(-b1/ (2*a), np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 eigenvalue2_DR = (complex(-b1 / (2*a), -np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 
 # Aperiodic Spiral Motion
-eigenvalue_ASM= (2*CL*(Clbeta*Cn_r-Cnbeta*Clr))/(Clp*(Cybeta*Cn_r+4*mub*Cnbeta)-Cnp*(Cybeta*Clr+4*mub*Clbeta))
+eigenvalue_ASM= (2*CL_DesCruise*(Clbeta*Cn_r-Cnbeta*Clr))/(Clp*(Cybeta*Cn_r+4*mub*Cnbeta)-Cnp*(Cybeta*Clr+4*mub*Clbeta))
 
 # Add Labels and sizing nicely for Symmetric Cases
 plt.xlabel("Real")
@@ -96,7 +97,7 @@ def matrix_symmetric(hp0, V0, alpha0, theta0, m):
     C_3 = np.array([ [CXde],
                      [CZde],
                      [0],
-                     [Cmde]])
+                     [Cmdelta]])
     return C_1, C_2, C_3
 
 def matrix_symmetric_system(C_1, C_2, C_3):
