@@ -43,7 +43,7 @@ def fuel_mass(oew_ratio, range):
         m_f = mtom(oew_ratio) * (mf_mMTO(range))[0] * (1 + m_f_extra)                       #[kg]
     return m_f
 
-oew_mtom = 12634.92498884976 / 18776.968761605054
+oew_mtom = 12634.92498884976 / 18777.90521758506
 m_mto = mtom(oew_mtom)
 m_f = fuel_mass(oew_mtom, "full")
 oem = oew_mtom * m_mto  #+ m_f * 1.4
