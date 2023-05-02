@@ -9,7 +9,7 @@ from Constants.Empennage_LandingGear import taperh, taperv, xc_m_tail, tc_tail_v
 # PRELIMINARY Values -------------
 k = 0.405*10**(-5)                      # K value for production sheet metal
 percent_lam_fuse = 0.1                 # % laminar flow on fuselage - FIND!!! based on aircraft type/material
-percent_lam_wing = 0.11                  # % laminar flow on wing+tails - FIND!!! based on aircraft type/material
+percent_lam_wing = 0.15                  # % laminar flow on wing+tails - FIND!!! based on aircraft type/material
 tc_wing = 0.21                          # Average t/c ratio of wing crosssection
 xc_m_wing = 0.3483                          # (x/c)_m Position of max thickness - 0.3 for low speed, 0.5 for high speed
 sweep_m_wing = Calculate_wingsweep(0, 0.25, xc_m_wing, taperw)  # Sweep at (x/c)_m Wing

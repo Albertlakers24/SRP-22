@@ -60,7 +60,7 @@ ALpha_Wing_CR = np.append(Alpha_list_CRw, Alpha_list_stallCRw)
 
 #- ----------------------- DRAG ---------------------------
 h_winglet = 2.4
-delta_A = 1.9*h_winglet/bw *Aw
+delta_A = 0#1.9*h_winglet/bw *Aw
 A_eff = Aw + delta_A
 twist_tip = -3
 twist_root = 1
