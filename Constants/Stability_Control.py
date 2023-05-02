@@ -5,7 +5,7 @@ import numpy as np
 AC_loc = 13                             # ac location           [m]
 x_AC = 13                               # AC location           [m] aft of cg
 KY2 =1.25 * 1.114                       # KY^2                  [-]             FILE: Derivative_Calculations_Dynamic
-KX2= 0.002                              # KX^2                  [-]             FILE: Derivative_Calculations_Dynamic
+KX2= 0.02                               # KX^2                  [-]             FILE: Derivative_Calculations_Dynamic
 KZ2 = 0.042                             # KZ^2                  [-]             FILE: Derivative_Calculations_Dynamic
 
 '''UPDATED :)'''

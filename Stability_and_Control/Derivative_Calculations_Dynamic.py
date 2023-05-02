@@ -88,8 +88,8 @@ print("Cmadot =", Attack_Derivative()[4])
 print("Cmq    =", Pitch_Derivative()[2])
 print("Cm alpha =", Attack_Derivative()[2])
 
-print("muc =", m_mto/(rho_0 * S_w * c_mac_w) )
-print("mub = ",m_mto/(rho_0 * S_w * bw) )
+print("muc =", m_mto/(rho_0 * S_w * c_mac_w))
+print("mub = ",m_mto/(rho_0 * S_w * bw))
 
 KY2 = KY**2
 KX2 = 0.002
