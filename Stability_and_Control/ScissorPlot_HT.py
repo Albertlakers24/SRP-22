@@ -11,7 +11,7 @@ from Constants.Masses_Locations import m_mto
 from Stability_and_Control.Initial_Tail_Sizing import Geometry_HT
 
 # Imported Variables :  Aircraft Geometry Drawings to do
-v_t_w = 3.3                     # Vertical distance HT and wing     [m]
+v_t_w = 4.78#3.3                     # Vertical distance HT and wing     [m]
 W_landing = m_mto*g             # Landing weight                    [N]
 
 # Inputs for Geometry of HT: TO BE CHANGED IF NECESSARY
@@ -45,8 +45,8 @@ print("cf/c'=", cf_over_cprime_flap)
 # Graph Variables       TODO: TO BE FILLED IN
 x_ac_w = 0.25                   # Wing contribution to ac           [MAC]   Lecture 7 (SEAD), Slide 31 (Torenbeek)
 mu1 =0.20                       # Lecture 8, Slide 20               [-]     Lecture 8 (SEAD) (Torenbeek)
-mu2 =0.58                       # Lecture 8, Slide 21               [-]     Lecture 8 (SEAD) (Torenbeek)
-mu3 =0.058                      # Lecture 8, Slide 21               [-]     Lecture 8 (SEAD) (Torenbeek)
+mu2 =0.56                       # Lecture 8, Slide 21               [-]     Lecture 8 (SEAD) (Torenbeek)
+mu3 =0.056                      # Lecture 8, Slide 21               [-]     Lecture 8 (SEAD) (Torenbeek)
 
 def Location_in_MAC(Location):
     """
@@ -73,9 +73,10 @@ def CL_alpha_Ah():
     return C_L_alpha_Ah
 
 def Downwash():
-    """
+    """ Lecture 7 SEAD slide 42
     :param mtv; phi = sin^-1(mtv/r)
     :return: Downwash gradient (-)
+    Sweep_quarterchord in gradients
     """
     r = lh/(bw/2)
     mtv = v_t_w/(bw/2)
@@ -84,8 +85,6 @@ def Downwash():
     downwash = (K_EA/K_EA0)*(r/(r**2+mtv**2) * (0.4876/np.sqrt(r**2+0.6319+mtv**2)) +(1+(r**2/(r**2+0.7915+5.0734*mtv**2))**0.3113)*(1-np.sqrt(mtv**2/(1+mtv**2))))*(CL_Alpha_Wing/(np.pi*Aw))
     # downwash = 4 / (Aw + 2)
     return downwash
-
-print("Downwash=", Downwash())
 
 def AC_location():
     """
@@ -140,8 +139,6 @@ def C_m_AC(mu1, mu2, mu3):
     #C_m_ac = -0.4
     return C_m_ac
 
-print("Cmac=", C_m_AC(mu1=mu1, mu2=mu2, mu3=mu3))
-
 def C_L_Ah():
     """
     CHECKED
@@ -188,6 +185,11 @@ print("Ah =", A_h)
 print("bh =", Geometry_HT(Sh, A_h, taperh)[0], "m")
 print("cr_h =", Geometry_HT(Sh, A_h, taperh)[1], "m")
 print("ct_h =", Geometry_HT(Sh, A_h, taperh)[2], "m")
+print("------------------------------------------------------")
+print("Downwash=", Downwash())
+print("Cmac=", C_m_AC(mu1=mu1, mu2=mu2, mu3=mu3))
+print("CL_alpha_HT =", C_L_alpha(A=A_h,lambdahalf=lambdahalf_h), "rad^-1")
+print("CL_alpha_VT =", C_L_alpha(A=Av, lambdahalf=Sweep_halfchord_VT),"rad^-1")
 
 #Plotting the curves
 plt.plot(x, ys_SM, 'g', linestyle = '--', label='Neutral stability Line')

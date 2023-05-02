@@ -4,11 +4,11 @@
 R_HT =7.5*10**6                     # Reynolds number of the HT
 Cmac = -0.6926729205077256          # Cmac                          [-]             FILE: ScissorPlot_HT
 R_lfus = 111301293.64412345  # Fuselage Reynolds number              [-]
-CL_Alpha_VT =  4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
+CL_Alpha_VT =  2.102#4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
 CL_Alpha_VT_eff = 3.77      # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
 Cl_Alpha_VT_Airfoil = 5.841193106203845      # VT :  cl over alpha airfoil of VT     [rad^-1]
-downwash = 0.00571439       # Downwash gradient                     [-]             FILE: TODO: Update/Check
-CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT  TODO: Check
+downwash = 0.24789#0.00571439       # Downwash gradient                     [-]             FILE: TODO: Update/Check
+CL_Alpha_HT =  4.3297#2.55         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT  TODO: Check
 Cl_Alpha_HT_Airfoil = 5.841193106203845      # VT :  cl over alpha airfoil of VT     [rad^-1]
 CLH_adj = -0.8                  # HT: CL for an adjustable tail         [-]
 CD0_tailhCR = 0.09292522985159975 # HT: CD0 for cruise condition     [-]

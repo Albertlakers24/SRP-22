@@ -18,7 +18,7 @@ VT.1. Directional stability:
 VT.2. Spin recovery       -> This is a transport aircraft and therefore spin recovery is not necessary
 
 Rudder Design checks:
-R.1. One engine inoperative (Directional Trim)
+R.1. Multiple engine inoperative (Directional Trim)
 R.2. Cross wind recovery
 R.3. Spin recovery        -> This is a transport aircraft and therefore spin recovery is not necessary (??)
 """
@@ -27,14 +27,14 @@ CheckVT = 0
 CheckR = 0
 
 # Estimated Inputs for VT and Rudder design                                     ITERATIVE PROCESS RESULTS PRESENTED IN THE REPORT
-V_v = 0.05                      # VT : volume fraction              [m^3]
+V_v = 0.07                      # VT : volume fraction              [m^3]
 l_v = 8.3                       # VT : tail arm                     [m]
 Av = 1.5                        # VT : aspect ratio                 [-]
 taperv = 0.6                    # VT : taper ratio                  [-]
 Sweepv = 26*np.pi/180           # VT : sweep angle                  [rad]
 i_v = 0                         # VT : incidence angle              [rad]       -> Symmetric propulsion
 Dihedral = 0                    # VT : dihedral                     [rad]       -> Symmetric propulsion
-br_bv = 0.7                     # Rudder-to-VT span                 [-]         -> rudder effectiveness, 0.8
+br_bv = 0.9                     # Rudder-to-VT span                 [-]         -> rudder effectiveness, 0.8
 Cr_Cv = 0.3                     # Rudder-to-VT chord                [-]         -> graph 12.12 from book
 V_stall_TO = np.sqrt(m_mto*g/(S_w*0.5*rho_5000*CL_MaxTakeOff))
 V_mincont = 0.8 * V_stall_TO    # Min controllable speed            [m/s]       -> See FAR regulations (estimate 80% of stall speed at take off)
@@ -115,6 +115,9 @@ A_vhf_Avf = 1.5           # In the presence of fuselage alone           [-]     
 K_vh = 0.9                # Factor for relative size Sh and Sv          [-]         Fig 10.16 (p.422)   -> overdesigned
 Av_eff = A_vf_Av*Av*(1+K_vh*A_vhf_Avf-1)
 
+# TODO: Rudder angle of attack effectiveness
+tau_r = 0.52              # Rudder angle of attack effectiveness        [-]         (p.682 Mohammed)
+
 def Deriv_Directional_Stability():
     """
     VT.1.       Directional Stability Check
@@ -134,12 +137,11 @@ def Deriv_Directional_Stability():
     Cnr_v = (2 / bw ** 2) * ((l_v * np.cos(alpha_TO) + zv * np.sin(alpha_TO)) ** 2) * Cybeta_v
     Cn_r = Cnr_v + Cnr_w                                                                    # eq.10.86 (p.464)
     #Cn_r = -0.18
-    return Cn_beta, Cn_r
+    return Cn_beta, Cn_r,Cybeta_v
 
 Cn_beta = Deriv_Directional_Stability()[0]
 Cn_r = Deriv_Directional_Stability()[1]
-
-tau_r = 0.5     # Rudder angle of attack effectiveness (p.682 Mohammed)     [-]
+Cybeta_v = Deriv_Directional_Stability()[2]
 
 # R.1. One Engine Inoperative AND R.2. Cross-Wind Landing calculations
 # R.1 most crictical case at TO
@@ -153,15 +155,13 @@ def Deriv_Rudder():
 
     # todo : fix this (lateral position of propulsion system) - conservative: 5inboard, 8.5outboard
     # Cndelta_r = - Cydelta_r * (l_v * np.cos(alpha_TO) + zv * np.sin(alpha_TO)) / bw                       # eq.10.125 (p.494)
-    # eta_v = 0.97
-    Cndelta_r = -CL_Alpha_VT*V_v*0.9*(tau_r)*0.7
+    eta_v = 0.97
+    Cndelta_r = -CL_Alpha_VT*V_v*eta_v*(tau_r)*(br_bv)
     #Cndelta_r = -0.09
     return Cydelta_r, Cndelta_r
 
 Cydelta_r = Deriv_Rudder()[0]
 Cndelta_r = Deriv_Rudder()[1]
-
-print("Cndelta_r =", Cndelta_r)
 
 P_engine = Power_tot/4                  # Power per engine (4 motors)       [W]
 T_L = P_engine/V_cruise                 # Force by 1 engine                 [N]
@@ -174,7 +174,7 @@ Cnzero = 0                              # Cn0                               [-]
 
 print("Side slip angle =", beta*180/np.pi, "deg -> should be > 0 for a mean positive rudder deflection")
 
-"ASYMMETRIC THRUST REQUIREMENT OUTPUT" #todo work this!!!!! Recalculated Cndelta_R
+"ASYMMETRIC THRUST REQUIREMENT OUTPUT"
 delta_r_assym = (T_L*4+T_L*8.5)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
 
 "CROSS WIND REQUIREMENT OUTPUT"
@@ -235,6 +235,7 @@ print("Cydelta_r =", Cydelta_r)
 print("Cnbeta =", Cn_beta)
 print("Cnr =", Cn_r)
 print("A_eff =", Av_eff)
+print("Cybeta_v = ",Cybeta_v)
 
 if CheckVT == 1 and CheckR ==1:
     print("---------------------------------------------------------")
