@@ -1,4 +1,4 @@
-''' AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 27/03/22 '''
+''' AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 02/05/22 '''
 
 '''To Be Added:'''
 R_HT =7.5*10**6                     # Reynolds number of the HT
@@ -15,28 +15,26 @@ CD0_tailhCR = 0.09292522985159975 # HT: CD0 for cruise condition     [-]
 CLwf = 0.63369832                  # Cruise: wing and fuselage lift coefficient - steady state lift coeff at 1g flight   [-]
 
 ''' Zero-Drag estimations '''
-CD0_CR = 0.021106443565976893      # CD0 Clean/Cruise [-]
-CD0_15 = 0.04030446169943226        # CD0 Flap deflection 15 deg [-]
-CD0_40 = 0.07520760765686323        # CD0 Flap deflection 40 def [-]
+CD0_CR = 0.0239171503      # CD0 Clean/Cruise [-]
+CD0_15 = 0.042574742757        # CD0 Flap deflection 15 deg [-]
+CD0_40 = 0.017556784573        # CD0 Flap deflection 40 def [-]
 
 ''' Cruise data '''
 CL_DesCruise = 0.63369832                 # CL Design Cruise [-]
-CL_CD_DesCruise = 18.31272406 #19.06985102             # CL/CD Design Cruise [-]
+CL_CD_DesCruise = 17.67132      # CL/CD Design Cruise [-]
 Alpha_DesCruise = 3.962389                # Angle of attack Cruise [deg]
 CL_Max_Clean =  1.3499704142011835        # CL max wing clean configuration [-]
 
-'''Take-off data --> 40 deg flap deflection'''
+'''Take-off data --> 15 deg flap deflection'''
 CL_DesTakeOff = 1.9              # CL max 40 deg deflection/1.13 [-]
-CD_DesTakeOff = 0.17041399                # CD at 40 deg flap deflection [-]
-CL_CD_TakeOff = 12.428740               # CL/CD at 40 deg flap deflection [-]
-Alpha_DesTakeOff = 11.0923                # Alpha at 40 deg flap deflection [-]
+CD_DesTakeOff = 0.1331683                # CD at 40 deg flap deflection [-]
+CL_CD_TakeOff = 13.068810               # CL/CD at 40 deg flap deflection [-]
 CL_MaxTakeOff = 1.9                       # CL max wing at flap deflection 40 deg
 
 ''' Landing data --> 40 deg flap deflection'''
 CL_DesLand = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
-CD_DesLand = 0.17041399                # CD at 40 deg flap deflection [-]
-CL_CD_Land = 12.428740                 # CL/CD at 40 deg flap deflection [-]
-Alpha_DesLand = 11.0923                # Alpha at 40 deg flap deflection [-]
+CD_DesLand = 0.19790                # CD at 40 deg flap deflection [-]
+CL_CD_Land = 10.6112                 # CL/CD at 40 deg flap deflection [-]
 CL_MaxLand = 2.2                       # CL max wing at flap deflection 40 deg
 
 ''' Slopes '''
