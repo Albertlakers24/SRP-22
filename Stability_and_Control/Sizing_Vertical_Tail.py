@@ -9,6 +9,8 @@ from Constants.Aerodynamics import Alpha_DesTakeOff,R_lfus, CL_Alpha_VT, Cl_Alph
 from Constants.MissionInputs import V_approach, ISA_calculator, landing_critical, dt_land, V_cruise, g, rho_5000
 from Constants.FlightPerformance_Propulsion import Power_tot
 
+
+##TODO continue here
 print("FILE: Vertical_Tail")
 """
 VT design checks:
@@ -175,7 +177,7 @@ Cnzero = 0                              # Cn0                               [-]
 print("Side slip angle =", beta*180/np.pi, "deg -> should be > 0 for a mean positive rudder deflection")
 
 "ASYMMETRIC THRUST REQUIREMENT OUTPUT"
-delta_r_assym = (T_L*4+T_L*8.5)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
+delta_r_assym = (T_L*7.71+T_L*3.96)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
 
 "CROSS WIND REQUIREMENT OUTPUT"
 beta_speed = m.atan(Vw/V_approach)            # [rad]
