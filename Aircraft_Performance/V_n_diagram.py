@@ -95,7 +95,7 @@ for j in np.arange(0, V_S, 0.1):
 
 # FLAPS
 V_max_flaps = np.sqrt(2 * W_S_design / (0.5 * rho_0 * 2.4))
-V_intersect = 82.19371
+V_intersect = 79.6987
 V_A_flaps = []
 n_A_list_flaps = []
 V_A_fin_flaps = V_S * np.sqrt(n_max)
