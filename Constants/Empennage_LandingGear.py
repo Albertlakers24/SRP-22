@@ -2,7 +2,7 @@
 import numpy as np
 
 '''To be updated:'''
-Av_eff = 2.376                    # VT: effective Aspect Ratio    [-]         FILE: Sizing_Vertical_Tail
+Av_eff = 3.24                   # VT: effective Aspect Ratio    [-]         FILE: Sizing_Vertical_Tail
 xc_m_tail = 0.29                # (x/c)_m Position of max thickness - 0.3 for low speed, 0.5 for high speed
 t_over_c_HT = 0.12              # HT : t/c                      [-]
 
@@ -14,9 +14,9 @@ taperh = 0.75                   # HT: Taper                     [-]
 x_h = 22                        # HT: xlocation from nose to ac [m]
 A_h = 4.7                       # HT: aspect ratio              [-]
 lh = 8.85                       # HT: Tail arm                  [m]
-Sv = 9.72                       # VT: Surface area              [m^2]
-taperv = 0.8                    # VT: Taper                     [-]
-Av = 1.1                        # VT: Aspect ratio              [-]
+Sv = 11.0                       # VT: Surface area              [m^2]
+taperv = 0.6                    # VT: Taper                     [-]
+Av = 1.5                        # VT: Aspect ratio              [-]
 tc_tail_vt = 0.18               # VT: t/c ratio                 [-]
 Sweep_LE_HT = 3.94*np.pi/180    # HT: LE sweep angle            [rad]
 Sweep_LE_VT = 30*np.pi/180      # VT: LE sweep angle            [rad]

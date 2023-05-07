@@ -2,13 +2,13 @@
 
 '''To Be Added:'''
 R_HT =7.5*10**6                     # Reynolds number of the HT
-Cmac = -0.6926729205077256          # Cmac                          [-]             FILE: ScissorPlot_HT
+Cmac = -0.623988675133655          # Cmac                          [-]             FILE: ScissorPlot_HT
 R_lfus = 111301293.64412345  # Fuselage Reynolds number              [-]
-CL_Alpha_VT =  4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
+CL_Alpha_VT =  2.102#4.03         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
 CL_Alpha_VT_eff = 3.77      # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT TODO: Check
 Cl_Alpha_VT_Airfoil = 5.841193106203845      # VT :  cl over alpha airfoil of VT     [rad^-1]
-downwash = 0.00571439       # Downwash gradient                     [-]             FILE: TODO: Update/Check
-CL_Alpha_HT =  2.55         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT  TODO: Check
+downwash = 0.24789#0.00571439       # Downwash gradient                     [-]             FILE: TODO: Update/Check
+CL_Alpha_HT =  4.3297#2.55         # VT : CL over alpha                    [rad^-1]        FILE: ScissorPlot_HT  TODO: Check
 Cl_Alpha_HT_Airfoil = 5.841193106203845      # VT :  cl over alpha airfoil of VT     [rad^-1]
 CLH_adj = -0.8                  # HT: CL for an adjustable tail         [-]
 CD0_tailhCR = 0.09292522985159975 # HT: CD0 for cruise condition     [-]
@@ -25,17 +25,21 @@ CL_CD_DesCruise = 18.28261      # CL/CD Design Cruise [-]
 Alpha_DesCruise = 3.962389                # Angle of attack Cruise [deg]
 CL_Max_Clean =  1.3499704142011835        # CL max wing clean configuration [-]
 CD_DesCruise = 0.034661
+
+
 '''Take-off data --> 15 deg flap deflection'''
-CL_DesTakeOff = 1.9              # CL max 40 deg deflection/1.13 [-]
-CD_DesTakeOff = 0.1331683                # CD at 40 deg flap deflection [-]
-CL_CD_TakeOff = 13.068810               # CL/CD at 40 deg flap deflection [-]
+CL_DesTakeOff = 1.9              # CL max 15 deg deflection/1.13 [-]
+CD_DesTakeOff = 0.16116               # CD at 15 deg flap deflection [-]
+CL_CD_TakeOff = 11.7892               # CL/CD at 15 deg flap deflection [-]
 CL_MaxTakeOff = 1.9                       # CL max wing at flap deflection 40 deg
+Alpha_DesTakeOff =12.033        # Alpha Take-off Design CL [deg]
 
 ''' Landing data --> 40 deg flap deflection'''
 CL_DesLand = 2.1180312426              # CL max 40 deg deflection/1.13 [-]
-CD_DesLand = 0.19790                # CD at 40 deg flap deflection [-]
-CL_CD_Land = 10.6112                 # CL/CD at 40 deg flap deflection [-]
+CD_DesLand = 0.2159499                # CD at 40 deg flap deflection [-]
+CL_CD_Land = 9.724462                 # CL/CD at 40 deg flap deflection [-]
 CL_MaxLand = 2.2                       # CL max wing at flap deflection 40 deg
+Alpha_DesLand = 9.51923077   # Alpha landing Design CL [deg]
 
 ''' Slopes '''
 CL_Alpha_Wing = 5.63403713             # Lift slope wing [1/rad]

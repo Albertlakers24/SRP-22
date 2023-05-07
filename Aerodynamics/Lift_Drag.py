@@ -171,9 +171,9 @@ print('CL/CD Max Cruise', CL_CD_MaxCR)
 CL_CD_TO = CL_list_TO/CD_Wing_TO
 CL_CD_MaxTO = CL_CD_TO.max()
 
-ind_cldes_TO = np.where(np.isclose(CL_list_TO,1.90, atol = 0.01))
+ind_cldes_TO = np.where(np.isclose(CL_list_TO,1.90, atol = 0.001))
 CL_Des_TO = CL_list_TO[ind_cldes_TO]        # CL Design Cruise
-CD_Des_TO = CD_Wing_LD[ind_cldes_TO]        # CD Design Cruise
+CD_Des_TO = CD_Wing_TO[ind_cldes_TO]        # CD Design Cruise
 Alpha_Des_TO = Alpha_Wing_TO[ind_cldes_TO]         # Alpha Design Cruise
 CL_CD_Des_TO = CL_CD_TO[ind_cldes_TO]
 
@@ -183,6 +183,7 @@ print('CL/CD Take-off', CL_CD_Des_TO)
 print('CL Take-off', CL_Des_TO)
 print('CD Take-off', CD_Des_TO)
 print('CL/CD Max Tak-off', CL_CD_MaxTO)
+print('Alpha Take off', Alpha_Des_TO)
 
 ''' LANDING ----------------------- '''
 CL_CD_LD = CL_list_LD/CD_Wing_LD
@@ -198,6 +199,7 @@ print('CL/CD Landing', CL_CD_Des_LD)
 print('CL Landing', CL_Des_LD)
 print('CD Landing', CD_Des_LD)
 print('CL/CD Max Landing', CL_CD_MaxLD)
+print('Alpha Landing', Alpha_Des_LD)
 
 ''' PLOTTING --------------------- '''
 # plt.plot(Alpha_AF, Cl_AF, color = 'navy', linestyle = '-', label = 'Airfoil')

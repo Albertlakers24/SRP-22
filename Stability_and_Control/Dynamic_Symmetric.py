@@ -2,17 +2,14 @@ import control
 import numpy as np
 import matplotlib.pyplot as plt
 from Constants.AircraftGeometry import S_w , c_mac_w, bw
-from Constants.Stability_Control import Cnp,Clr,Clbeta,CL,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmde
+from Constants.Stability_Control import muc,Cnp,Clr,Clbeta,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmdelta
 from Constants.MissionInputs import rho_0, g, V_cruise, ISA_calculator, h_cruise,dt_cruise
 from Constants.Masses_Locations import m_mto
-
-alpha0 = 1
-theta0 = 0
+from Constants.Aerodynamics import CL_DesCruise
 
 # Needed from Other files:
 V0 = V_cruise
 rho = ISA_calculator(h_cruise,dt_cruise)[2]
-muc = m_mto / (rho * S_w * c_mac_w)
 
 # ---------------------------------------------
 # Eigenvalues Symmetric Motion
@@ -45,6 +42,8 @@ DampingRatio_ph = - (Real_ph/np.sqrt(Real_ph**2+Imag_ph**2))
 # Aperiodic Rolling Motion
 eigenvalue_ARM = (Clp/(4*mub*KX2))*(V0/bw)
 
+Period_r_ARM = -1/eigenvalue_ARM
+
 # Dutch Roll
 a = 8*mub ** 2 * KZ2
 b1 = -2*mub * (Cn_r + 2 * KZ2 * Cybeta)
@@ -53,30 +52,101 @@ c = 4*mub * Cnbeta + Cybeta * Cn_r
 eigenvalue1_DR = (complex(-b1/ (2*a), np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 eigenvalue2_DR = (complex(-b1 / (2*a), -np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 
+Izz = 214309.89403883           # todo determine
+Real_eigenvalue =eigenvalue1_DR.real
+Imag_eigenvalue =eigenvalue1_DR.imag
+DampingRatio_DR = -Real_eigenvalue/np.sqrt(Real_eigenvalue**2+Imag_eigenvalue**2)
+ohm_nd_DR = np.sqrt(Cnbeta*0.2*rho*V_cruise**2*S_w*bw/Izz)
+Damping_ohmnd_DR =DampingRatio_DR*ohm_nd_DR
+
 # Aperiodic Spiral Motion
-eigenvalue_ASM= (2*CL*(Clbeta*Cn_r-Cnbeta*Clr))/(Clp*(Cybeta*Cn_r+4*mub*Cnbeta)-Cnp*(Cybeta*Clr+4*mub*Clbeta))
+eigenvalue_ASM= (2*CL_DesCruise*(Clbeta*Cn_r-Cnbeta*Clr))/(Clp*(Cybeta*Cn_r+4*mub*Cnbeta)-Cnp*(Cybeta*Clr+4*mub*Clbeta))
+
+Period2s_ASM = np.log(2)/eigenvalue_ASM*bw/V_cruise
 
 # Add Labels and sizing nicely for Symmetric Cases
 plt.xlabel("Real")
 plt.ylabel("Imaginary")
+
 plt.plot(eigenvalue1_SP.real, eigenvalue1_SP.imag, marker="x", color="r", linewidth=1)        # short period
-plt.annotate("  \u03BB\u2081", (eigenvalue1_SP.real, eigenvalue1_SP.imag), ha='left')
+plt.annotate("  \u03BB\u2085", (eigenvalue1_SP.real, eigenvalue1_SP.imag), ha='left')
 plt.plot(eigenvalue2_SP.real, eigenvalue2_SP.imag, marker="x", color="r", linewidth=1)        # short period
-plt.annotate("  \u03BB\u2082", (eigenvalue2_SP.real, eigenvalue2_SP.imag), ha='left')
-plt.plot(eigenvalue1_FM.real, eigenvalue1_FM.imag, marker="x", color="r", linewidth=1)      # phugoid
-plt.annotate("  \u03BB\u2083", (eigenvalue1_FM.real, eigenvalue1_FM.imag), ha='left')
-plt.plot(eigenvalue2_FM.real, eigenvalue2_FM.imag, marker="x", color="r", linewidth=1)     # phugoid
+plt.annotate("  \u03BB\u2086", (eigenvalue2_SP.real, eigenvalue2_SP.imag), ha='left')
+plt.plot(eigenvalue1_FM.real, eigenvalue1_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
+plt.annotate("  \u03BB\u2087", (eigenvalue1_FM.real, eigenvalue1_FM.imag), ha='left')
+plt.plot(eigenvalue2_FM.real, eigenvalue2_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
 plt.annotate("  \u03BB\u2084", (eigenvalue2_FM.real, eigenvalue2_FM.imag), ha='left')
-plt.xlim(-1,0.5)
-plt.ylim(-0.2,0.2)
+# plt.xlim(-1,0.5)
+# plt.ylim(-0.2,0.2)
 plt.grid(True)
 plt.axhline(0, color='k', linewidth=0.5)
 plt.axvline(0, color='k', linewidth=0.5)
 plt.show()
 
+# Add Labels and sizing nicely for Asymmetric Cases
+plt.xlabel("Real")
+plt.ylabel("Imaginary")
+plt.plot(eigenvalue_ARM.real, eigenvalue_ARM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Rolling Motion
+plt.annotate("  \u03BB\u2081", (eigenvalue_ARM.real, eigenvalue_ARM.imag), ha='left')
+plt.plot(eigenvalue1_DR.real, eigenvalue1_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
+plt.annotate("  \u03BB\u2082", (eigenvalue1_DR.real, eigenvalue1_DR.imag), ha='left')
+plt.plot(eigenvalue2_DR.real, eigenvalue2_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
+plt.annotate("  \u03BB\u2083", (eigenvalue2_DR.real, eigenvalue2_DR.imag), ha='left')
+plt.plot(eigenvalue_ASM.real, eigenvalue_ASM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Spiral Motion
+plt.annotate("  \u03BB\u2088", (eigenvalue_ASM.real, eigenvalue_ASM.imag), ha='left')
+# plt.xlim(-1,0.5)
+# plt.ylim(-0.2,0.2)
+plt.grid(True)
+plt.axhline(0, color='k', linewidth=0.5)
+plt.axvline(0, color='k', linewidth=0.5)
+plt.show()
+
+print("Symmetric")
+print("---------------Short Period----------------")
+if DampingRatio_sp >0.3:
+    if DampingRatio_sp <2.00:
+        print("Damping ratio =", DampingRatio_sp)
+    else:
+        print("Damping ratio requirement is NOT met:")
+        print("Damping ratio =", DampingRatio_sp)
+
+print("---------------Phugoid Motion----------------")
+if DampingRatio_ph > 0.04:
+    print("Damping ratio =", DampingRatio_ph)
+else:
+    print("Damping ratio requirement is NOT met:")
+    print("Damping ratio =", DampingRatio_ph)
+
+print("Asymmetric")
+print("---------------Aperiodic Roll----------------")
+if Period_r_ARM>1.4:
+    print("Period_r requirement is not met:")
+print("Period_r =", Period_r_ARM)
+
+print("---------------Dutch Roll----------------")
+if DampingRatio_DR<0.08:
+    print("Dampring ratio requirement is not met:")
+print("Damping ratio =", DampingRatio_DR)
+if Damping_ohmnd_DR<0.15:
+    print("Dampring ratio*ohm_nd requirement is not met:")
+print("Damping ratio*ohm_nd =", Damping_ohmnd_DR)
+if ohm_nd_DR<0.4:
+    print("ohm_nd requirement is NOT met:")
+print("ohm_nd =", ohm_nd_DR)
+
+print("---------------Spiral Motion----------------")
+if Period2s_ASM>20:
+    print("Period2s =", Period2s_ASM)
+else:
+    print("Period2s requirement is not met:")
+    print("Period2s =", Period2s_ASM)
+
 # ---------------------------------------------
 # Equations of Symmetric motion  in State-Space
 # ---------------------------------------------
+"""
+alpha0 = 1
+theta0 = 0
 
 def matrix_symmetric(hp0, V0, alpha0, theta0, m):
     W = m_mto * g
@@ -96,7 +166,7 @@ def matrix_symmetric(hp0, V0, alpha0, theta0, m):
     C_3 = np.array([ [CXde],
                      [CZde],
                      [0],
-                     [Cmde]])
+                     [Cmdelta]])
     return C_1, C_2, C_3
 
 def matrix_symmetric_system(C_1, C_2, C_3):
@@ -309,3 +379,4 @@ plt.grid(True)
 plt.axhline(0, color='k', linewidth=0.5)
 plt.axvline(0, color='k', linewidth=0.5)
 plt.show()
+"""
