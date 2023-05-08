@@ -2,6 +2,8 @@
 import numpy as np
 
 '''TO BE UPDATED:'''
+RFCO2_ATR =1.015*10**-11                    # RF for CO2            [W/m^2/s]       FILE: CO2 (graph)
+RFNOx = -5.5054104*10**-16              # RF for NOx            [W/m^2/s]       FILE: NOx
 AC_loc = 13                             # ac location           [m]
 x_AC = 13                               # AC location           [m] aft of cg
 KY2 =1.25 * 1.114                       # KY^2                  [-]             FILE: Derivative_Calculations_Dynamic
