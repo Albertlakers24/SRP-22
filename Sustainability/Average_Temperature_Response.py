@@ -110,9 +110,11 @@ result_Temperatureresponse = Temperature_response(RF=RF_total,time=time_horizon)
 print("Temperature Change=",result_Temperatureresponse)
 
 """For ATR:"""
-RF_total_ATR = RF_contrails(RF_CO2)+RF_water(massflow_ATR,t_year,RF_CO2)+RFNOx+RFCO2_ATR
+RFCO2_ATR = (1/0.6931)*np.log((380+0.4)/380)
+RF_total_ATR = RF_contrails(RF_CO2)+RF_water(massflow,t_year,RF_CO2)+RFNOx+RFCO2_ATR
 result_Temperatureresponse_ATR = Temperature_response(RF=RF_total_ATR,time = time_horizon)
 print("RF_total_ATR =", RF_total_ATR)
+print("RF_CO2=",RFCO2_ATR)
 
 fig, ax = plt.subplots()
 

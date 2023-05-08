@@ -115,4 +115,4 @@ if __name__ == '__main__':
     plt.grid(True)
     plt.xlabel("Year")
     plt.ylabel("Concentration [ppmv]")
-    #plt.show()
+    plt.show()
