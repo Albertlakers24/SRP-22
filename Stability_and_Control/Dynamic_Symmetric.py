@@ -70,38 +70,38 @@ plt.xlabel("Real")
 plt.ylabel("Imaginary")
 
 """Graphs for dynamic stability"""
-# plt.plot(eigenvalue1_SP.real, eigenvalue1_SP.imag, marker="x", color="r", linewidth=1)        # short period
-# plt.annotate("  \u03BB\u2085", (eigenvalue1_SP.real, eigenvalue1_SP.imag), ha='left')
-# plt.plot(eigenvalue2_SP.real, eigenvalue2_SP.imag, marker="x", color="r", linewidth=1)        # short period
-# plt.annotate("  \u03BB\u2086", (eigenvalue2_SP.real, eigenvalue2_SP.imag), ha='left')
-# plt.plot(eigenvalue1_FM.real, eigenvalue1_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
-# plt.annotate("  \u03BB\u2087", (eigenvalue1_FM.real, eigenvalue1_FM.imag), ha='left')
-# plt.plot(eigenvalue2_FM.real, eigenvalue2_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
-# plt.annotate("  \u03BB\u2084", (eigenvalue2_FM.real, eigenvalue2_FM.imag), ha='left')
-# # plt.xlim(-1,0.5)
-# # plt.ylim(-0.2,0.2)
-# plt.grid(True)
-# plt.axhline(0, color='k', linewidth=0.5)
-# plt.axvline(0, color='k', linewidth=0.5)
-# plt.show()
+plt.plot(eigenvalue1_SP.real, eigenvalue1_SP.imag, marker="x", color="r", linewidth=1)        # short period
+plt.annotate("  \u03BB\u2085", (eigenvalue1_SP.real, eigenvalue1_SP.imag), ha='left', fontsize=20)
+plt.plot(eigenvalue2_SP.real, eigenvalue2_SP.imag, marker="x", color="r", linewidth=1)        # short period
+plt.annotate("  \u03BB\u2086", (eigenvalue2_SP.real, eigenvalue2_SP.imag), ha='left', fontsize=20)
+plt.plot(eigenvalue1_FM.real, eigenvalue1_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
+plt.annotate("  \u03BB\u2087", (eigenvalue1_FM.real, eigenvalue1_FM.imag), ha='left', fontsize=20)
+plt.plot(eigenvalue2_FM.real, eigenvalue2_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
+plt.annotate("  \u03BB\u2084", (eigenvalue2_FM.real, eigenvalue2_FM.imag), ha='left', va='top', fontsize=20)
+plt.xlim(-4,0.5)
+plt.ylim(-5,5)
+plt.grid(True)
+plt.axhline(0, color='k', linewidth=0.5)
+plt.axvline(0, color='k', linewidth=0.5)
+plt.show()
 
 # Add Labels and sizing nicely for Asymmetric Cases
-# plt.xlabel("Real")
-# plt.ylabel("Imaginary")
-# plt.plot(eigenvalue_ARM.real, eigenvalue_ARM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Rolling Motion
-# plt.annotate("  \u03BB\u2081", (eigenvalue_ARM.real, eigenvalue_ARM.imag), ha='left')
-# plt.plot(eigenvalue1_DR.real, eigenvalue1_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
-# plt.annotate("  \u03BB\u2082", (eigenvalue1_DR.real, eigenvalue1_DR.imag), ha='left')
-# plt.plot(eigenvalue2_DR.real, eigenvalue2_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
-# plt.annotate("  \u03BB\u2083", (eigenvalue2_DR.real, eigenvalue2_DR.imag), ha='left')
-# plt.plot(eigenvalue_ASM.real, eigenvalue_ASM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Spiral Motion
-# plt.annotate("  \u03BB\u2088", (eigenvalue_ASM.real, eigenvalue_ASM.imag), ha='left')
-# # plt.xlim(-1,0.5)
-# # plt.ylim(-0.2,0.2)
-# plt.grid(True)
-# plt.axhline(0, color='k', linewidth=0.5)
-# plt.axvline(0, color='k', linewidth=0.5)
-# plt.show()
+plt.xlabel("Real")
+plt.ylabel("Imaginary")
+plt.plot(eigenvalue_ARM.real, eigenvalue_ARM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Rolling Motion
+plt.annotate("  \u03BB\u2081", (eigenvalue_ARM.real, eigenvalue_ARM.imag), ha='left', fontsize=20)
+plt.plot(eigenvalue1_DR.real, eigenvalue1_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
+plt.annotate("  \u03BB\u2082", (eigenvalue1_DR.real, eigenvalue1_DR.imag), ha='left', fontsize=20)
+plt.plot(eigenvalue2_DR.real, eigenvalue2_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
+plt.annotate("  \u03BB\u2083", (eigenvalue2_DR.real, eigenvalue2_DR.imag), ha='left', fontsize=20)
+plt.plot(eigenvalue_ASM.real, eigenvalue_ASM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Spiral Motion
+plt.annotate("  \u03BB\u2088", (eigenvalue_ASM.real, eigenvalue_ASM.imag), ha='left', fontsize=20)
+plt.xlim(-4,1)
+plt.ylim(-0.6,0.6)
+plt.grid(True)
+plt.axhline(0, color='k', linewidth=0.5)
+plt.axvline(0, color='k', linewidth=0.5)
+plt.show()
 
 print("Symmetric")
 print("---------------Short Period----------------")
