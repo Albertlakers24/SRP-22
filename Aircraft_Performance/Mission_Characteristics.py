@@ -220,15 +220,15 @@ eq = MTOW**2 / (rho_5000 * g * S_w * CL2 * 0.85 * TV2) + 2 * h2 * (TV2 / MTOW - 
 TV2 = sp.solve(eq, TV2)[1]
 l_run = (MTOW**2 / (rho_5000 * g * S_w * CL2 * 0.85 * TV2)) * 0.8
 l_air = 2 * h2 * (TV2 / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off))**(-1)
-print((l_run + l_air)/ft_m, "TAKEOFF DISTANCE")
+print(l_run/ft_m,l_air/ft_m,(l_run + l_air)/ft_m, "TAKEOFF DISTANCE")
 avg_a = V_LOF**2 / (2*l_run)
 ROC_TO = (P_available_prop - 1 / np.mean(CL_CD_TakeOff) * MTOW) / MTOW - avg_a * V_LOF / g
 print(V_LOF/avg_a+5, "takeoff time")
 
 #HOT AND HIGH TAKEOFF
 TV2_HOT = sp.Symbol("TV2_HOT")
-T_hot = ISA_calculator(5000*ft_m, 41)[0]
-rho_hot = ISA_calculator(5000*ft_m, 41)[2]
+T_hot = ISA_calculator(7600*ft_m, 41)[0]
+rho_hot = ISA_calculator(7600*ft_m, 41)[2]
 eq2 = MTOW**2 / (rho_hot * g * S_w * CL2 * 0.85 * TV2_HOT) + 2 * h2 * (TV2_HOT / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off)) ** (-1) - 4500 * ft_m
 TV2_HOT = sp.solve(eq2, TV2_HOT)[1]
 l_run_hot = (MTOW**2 / (rho_hot * g * S_w * CL2 * 0.85 * TV2_HOT))
@@ -343,6 +343,18 @@ for i in np.arange(5010, 40010, i_step):#28010
         heights.append(i)
         V_check.append(V)
         time_climb.append(time)
+    elif 28001 <= i < 35001:
+        V = VTAS_calc(V_EAS2, i * ft_m, 0)
+        ROC = ROC_calc(V, i * ft_m, 0, 0, CL_endurance / CD_endurance)
+        time = i_step * ft_m / ROC
+        Vx = math.sqrt(V ** 2 - ROC ** 2)
+        Sx = Vx * time
+        s_trav = s_trav + Sx
+        s_traveled.append(s_trav)
+        ROCS.append(ROC)
+        heights.append(i)
+        V_check.append(V)
+        time_climb.append(time)
 
 print(sum(time_climb)/60, "CLIMB TIME")
 
@@ -355,7 +367,9 @@ print(f"Maximum attainable velocity during cruise is {V_max/kts_m_s} kts")
 #LANDING DISTANCE
 s_land = m_mto * g * C_LFL * 2 / (rho_5000 * CL_MaxLand * S_w)
 print(s_land/ft_m, "MAXIMUM LANDING DISTANCE")
-
+V_approach = np.sqrt(m_mto*g * 2 / (rho_5000 * CL_MaxLand * S_w))*1.23
+CL_approach = m_mto * g / (1/2 * rho_5000 * V_approach**2 * S_w)
+print(CL_approach)
 #ENERGY CALCULATIONS
 V_initial_descent = VTAS_calc(176*kts_m_s, 19000*ft_m, 0)
 V_second_descent = VTAS_calc(140*kts_m_s, 5000*ft_m, 0)
@@ -364,23 +378,50 @@ ROD1_avg = -V_initial_descent * np.sin(glide_angle)
 ROD2_avg = -V_second_descent * np.sin(glide_angle)
 time_descent_1 = 18000 * ft_m / ROD1_avg
 time_descent_2 = 10000 * ft_m / ROD2_avg
-
+#35000 ft
+V_in_35000 = VTAS_calc(138.7 * kts_m_s, 35000*ft_m, 0)
+V_2_35000 = VTAS_calc(138.7 * kts_m_s, 19000*ft_m, 0)
+V_3_35000 = VTAS_calc(138.7 * kts_m_s, 5000*ft_m, 0)
+ROD1_35000 = -V_in_35000 * np.sin(glide_angle)
+ROD2_35000 = -V_2_35000 * np.sin(glide_angle)
+ROD3_35000 = -V_3_35000 * np.sin(glide_angle)
+time_descent_1_35000 = 12000 * ft_m / ROD1_35000
+time_descent_2_35000 = 18000 * ft_m / ROD2_35000
+time_descent_3_35000 = 10000 * ft_m / ROD3_35000
+dist_desc_35000 = (time_descent_1_35000 * V_in_35000 + time_descent_2_35000 * V_2_35000 + time_descent_3_35000 * V_3_35000) * np.cos(glide_angle)
 
 dist_descent = time_descent_1 * V_initial_descent * np.cos(glide_angle) + time_descent_2 * V_second_descent * np.cos(glide_angle)
 total_descent_avg = time_descent_1 + time_descent_2
 climb_time = sum(time_climb)
 cruise_dist_avg = 1000 * nmi_m - s_traveled[2799] - dist_descent
-print(cruise_dist_avg/nmi_m, "DISTANCE CRUISE")
+cruise_dist_35000 = 1000 * nmi_m - s_traveled[3499] - dist_desc_35000
+print(cruise_dist_avg/nmi_m, "DISTANCE CRUISE FL280")
+print(cruise_dist_35000/nmi_m, "DISTANCE CRUISE FL350")
 time_normal_cruise = cruise_dist_avg / V_cruise
 time_fast = cruise_dist_avg / V_max
 power_cruise = 1/2 * rho_cruise * V_cruise**3 * CD_DesCruise * S_w
 E_normal_cruise = power_cruise * time_normal_cruise
 power_cruise_fast = 1/2 * rho_cruise * V_max**3 * CD_DesCruise * S_w
 E_fast = power_cruise_fast * time_fast
-print(power_cruise/10**6, "POWER NORMAL")
-print(power_cruise_fast/10**6, "POWER FAST")
-print(E_normal_cruise/10**6, "ENERGY NORMAL")
-print(E_fast/10**6,"NORMAL FAST")
+print(power_cruise/10**3, "POWER NORMAL FL280 (kW)")
+print(power_cruise_fast/10**3, "POWER FAST FL280(kW)")
+print(E_normal_cruise/10**6, "ENERGY NORMAL FL280(MJ)")
+print(E_fast/10**6,"NORMAL FAST FL280(MJ)")
+print(E_fast/E_normal_cruise)
+
+rho_35000 = ISA_calculator(35000*ft_m, 0)[2]
+P_35000 = 1/2 * rho_35000 * V_cruise**3 * CD_endurance * S_w
+E_35000 = P_35000 * cruise_dist_35000 / V_cruise
+V_max_35000 = ((2 * P_available_prop) / (rho_35000 * CD_endurance * S_w))**(1/3)
+P_35000_fast = 1/2 * rho_35000 * V_max_35000**3 * CD_endurance * S_w
+E_35000_fast = P_35000_fast * (cruise_dist_35000 / V_max_35000)
+print(P_35000/10**3, "POWER NORMAL FL350 (kW)")
+print(P_35000_fast/10**3, "POWER FAST FL350(kW)")
+print(E_35000/10**6, "ENERGY NORMAL FL350(MJ)")
+print(E_35000_fast/10**6,"NORMAL FAST FL350(MJ)")
+print(E_35000_fast/E_35000)
+
+
 
 plt.plot(np.array(s_traveled) / nmi_m, heights)
 plt.axhline(y=s_1 / ft_m, color='grey', linestyle='--')
@@ -398,6 +439,9 @@ plt.plot([s_trav / nmi_m, s_trav / nmi_m], [0, s_3 / ft_m], color='grey', linest
 plt.annotate('Distance Traveled in Climb', xy=(s_trav / nmi_m - 1, 16000), rotation='vertical')
 plt.xlabel("Distance Traveled (nmi)")
 plt.ylabel("Altitude (ft)")
-plt.xlim(0,55)
-plt.ylim(0,30200)
+# plt.xlim(0,55)
+# plt.ylim(0,30200)
 plt.show()
+print(V_cruise/kts_m_s)
+print(V_max_35000/kts_m_s)
+print(V_max_35000/V_cruise)
