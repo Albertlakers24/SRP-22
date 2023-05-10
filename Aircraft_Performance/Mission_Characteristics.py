@@ -1,14 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Constants.Masses_Locations import m_mto,W_S_design,W_P_design
-from Constants.MissionInputs import ft_m, nmi_m, kts_m_s,ISA_calculator, rho_0,V_cruise,rho_cruise,g, rho_5000, h_cruise
-from Constants.Aerodynamics import CL_MaxTakeOff, CL_CD_TakeOff, CD0_15, CL_CD_DesCruise, CD_DesCruise, CL_DesCruise, Oswald_TO
+from Constants.Masses_Locations import m_mto,W_S_design
+from Constants.MissionInputs import ft_m, nmi_m, kts_m_s,ISA_calculator, rho_0,V_cruise,rho_cruise,g, rho_5000
+from Constants.Aerodynamics import CL_MaxTakeOff, CL_CD_TakeOff, CD0_15, CL_CD_DesCruise, CD_DesCruise, CL_DesCruise, Oswald_TO, CL_MaxLand
 from Constants.FlightPerformance_Propulsion import H2_power_density
 from Constants.AircraftGeometry import S_w, Aw
 import sympy as sp
 import math
 
 e_take_off = Oswald_TO
+C_LFL = 0.45
 m_mto = m_mto
 m_fuel = 611
 h2 = 50 * ft_m
@@ -47,7 +48,6 @@ V_TAS3_avg = V_TAS_calc(V_IAS3, s_3, s_2)
 V_TAS4_avg = V_TAS_calc(V_IAS4, s_3, s_4)
 V_TAS5_avg = V_TAS_calc(V_IAS5, s_4, s_5)
 
-# print(V_TAS_list)
 ROC_list = [ROC1, ROC2, ROC3, ROD1, ROD2]
 
 V_x = []
@@ -65,18 +65,14 @@ def t_calc():
         t_list.append(t)
     return t_list
 t_list = t_calc()
-# print("times", t_list)
 descent_distance = V_x[3]*t_list[3]+V_x[4]*t_list[4]
 total_distance = sum(np.array(V_x) * np.array(t_list))
-# print(total_distance / 1852)
 full_time_climb = t_list[0] + t_list[1] + t_list[2]
 full_time_descent = t_list[3] + t_list[4]
-# print(f"Full time of climb: {full_time_climb} s")
-print(f"Full time of descent: {full_time_descent / 3600} hours")
+print(f"Full time of descent: {full_time_descent / 60} minutes")
 print(f"Descent distance: {descent_distance / nmi_m} nmi")
 cruise_distance = (1000 * 1852 - total_distance)                             #in m
 cruise_time = cruise_distance / V_cruise
-# print(f"Cruise time: {cruise_time} s")
 full_time = full_time_climb + cruise_time + full_time_descent
 
 Weight = m_mto
@@ -208,7 +204,6 @@ def ROC_calc(V, h, dt, extra_acc, CL_CD):
     return ROC
 
 ROC_TO = ROC_calc(57.5, 7600*ft_m, 41, 0, CL_CD_TakeOff)
-print("ROC AT TO", ROC_TO / 57.5)
 
 def VTAS_calc(V, h, dt):
     rho = ISA_calculator(h, dt)[2]
@@ -225,24 +220,24 @@ eq = MTOW**2 / (rho_5000 * g * S_w * CL2 * 0.85 * TV2) + 2 * h2 * (TV2 / MTOW - 
 TV2 = sp.solve(eq, TV2)[1]
 l_run = (MTOW**2 / (rho_5000 * g * S_w * CL2 * 0.85 * TV2)) * 0.8
 l_air = 2 * h2 * (TV2 / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off))**(-1)
-print(l_run, l_air, l_run + l_air, "RUNWAY DISTANCE ETC.")
+print((l_run + l_air)/ft_m, "TAKEOFF DISTANCE")
 avg_a = V_LOF**2 / (2*l_run)
 ROC_TO = (P_available_prop - 1 / np.mean(CL_CD_TakeOff) * MTOW) / MTOW - avg_a * V_LOF / g
 print(V_LOF/avg_a+5, "takeoff time")
 
 #HOT AND HIGH TAKEOFF
 TV2_HOT = sp.Symbol("TV2_HOT")
-T_hot = ISA_calculator(7600*ft_m, 0)[0]
-rho_hot = ISA_calculator(7600*ft_m, 41)[2]
+T_hot = ISA_calculator(5000*ft_m, 41)[0]
+rho_hot = ISA_calculator(5000*ft_m, 41)[2]
 eq2 = MTOW**2 / (rho_hot * g * S_w * CL2 * 0.85 * TV2_HOT) + 2 * h2 * (TV2_HOT / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off)) ** (-1) - 4500 * ft_m
 TV2_HOT = sp.solve(eq2, TV2_HOT)[1]
 l_run_hot = (MTOW**2 / (rho_hot * g * S_w * CL2 * 0.85 * TV2_HOT))
 l_air_hot = 2 * h2 * (TV2_HOT / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off))**(-1)
-print(l_run_hot, l_air_hot, l_run_hot + l_air_hot, "RUNWAY DISTANCE ETC. HOT CLIMATE")
+print((l_run_hot + l_air_hot)/ft_m, "TAKEOFF DISTANCE HOT CLIMATE")
 V_LOF_HOT = np.sqrt(2 * MTOW / (rho_hot * S_w * CL_MaxTakeOff)) * 1.05
 avg_a = V_LOF_HOT**2 / (2*l_run_hot)
 ROC_TO = (P_available_prop - 1 / np.mean(CL_CD_TakeOff) * MTOW) / MTOW - avg_a * V_LOF / g
-print(V_LOF/avg_a+5, "takeoff time HOT", V_LOF_HOT, TV2 * V_LOF, TV2_HOT*V_LOF_HOT, rho_5000, rho_hot)
+print(V_LOF/avg_a+5, "takeoff time HOT")
 
 ROCS = []
 heights = []
@@ -348,48 +343,18 @@ for i in np.arange(5010, 40010, i_step):#28010
         heights.append(i)
         V_check.append(V)
         time_climb.append(time)
-    # elif 28001 <= i < 30201:
-    #     V = VTAS_calc(V_EAS2, i * ft_m, 0)
-    #     ROC = ROC_calc(V, i * ft_m, 0, 0, CL_endurance/CD_endurance)
-    #     time = i_step * ft_m / ROC
-    #     Vx = math.sqrt(V ** 2 - ROC ** 2)
-    #     Sx = Vx * time
-    #     s_trav = s_trav + Sx
-    #     s_traveled.append(s_trav)
-    #     ROCS.append(ROC)
-    #     heights.append(i)
-    #     V_check.append(V)
-    #     time_climb.append(time)
 
 print(sum(time_climb)/60, "CLIMB TIME")
-#print(s_traveled[210], "RIGHT INDEX")
 
 dup = {x for x in heights if heights.count(x) > 1}
 
 #MAX SPEED CALC
 V_max = ((2 * P_available_prop) / (rho_cruise * CD_DesCruise * S_w))**(1/3)
-print(f"Maximum attainable velocity during cruise is {V_max} m/s")
+print(f"Maximum attainable velocity during cruise is {V_max/kts_m_s} kts")
 
-#OPTIMUM ALTITUDE
-CL_endurance = 0.97786
-CD_endurance = 0.048984
-def V_find(V):
-    CL = 0.97786
-    rho = 2 * MTOW / (V**2 * S_w * CL)
-    rho_set = rho_0
-    alt_0 = 0
-    while rho_set > rho:
-        alt_0 += 10
-        rho_set = ISA_calculator(alt_0, 0)[2]
-    #print((alt_0)/ft_m)
-    return rho_set, alt_0, rho
-# print(ROC_calc(V_cruise, 50000*ft_m, 0, 0, CL_CD_DesCruise))
-#
-# print(V_find(V_cruise))
-# print(CL_DesCruise)
-# def power_endurance():
-#     CD_CL_ratio = 424.2638
-
+#LANDING DISTANCE
+s_land = m_mto * g * C_LFL * 2 / (rho_5000 * CL_MaxLand * S_w)
+print(s_land/ft_m, "MAXIMUM LANDING DISTANCE")
 
 #ENERGY CALCULATIONS
 V_initial_descent = VTAS_calc(176*kts_m_s, 19000*ft_m, 0)
@@ -399,38 +364,23 @@ ROD1_avg = -V_initial_descent * np.sin(glide_angle)
 ROD2_avg = -V_second_descent * np.sin(glide_angle)
 time_descent_1 = 18000 * ft_m / ROD1_avg
 time_descent_2 = 10000 * ft_m / ROD2_avg
-#40000 ft
-V_in_40000 = VTAS_calc(138.7 * kts_m_s, 34000*ft_m, 0)
-V_2_40000 = VTAS_calc(138.7 * kts_m_s, 19000*ft_m, 0)
-V_3_40000 = VTAS_calc(138.7 * kts_m_s, 5000*ft_m, 0)
-ROD1_40000 = -V_in_40000 * np.sin(glide_angle)
-ROD2_40000 = -V_2_40000 * np.sin(glide_angle)
-ROD3_40000 = -V_3_40000 * np.sin(glide_angle)
-time_descent_1_40000 = 12000 * ft_m / ROD1_40000
-time_descent_2_40000 = 18000 * ft_m / ROD2_40000
-time_descent_3_40000 = 10000 * ft_m / ROD3_40000
-dist_desc_40000 = (time_descent_1_40000 * V_in_40000 + time_descent_2_40000 * V_2_40000 + time_descent_3_40000 * V_3_40000) * np.cos(glide_angle)
+
 
 dist_descent = time_descent_1 * V_initial_descent * np.cos(glide_angle) + time_descent_2 * V_second_descent * np.cos(glide_angle)
 total_descent_avg = time_descent_1 + time_descent_2
 climb_time = sum(time_climb)
 cruise_dist_avg = 1000 * nmi_m - s_traveled[2799] - dist_descent
-#cruise_dist_40000 = 1000 * nmi_m - s_traveled[3999] - dist_desc_40000
-print(cruise_dist_avg, "DISTANCE CRUISE", dist_descent/nmi_m, s_traveled[2799]/nmi_m)
+print(cruise_dist_avg/nmi_m, "DISTANCE CRUISE")
 time_normal_cruise = cruise_dist_avg / V_cruise
 time_fast = cruise_dist_avg / V_max
 power_cruise = 1/2 * rho_cruise * V_cruise**3 * CD_DesCruise * S_w
 E_normal_cruise = power_cruise * time_normal_cruise
-E_fast = P_available_prop * time_fast
-print(E_normal_cruise/10**6, E_fast/10**6, "POWERS")
-rho_40000 = ISA_calculator(40000*ft_m, 0)[2]
-P_40000 = 1/2 * rho_40000 * V_cruise**3 * CD_endurance * S_w
-#E_40000 = P_40000 * cruise_dist_40000 / V_cruise
-V_max_40000 = ((2 * P_available_prop) / (rho_40000 * CD_endurance * S_w))**(1/3)
-#E_40000_fast = P_available_prop * (cruise_dist_40000 / V_max_40000)
-#print(E_40000/10**6, E_40000_fast/10**6, V_max_40000, rho_40000, s_traveled[3999])
-#print(cruise_dist_avg, cruise_dist_40000)
-#print(E_normal_cruise/10**6, E_fast/10**6, E_40000/10**6, E_40000_fast/10**6)
+power_cruise_fast = 1/2 * rho_cruise * V_max**3 * CD_DesCruise * S_w
+E_fast = power_cruise_fast * time_fast
+print(power_cruise/10**6, "POWER NORMAL")
+print(power_cruise_fast/10**6, "POWER FAST")
+print(E_normal_cruise/10**6, "ENERGY NORMAL")
+print(E_fast/10**6,"NORMAL FAST")
 
 plt.plot(np.array(s_traveled) / nmi_m, heights)
 plt.axhline(y=s_1 / ft_m, color='grey', linestyle='--')
@@ -451,7 +401,3 @@ plt.ylabel("Altitude (ft)")
 plt.xlim(0,55)
 plt.ylim(0,30200)
 plt.show()
-
-
-
-
