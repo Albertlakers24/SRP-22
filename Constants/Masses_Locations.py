@@ -20,6 +20,6 @@ beta_s_land_fc = m_zf / m_mto
 ''' Overall CG locations '''
 LEMAC = 12.087743576790354  # LEMAC position                    [m]
 xcg_gear = 13.4             # Location landing gear             [m]
-xcg_aft_potato = 13.065460618085575       # Aft cg location (potato plot)     [m]
-xcg_front_potato = 12.21880418414821     # Front cg location (potato plot)   [m]
+xcg_aft_potato = 13.17153078202       # Aft cg location (potato plot)     [m]
+xcg_front_potato = 12.301425610882362    # Front cg location (potato plot)   [m]
 cg_tank = 1.3
