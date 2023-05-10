@@ -131,7 +131,7 @@ all_ffs = [first_ff, second_ff, third_ff, fourth_ff, fifth_ff, sixth_ff]
 total_fuel_check = sum(np.array(t_list_all) * np.array(all_ffs))
 
 #PEAK POWER
-Peak_power = m_mto * g / W_P_design
+Peak_power = 2.5 * 10**6
 
 #Check Mission Profile
 def CL_calc(V_IAS, h, mass):
@@ -348,21 +348,21 @@ for i in np.arange(5010, 40010, i_step):#28010
         heights.append(i)
         V_check.append(V)
         time_climb.append(time)
-    elif 28001 <= i < 40001:
-        V = VTAS_calc(V_EAS2, i * ft_m, 0)
-        ROC = ROC_calc(V, i * ft_m, 0, 0, CL_endurance/CD_endurance)
-        time = i_step * ft_m / ROC
-        Vx = math.sqrt(V ** 2 - ROC ** 2)
-        Sx = Vx * time
-        s_trav = s_trav + Sx
-        s_traveled.append(s_trav)
-        ROCS.append(ROC)
-        heights.append(i)
-        V_check.append(V)
-        time_climb.append(time)
+    # elif 28001 <= i < 30201:
+    #     V = VTAS_calc(V_EAS2, i * ft_m, 0)
+    #     ROC = ROC_calc(V, i * ft_m, 0, 0, CL_endurance/CD_endurance)
+    #     time = i_step * ft_m / ROC
+    #     Vx = math.sqrt(V ** 2 - ROC ** 2)
+    #     Sx = Vx * time
+    #     s_trav = s_trav + Sx
+    #     s_traveled.append(s_trav)
+    #     ROCS.append(ROC)
+    #     heights.append(i)
+    #     V_check.append(V)
+    #     time_climb.append(time)
 
 print(sum(time_climb)/60, "CLIMB TIME")
-print(s_traveled[210], "RIGHT INDEX")
+#print(s_traveled[210], "RIGHT INDEX")
 
 dup = {x for x in heights if heights.count(x) > 1}
 
@@ -381,50 +381,15 @@ def V_find(V):
     while rho_set > rho:
         alt_0 += 10
         rho_set = ISA_calculator(alt_0, 0)[2]
-    print((alt_0)/ft_m)
+    #print((alt_0)/ft_m)
     return rho_set, alt_0, rho
-print(ROC_calc(V_cruise, 50000*ft_m, 0, 0, CL_CD_DesCruise))
-
-print(V_find(V_cruise))
-print(CL_DesCruise)
+# print(ROC_calc(V_cruise, 50000*ft_m, 0, 0, CL_CD_DesCruise))
+#
+# print(V_find(V_cruise))
+# print(CL_DesCruise)
 # def power_endurance():
 #     CD_CL_ratio = 424.2638
 
-#SERVICE CEILING
-rho_check_des = rho_0 * ((CD_DesCruise * S_w * rho_0 * (V_cruise * np.sqrt(rho_cruise / rho_0))**3) / (2 * P_available_prop))**2
-rho_check_end = rho_0 * ((CD_endurance * S_w * rho_0 * (V_cruise * np.sqrt(rho_cruise / rho_0))**3) / (2 * P_available_prop))**2
-print(rho_check_des, rho_check_end, "DENSITIES")
-def find_alt(rho):
-    rho_set = rho_0
-    alt_0 = 0
-    while rho_set > rho:
-        alt_0 += 10
-        rho_set = ISA_calculator(alt_0, 0)[2]
-    # print((alt_0) / ft_m)
-    return alt_0
-print("RHO FOR DESIGN CD")
-print(find_alt(rho_check_des))
-print("RHO FOR ENDURANCE")
-print(find_alt(rho_check_end))
-
-#MAX ENDURANCE
-#TODO: Find Service Ceiling and Find Altitude We Want To Fly At
-rho_endurance = ISA_calculator(28000 * ft_m, 0)[2]
-Pr_min = m_mto * 0.95 * g * np.sqrt(m_mto * g / S_w * 2 / rho_endurance * (CD_endurance**2 / CL_endurance**3))
-V_opt = ((2 * Pr_min) / (rho_endurance * S_w * CD_endurance / CL_endurance))**(1/3)
-print(f"Optimum velocity for maximum endurance: {V_opt / kts_m_s}")
-def service_ceiling():
-    ROC = 100 * ft_m / 60
-    Pr = P_available_prop - ROC * MTOW
-    rho = 2 * Pr / (CD_DesCruise * V_cruise**3 * S_w)
-    rho_set = rho_0
-    alt_0 = 0
-    while rho_set > rho:
-        alt_0 += 10
-        rho_set = ISA_calculator(alt_0, 0)[2]
-    print((alt_0) / ft_m)
-    return rho_set, alt_0, rho
-print(service_ceiling())
 
 #ENERGY CALCULATIONS
 V_initial_descent = VTAS_calc(176*kts_m_s, 19000*ft_m, 0)
@@ -450,7 +415,7 @@ dist_descent = time_descent_1 * V_initial_descent * np.cos(glide_angle) + time_d
 total_descent_avg = time_descent_1 + time_descent_2
 climb_time = sum(time_climb)
 cruise_dist_avg = 1000 * nmi_m - s_traveled[2799] - dist_descent
-cruise_dist_40000 = 1000 * nmi_m - s_traveled[3999] - dist_desc_40000
+#cruise_dist_40000 = 1000 * nmi_m - s_traveled[3999] - dist_desc_40000
 print(cruise_dist_avg, "DISTANCE CRUISE", dist_descent/nmi_m, s_traveled[2799]/nmi_m)
 time_normal_cruise = cruise_dist_avg / V_cruise
 time_fast = cruise_dist_avg / V_max
@@ -460,100 +425,12 @@ E_fast = P_available_prop * time_fast
 print(E_normal_cruise/10**6, E_fast/10**6, "POWERS")
 rho_40000 = ISA_calculator(40000*ft_m, 0)[2]
 P_40000 = 1/2 * rho_40000 * V_cruise**3 * CD_endurance * S_w
-E_40000 = P_40000 * cruise_dist_40000 / V_cruise
+#E_40000 = P_40000 * cruise_dist_40000 / V_cruise
 V_max_40000 = ((2 * P_available_prop) / (rho_40000 * CD_endurance * S_w))**(1/3)
-E_40000_fast = P_available_prop * (cruise_dist_40000 / V_max_40000)
-print(E_40000/10**6, E_40000_fast/10**6, V_max_40000, rho_40000, s_traveled[3999])
-print(cruise_dist_avg, cruise_dist_40000)
-print(E_normal_cruise/10**6, E_fast/10**6, E_40000/10**6, E_40000_fast/10**6)
-
-
-
-
-
-#ABSOLUTE SERVICE CEILING -> if no constant speed propeller
-#SELECT PROP TYPE, type 1 is constant speed, type 2 is variable speed
-type_prop = 1
-def advance_ratio(h, V_0):
-    V_max = 0.95 * ISA_calculator(h, 0)[3]
-    J = V_0 * np.pi / np.sqrt(V_max ** 2 - V_0 ** 2)
-    return J
-J_cruise = advance_ratio(h_cruise, V_cruise)
-
-if type_prop == 2:
-    print(advance_ratio(33000 * ft_m, V_cruise))
-    V_tip_max = V_cruise * np.pi / 1.8
-    a_advance_max = np.sqrt(V_tip_max**2 + V_cruise**2) / 0.95
-    h_check = 29000 * ft_m
-    a_check = ISA_calculator(h_check, 0)[3]
-    while a_check < a_advance_max:
-        a_check = ISA_calculator(h_check, 0)[3]
-        h_check += 10 * ft_m
-    print(h_check, a_check, a_advance_max)
-
-#COMBINE ALL
-def Lift(V, CL):
-    rho = 2 * MTOW * 0.95 / (V ** 2 * S_w * CL)
-    height = find_alt(rho)                            #in m
-    return height, rho
-
-def advance(V, D):
-    J = 1.4
-    rpm = V / (D * J) * 60
-    return rpm
-
-def V_max_calc(V, CL, CD):
-    rho = Lift(V, CL)[1]
-    V_max = ((2 * P_available_prop) / (rho * CD * S_w)) ** (1 / 3)
-    return V_max
-
-def CEILING():
-    J = 0.8
-    D_main = 3.03
-    D_tip = 2.15
-    rpm = 0
-    V_max = 300
-    i_step = 10
-    i = 28000 * ft_m
-    V = 0
-    rpms = []
-    Vs = []
-    ROCS = []
-    while rpm < 2850:# V < V_max:
-        V = VTAS_calc(V_EAS2, i, 0)
-        ROC = ROC_calc(V, i, 0, 0, CL_CD_DesCruise)
-        time = i_step * ft_m / ROC
-        Vx = math.sqrt(V ** 2 - ROC ** 2)
-        i += i_step
-        V_max = V_max_calc(V, CL_DesCruise, CD_DesCruise)
-        rpm = advance(V, D_tip)
-        rpms.append(rpm)
-        ROCS.append(ROC)
-        Vs.append(V)
-        if i > 70000 * ft_m:
-            break
-    print(rpm, ROC, V, i/ft_m)
-    return rpm, ROC, V
-
-#CHECK
-# print(f"Outputs of calculation", CEILING())
-# print(VTAS_calc(V_EAS2, 28000*ft_m, 0))
-#
-#
-#
-#
-#
-# print(ROCS[250], ROCS[1000], ROCS[2150])
-# print(sum(time_climb) / 60)
-# print(s_trav / nmi_m)
-
-# plt.figure()
-# plt.plot(heights, ROCS)
-# plt.xlabel("Heights in ft")
-# plt.xlim(0,28000)
-# plt.ylabel("ROC in m/s")
-# plt.show()
-#
+#E_40000_fast = P_available_prop * (cruise_dist_40000 / V_max_40000)
+#print(E_40000/10**6, E_40000_fast/10**6, V_max_40000, rho_40000, s_traveled[3999])
+#print(cruise_dist_avg, cruise_dist_40000)
+#print(E_normal_cruise/10**6, E_fast/10**6, E_40000/10**6, E_40000_fast/10**6)
 
 plt.plot(np.array(s_traveled) / nmi_m, heights)
 plt.axhline(y=s_1 / ft_m, color='grey', linestyle='--')
@@ -566,12 +443,13 @@ plt.axhline(y=4000, color="grey", linestyle='--')
 plt.annotate('Start acceleration no. 2', xy=(30, 4000 + 200))
 plt.axhline(y=j, color="grey", linestyle="--")
 plt.annotate('End acceleration no. 1', xy=(30, j + 500))
-# plt.axvline(x=s_trav / nmi_m, color='grey', linestyle='--')
+plt.axvline(x=s_trav / nmi_m, color='grey', linestyle='--')
 plt.plot([s_trav / nmi_m, s_trav / nmi_m], [0, s_3 / ft_m], color='grey', linestyle='--')
 plt.annotate('Distance Traveled in Climb', xy=(s_trav / nmi_m - 1, 16000), rotation='vertical')
 plt.xlabel("Distance Traveled (nmi)")
 plt.ylabel("Altitude (ft)")
-plt.ylim(0,40200)
+plt.xlim(0,55)
+plt.ylim(0,30200)
 plt.show()
 
 
