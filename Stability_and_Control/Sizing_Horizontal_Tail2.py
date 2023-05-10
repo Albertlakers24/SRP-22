@@ -55,7 +55,7 @@ print("cf/c =", cf_over_c)
 print("t/c_HT =", t_over_c_HT)
 
 # Determined values from Graphs for Hingemoment_Coefficients 3D:
-DeltaCha_over_clalphaBK = 0.008             # Graph 10.77a (p. 515)
+DeltaCha_over_clalphaBK = 0.007             # Graph 10.77a (p. 515)
 Kalpha_i = 1.1                              # Graph 10.77b (p. 515)
 Kalpha_o = 4.25                             # Graph 10.77b (p. 515)
 B2 = 1.1                                    # Graph 10.77c (p. 515)
