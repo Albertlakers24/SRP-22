@@ -9,8 +9,6 @@ from Constants.Aerodynamics import Alpha_DesTakeOff,R_lfus, CL_Alpha_VT, Cl_Alph
 from Constants.MissionInputs import V_approach, ISA_calculator, landing_critical, dt_land, V_cruise, g, rho_5000
 from Constants.FlightPerformance_Propulsion import Power_tot
 
-
-##TODO continue here
 print("FILE: Vertical_Tail")
 """
 VT design checks:
