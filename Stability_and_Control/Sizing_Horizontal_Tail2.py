@@ -83,13 +83,13 @@ print("cla_over_cla_theory_HT=",cla_over_cla_theory_HT)
 print("cf/c =", cf_over_c)
 print("t/c =", t_over_c_HT)
 
-cf_c_tab = 0.1                              # ct/cf, compared to flap
+cf_c_tab = 0.3                              # ct/cf, compared to flap
 
 print("Needed for Airfoil hingemoment claculation of the TRIMTAB")
 print("cf/c_tab = ", cf_c_tab)
 print("cf/c =", cf_over_c)
 
-chdeltat = -0.009                           # Graph 10.72   (p.511)
+chdeltat = -0.014                           # Graph 10.72   (p.511)
 ch_cl_t = -0.058                            # Graph 10.73   (p.511)
 cla_dt = Cl_Alpha_HT_Airfoil                # 8.1.1.2
 alpha_dt = -0.6                             # Graph 10.74   (p.512)
@@ -176,7 +176,7 @@ Chalpha_Chdelta = Hingemoment_Coefficients_elevator()[1]/Hingemoment_Coefficient
 CNhalpha_free= CL_Alpha_HT - CNh_delta*Chalpha_Chdelta                                                              # Normal force gradient eq. 7.5 Sam1                [rad^-1]
 xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters
 Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                            # eq. 5.21 Sam1                                     [rad^-1]
-
+print("xnfree=",xnfree)
 def ControlForce_HT(V,delta_te):
     """ For Cruise Conditions
     Control Force should be between the following values: XX < Fe < XX
@@ -191,8 +191,8 @@ def ControlForce_HT(V,delta_te):
     F_velocity_independent_horn = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft_potato -xnfree)/c_mac_w)
     F_velocity_independent_nohorn = (MTOW/S_w)*(Ch_delta_nohorn/(Cmdelta_e()*0.8))*((xcg_aft_potato -xnfree)/c_mac_w)
 
-    F_velocity_dependent_horn= 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0()[1])
-    F_velocity_dependent_nohorn = 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0()[0])
+    F_velocity_dependent_horn= 0.5*rho*V**2*Chdelta_t*(trimtab_0()[1]-delta_te)
+    F_velocity_dependent_nohorn = 0.5*rho*V**2*Chdelta_t*(trimtab_0()[0]-delta_te)
 
     a_nohorn = deriv_deltae_se*Se*MACe*(Vh_V)**2
     a_horn = deriv_deltae_se_horn*Se*MACe*(Vh_V)**2
@@ -251,3 +251,7 @@ if Hingemoment_Coefficients_elevator()[0] < 0:
 else:
     print("Hinge moment derivative NOT met:")
     print("Chdelta =", Hingemoment_Coefficients_elevator()[0], ">0")
+
+Ch =Hingemoment_Coefficients_elevator()[0]
+Fe_V = -2*deriv_deltae_se_horn*Se*MACe*(Vh_V**2)*(m_mto/S_w)*(Ch/Cmdelta_e())*(1/149)*(xcg_aft_potato-xnfree)/c_mac_w
+print("Fe/V at Vtrim =", Fe_V)
