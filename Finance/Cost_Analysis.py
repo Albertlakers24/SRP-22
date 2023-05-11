@@ -7,7 +7,7 @@ def CEF(year):
     return inflation_rate
 V_max = V_cruise * (1/kts_m_s)
 W_to = m_mto * (1/lbs_kg)
-W_E = m_oem
+W_E = m_oem * (1/lbs_kg)
 W_eng = 447
 W_fc = 80 * 11
 W_A = (W_E - W_eng - W_fc) * (1/lbs_kg)
@@ -131,9 +131,11 @@ C_RDTE3 = Cost_RDTE(C_aedr,C_dstr,C_ftar3,C_ftor,C_tsfr,C_pror,C_finr)
 # plt.title("Research, Development and Testing cost for 50% fuel cell price reduction")
 # plt.legend(labels,bbox_to_anchor=(1, 1), loc=2, frameon=False,fontsize=12)
 # plt.show()
-# plt.pie([C_aedr/C_RDTE3,C_dstr/C_RDTE3,C_ftar3/C_RDTE3,C_ftor/C_RDTE3,C_pror,C_finr,C_tsfr],autopct='%1.1f%%',pctdistance=1.2,textprops={'fontsize': 12})
-# plt.title("Research, Development and Testing cost for optimistic fuel cell price")
-# plt.legend(labels,bbox_to_anchor=(1, 1), loc=2, frameon=False,fontsize=12)
+# all_masses = np.array([C_aedr,C_dstr,C_ftar3,C_ftor,C_pror * C_RDTE3,C_finr * C_RDTE3,C_tsfr * C_RDTE3]) / 10 **6
+# labels = [f'{l}, {s:1.1f} Million USD' for l, s in zip(labels, all_masses)]
+# plt.pie([C_aedr/C_RDTE3,C_dstr/C_RDTE3,C_ftar3/C_RDTE3,C_ftor/C_RDTE3,C_pror,C_finr,C_tsfr])
+#plt.title("Research, Development and Testing cost for optimistic fuel cell price")
+# plt.legend(labels,bbox_to_anchor=(0.95, 0.75),fontsize=12)
 # plt.show()
 # print(C_RDTE1/10**6)
 # print(C_RDTE2/10**6)
@@ -168,7 +170,7 @@ for N_m in range(1,2000,1):
     T_pft = 10
     F_ftoh = 4.0
     C_finm = 0.10
-    F_prom = 0.20
+    F_prom = 0.2
     C_opshr = 2310 * Cef_2035/Cef_2022
     def C_ACQ(c_man, c_pro):
         C_ACQ = c_man + c_pro
@@ -305,7 +307,7 @@ for N_m in range(1,2000,1):
 # plt.legend(labels,bbox_to_anchor=(1, 1), loc=2, frameon=False)
 # plt.show()
 
-#Break even point calculation
+# #Break even point calculation
 # for i in range(0,2000):
 #     Revenue = i * AEP_list1[999]
 #     if Revenue >= (C_RDTE1/10**6 + Manufacturing_cost_lst1[i]):
@@ -331,7 +333,7 @@ for N_m in range(1,2000,1):
 #         break
 #     else:
 #         continue
-
+#
 # for i in range(0,2000):
 #     Revenue = i * AEP_list3[999]
 #     if Revenue >= (C_RDTE3/10**6 + Manufacturing_cost_lst3[i]):
@@ -344,7 +346,6 @@ for N_m in range(1,2000,1):
 #         break
 #     else:
 #         continue
-#
 # print(Manufacturing_cost_lst1[999])
 # print(Manufacturing_cost_lst2[999])
 # print(Manufacturing_cost_lst3[999])
@@ -358,8 +359,8 @@ R_de = 110
 t_de = 0.5462
 AHj = 850
 T_efj = 11.0 * Cef_2035/Cef_1990
-Sal_j_cap = 20000 * Cef_2035/Cef_1989 #(20000+52000)/2 * Cef_2035/Cef_1989 #20000 * Cef_2035/Cef_1989
-Sal_j_fo =  11000 * Cef_2035/Cef_1989 #(11000+21000)/2 * Cef_2035/Cef_1989 #11000 * Cef_2035/Cef_1989
+Sal_j_cap = 52000 * Cef_2035/Cef_1989 #20000 * Cef_2035/Cef_1989
+Sal_j_fo = 21000 * Cef_2035/Cef_1989 #11000 * Cef_2035/Cef_1989
 W_f_500nmi = 241
 W_f_full = 683
 F_ins_hull = (0.005+0.030)/2
@@ -371,7 +372,7 @@ f_amb_mat = 0.55
 F_dap = 0.85
 DP_ap = 10
 F_deng = 0.85
-DP_eng = 20
+DP_eng = 10
 F_dprp = 0.85
 DP_prp = 7
 F_dav = 1
@@ -381,7 +382,7 @@ DP_apsp = 10
 F_dengsp = 0.85
 DP_engsp = 7
 F_dfc = 0.85
-DP_fc = 10
+DP_fc = 5
 C_rt = 0.001 + 10**(-8) * W_to
 DOC_fin = 0.07
 C_ins = 0.02
@@ -545,12 +546,22 @@ DOC_lnr = DOC_lnr(C_lf,C_nf)
 DOC1 = DOC(DOC_flt,DOC_maint1,DOC_depr1,DOC_lnr,DOC_fin,C_rt,C_ins)
 DOC2 = DOC(DOC_flt,DOC_maint2,DOC_depr2,DOC_lnr,DOC_fin,C_rt,C_ins)
 DOC3 = DOC(DOC_flt,DOC_maint3,DOC_depr3,DOC_lnr,DOC_fin,C_rt,C_ins)
+# all_cost = np.array([DOC_flt,DOC_maint3,DOC_depr3,DOC_lnr,DOC_fin * DOC3,C_rt* DOC3,C_ins* DOC3])*V_bl
+# all_cost_label = ["Flying Cost", "Maintenance Cost", "Depreciation Cost", "Landing Fess", "Finance Cost","Tax Cost"]
+# labels = [f'{l}, {s:1.1f} USD/hr' for l, s in zip(all_cost_label, all_cost)]
+# plt.pie(all_cost)
+# plt.title("Direct Operating Cost for optimistic fuel cell price")
+# plt.legend(labels,bbox_to_anchor=(0.95, 0.75),fontsize=12)
+# plt.show()
+
 Total_OC1 = DOC1 + IOC(DOC1)
 Total_OC2 = DOC2 + IOC(DOC2)
 Total_OC3 = DOC3 + IOC(DOC3)
 C_ops_airline1 = Total_OC1 * R_bl_annual * 25 * 10
 C_ops_airline2 = Total_OC2 * R_bl_annual * 25 * 10
 C_ops_airline3 = Total_OC3 * R_bl_annual * 25 * 10
+PAX = 48
+#print(C_crew * V_bl *Cef_2022/Cef_2035)
 # print(DOC1/PAX)
 # print(DOC2/PAX)
 # print(DOC3/PAX)
