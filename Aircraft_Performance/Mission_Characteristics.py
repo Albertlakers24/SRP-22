@@ -227,13 +227,14 @@ print(V_LOF/avg_a+5, "takeoff time")
 
 #HOT AND HIGH TAKEOFF
 TV2_HOT = sp.Symbol("TV2_HOT")
-T_hot = ISA_calculator(7600*ft_m, 41)[0]
+T_hot = ISA_calculator(7600*ft_m,0)[0]
 rho_hot = ISA_calculator(7600*ft_m, 41)[2]
 eq2 = MTOW**2 / (rho_hot * g * S_w * CL2 * 0.85 * TV2_HOT) + 2 * h2 * (TV2_HOT / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off)) ** (-1) - 4500 * ft_m
 TV2_HOT = sp.solve(eq2, TV2_HOT)[1]
 l_run_hot = (MTOW**2 / (rho_hot * g * S_w * CL2 * 0.85 * TV2_HOT))
 l_air_hot = 2 * h2 * (TV2_HOT / MTOW - (CD0_15 / CL2) - CL2 / (np.pi * Aw * e_take_off))**(-1)
 print((l_run_hot + l_air_hot)/ft_m, "TAKEOFF DISTANCE HOT CLIMATE")
+print(CL2)
 V_LOF_HOT = np.sqrt(2 * MTOW / (rho_hot * S_w * CL_MaxTakeOff)) * 1.05
 avg_a = V_LOF_HOT**2 / (2*l_run_hot)
 ROC_TO = (P_available_prop - 1 / np.mean(CL_CD_TakeOff) * MTOW) / MTOW - avg_a * V_LOF / g
@@ -399,6 +400,8 @@ print(cruise_dist_avg/nmi_m, "DISTANCE CRUISE FL280")
 print(cruise_dist_35000/nmi_m, "DISTANCE CRUISE FL350")
 time_normal_cruise = cruise_dist_avg / V_cruise
 time_fast = cruise_dist_avg / V_max
+print(time_normal_cruise/3600, "TIME CRUISE FL280")
+print(time_fast/3600, "TIME CRUISE FAST FL280")
 power_cruise = 1/2 * rho_cruise * V_cruise**3 * CD_DesCruise * S_w
 E_normal_cruise = power_cruise * time_normal_cruise
 power_cruise_fast = 1/2 * rho_cruise * V_max**3 * CD_DesCruise * S_w
@@ -415,6 +418,10 @@ E_35000 = P_35000 * cruise_dist_35000 / V_cruise
 V_max_35000 = ((2 * P_available_prop) / (rho_35000 * CD_endurance * S_w))**(1/3)
 P_35000_fast = 1/2 * rho_35000 * V_max_35000**3 * CD_endurance * S_w
 E_35000_fast = P_35000_fast * (cruise_dist_35000 / V_max_35000)
+time_normal_cruise_35000 = cruise_dist_35000 / V_cruise
+time_fast_35000 = cruise_dist_35000 / V_max_35000
+print(time_normal_cruise_35000/3600, "TIME CRUISE FL350")
+print(time_fast_35000/3600, "TIME CRUISE FAST FL350")
 print(P_35000/10**3, "POWER NORMAL FL350 (kW)")
 print(P_35000_fast/10**3, "POWER FAST FL350(kW)")
 print(E_35000/10**6, "ENERGY NORMAL FL350(MJ)")
@@ -423,25 +430,22 @@ print(E_35000_fast/E_35000)
 
 
 
-plt.plot(np.array(s_traveled) / nmi_m, heights)
-plt.axhline(y=s_1 / ft_m, color='grey', linestyle='--')
-plt.annotate('Start Second Climb Phase', xy=(30, s_1 / ft_m + 500))
-plt.axhline(y=s_2 / ft_m, color='grey', linestyle='--')
-plt.annotate('Start Third Climb Phase', xy=(2, s_2 / ft_m + 500))
-plt.axhline(y=s_3 / ft_m, color='grey', linestyle='--')
-plt.annotate('Start Cruise', xy=(2, s_3 / ft_m + 500))
-plt.axhline(y=4000, color="grey", linestyle='--')
-plt.annotate('Start acceleration no. 2', xy=(30, 4000 + 200))
-plt.axhline(y=j, color="grey", linestyle="--")
-plt.annotate('End acceleration no. 1', xy=(30, j + 500))
-plt.axvline(x=s_trav / nmi_m, color='grey', linestyle='--')
-plt.plot([s_trav / nmi_m, s_trav / nmi_m], [0, s_3 / ft_m], color='grey', linestyle='--')
-plt.annotate('Distance Traveled in Climb', xy=(s_trav / nmi_m - 1, 16000), rotation='vertical')
-plt.xlabel("Distance Traveled (nmi)")
-plt.ylabel("Altitude (ft)")
-# plt.xlim(0,55)
-# plt.ylim(0,30200)
-plt.show()
-print(V_cruise/kts_m_s)
-print(V_max_35000/kts_m_s)
-print(V_max_35000/V_cruise)
+# plt.plot(np.array(s_traveled) / nmi_m, heights)
+# plt.axhline(y=s_1 / ft_m, color='grey', linestyle='--')
+# plt.annotate('Start Second Climb Phase', xy=(30, s_1 / ft_m + 500))
+# plt.axhline(y=s_2 / ft_m, color='grey', linestyle='--')
+# plt.annotate('Start Third Climb Phase', xy=(2, s_2 / ft_m + 500))
+# plt.axhline(y=s_3 / ft_m, color='grey', linestyle='--')
+# plt.annotate('Start Cruise', xy=(2, s_3 / ft_m + 500))
+# plt.axhline(y=4000, color="grey", linestyle='--')
+# plt.annotate('Start acceleration no. 2', xy=(30, 4000 + 200))
+# plt.axhline(y=j, color="grey", linestyle="--")
+# plt.annotate('End acceleration no. 1', xy=(30, j + 500))
+# plt.axvline(x=s_trav / nmi_m, color='grey', linestyle='--')
+# plt.plot([s_trav / nmi_m, s_trav / nmi_m], [0, s_3 / ft_m], color='grey', linestyle='--')
+# plt.annotate('Distance Traveled in Climb', xy=(s_trav / nmi_m - 1, 16000), rotation='vertical')
+# plt.xlabel("Distance Traveled (nmi)")
+# plt.ylabel("Altitude (ft)")
+# # plt.xlim(0,55)
+# # plt.ylim(0,30200)
+# plt.show()
