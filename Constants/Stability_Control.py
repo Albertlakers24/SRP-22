@@ -45,3 +45,5 @@ muc= 96.05875842024848                  # muc                   [-]             
 mub= 8.388801600711354                  # mub                   [-]             FILE: Derivative_Calculations_Dynamic
 CXde= 0                                 # CXdelta               [-]             FILE: Derivative_Calculations_Dynamic
 CZde= -0.3159554861002181               # CZdelta               [-]             FILE: Derivative_Calculations_Dynamic
+KZ2 =0.022                              # Kz^2                  [-]             FILE: Derivative_Calculations_Dynamic
+Izz = 162324                            # Izz                   [kg*m^2]        FILE: Derivative_Calculations_Dynamic

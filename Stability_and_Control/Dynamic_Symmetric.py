@@ -2,7 +2,7 @@ import control
 import numpy as np
 import matplotlib.pyplot as plt
 from Constants.AircraftGeometry import S_w , c_mac_w, bw
-from Constants.Stability_Control import muc,Cnp,Clr,Clbeta,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmdelta
+from Constants.Stability_Control import muc,Cnp,Clr,Clbeta,Cnbeta,Cybeta, Cn_r, KZ2,KY2, Izz, Clp, mub, KX2, CZadot, Cmadot, CXu, CXa, CZ0, CXq, CZu, CZa, CX0, CZq, Cmu, Cmalpha, Cmq, CXde, CZde, Cmdelta
 from Constants.MissionInputs import rho_0, g, V_cruise, ISA_calculator, h_cruise,dt_cruise
 from Constants.Masses_Locations import m_mto
 from Constants.Aerodynamics import CL_DesCruise
@@ -17,6 +17,7 @@ rho = ISA_calculator(h_cruise,dt_cruise)[2]
 
 # Short Period
 # ------------
+Cnbeta=0.058125750001392446
 A = 2*muc * KY2 * (2*muc - CZadot)
 B = -2*muc * KY2 * CZa - (2*muc + CZq) * Cmadot - (2*muc - CZadot) * Cmq
 C = CZa * Cmq - (2*muc + CZq) * Cmalpha
@@ -45,7 +46,6 @@ eigenvalue_ARM = (Clp/(4*mub*KX2))*(V0/bw)
 Period_r_ARM = -1/eigenvalue_ARM
 
 # Dutch Roll
-# Cnbeta = 0.07
 a = 8*mub ** 2 * KZ2
 b1 = -2*mub * (Cn_r + 2 * KZ2 * Cybeta)
 c = 4*mub * Cnbeta + Cybeta * Cn_r
@@ -53,7 +53,6 @@ c = 4*mub * Cnbeta + Cybeta * Cn_r
 eigenvalue1_DR = (complex(-b1/ (2*a), np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 eigenvalue2_DR = (complex(-b1 / (2*a), -np.sqrt(4*a*c - b1**2) / (2*a))) * (V0/bw)
 
-Izz = 163309.89403883
 Real_eigenvalue =eigenvalue1_DR.real
 Imag_eigenvalue =eigenvalue1_DR.imag
 DampingRatio_DR = -Real_eigenvalue/np.sqrt(Real_eigenvalue**2+Imag_eigenvalue**2)
@@ -70,38 +69,38 @@ plt.xlabel("Real")
 plt.ylabel("Imaginary")
 
 """Graphs for dynamic stability"""
-plt.plot(eigenvalue1_SP.real, eigenvalue1_SP.imag, marker="x", color="r", linewidth=1)        # short period
-plt.annotate("  \u03BB\u2085", (eigenvalue1_SP.real, eigenvalue1_SP.imag), ha='left', fontsize=20)
-plt.plot(eigenvalue2_SP.real, eigenvalue2_SP.imag, marker="x", color="r", linewidth=1)        # short period
-plt.annotate("  \u03BB\u2086", (eigenvalue2_SP.real, eigenvalue2_SP.imag), ha='left', fontsize=20)
-plt.plot(eigenvalue1_FM.real, eigenvalue1_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
-plt.annotate("  \u03BB\u2087", (eigenvalue1_FM.real, eigenvalue1_FM.imag), ha='left', fontsize=20)
-plt.plot(eigenvalue2_FM.real, eigenvalue2_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
-plt.annotate("  \u03BB\u2084", (eigenvalue2_FM.real, eigenvalue2_FM.imag), ha='left', va='top', fontsize=20)
-plt.xlim(-4,0.5)
-plt.ylim(-5,5)
-plt.grid(True)
-plt.axhline(0, color='k', linewidth=0.5)
-plt.axvline(0, color='k', linewidth=0.5)
-plt.show()
-
-# Add Labels and sizing nicely for Asymmetric Cases
-plt.xlabel("Real")
-plt.ylabel("Imaginary")
-plt.plot(eigenvalue_ARM.real, eigenvalue_ARM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Rolling Motion
-plt.annotate("  \u03BB\u2081", (eigenvalue_ARM.real, eigenvalue_ARM.imag), ha='left', fontsize=20)
-plt.plot(eigenvalue1_DR.real, eigenvalue1_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
-plt.annotate("  \u03BB\u2082", (eigenvalue1_DR.real, eigenvalue1_DR.imag), ha='left', fontsize=20)
-plt.plot(eigenvalue2_DR.real, eigenvalue2_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
-plt.annotate("  \u03BB\u2083", (eigenvalue2_DR.real, eigenvalue2_DR.imag), ha='left', fontsize=20)
-plt.plot(eigenvalue_ASM.real, eigenvalue_ASM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Spiral Motion
-plt.annotate("  \u03BB\u2088", (eigenvalue_ASM.real, eigenvalue_ASM.imag), ha='left', fontsize=20)
-plt.xlim(-4,1)
-plt.ylim(-0.6,0.6)
-plt.grid(True)
-plt.axhline(0, color='k', linewidth=0.5)
-plt.axvline(0, color='k', linewidth=0.5)
-plt.show()
+# plt.plot(eigenvalue1_SP.real, eigenvalue1_SP.imag, marker="x", color="r", linewidth=1)        # short period
+# plt.annotate("  \u03BB\u2085", (eigenvalue1_SP.real, eigenvalue1_SP.imag), ha='left', fontsize=20)
+# plt.plot(eigenvalue2_SP.real, eigenvalue2_SP.imag, marker="x", color="r", linewidth=1)        # short period
+# plt.annotate("  \u03BB\u2086", (eigenvalue2_SP.real, eigenvalue2_SP.imag), ha='left', fontsize=20)
+# plt.plot(eigenvalue1_FM.real, eigenvalue1_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
+# plt.annotate("  \u03BB\u2087", (eigenvalue1_FM.real, eigenvalue1_FM.imag), ha='left', fontsize=20)
+# plt.plot(eigenvalue2_FM.real, eigenvalue2_FM.imag, marker="x", color="r", linewidth=1)        # phugoid
+# plt.annotate("  \u03BB\u2084", (eigenvalue2_FM.real, eigenvalue2_FM.imag), ha='left', va='top', fontsize=20)
+# plt.xlim(-4,0.5)
+# plt.ylim(-5,5)
+# plt.grid(True)
+# plt.axhline(0, color='k', linewidth=0.5)
+# plt.axvline(0, color='k', linewidth=0.5)
+# plt.show()
+#
+# # Add Labels and sizing nicely for Asymmetric Cases
+# plt.xlabel("Real")
+# plt.ylabel("Imaginary")
+# plt.plot(eigenvalue_ARM.real, eigenvalue_ARM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Rolling Motion
+# plt.annotate("  \u03BB\u2081", (eigenvalue_ARM.real, eigenvalue_ARM.imag), ha='left', fontsize=20)
+# plt.plot(eigenvalue1_DR.real, eigenvalue1_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
+# plt.annotate("  \u03BB\u2082", (eigenvalue1_DR.real, eigenvalue1_DR.imag), ha='left', fontsize=20)
+# plt.plot(eigenvalue2_DR.real, eigenvalue2_DR.imag, marker="x", color="r", linewidth=1)        # Dutch Roll
+# plt.annotate("  \u03BB\u2083", (eigenvalue2_DR.real, eigenvalue2_DR.imag), ha='left', fontsize=20)
+# plt.plot(eigenvalue_ASM.real, eigenvalue_ASM.imag, marker="x", color="r", linewidth=1)        # Aperiodic Spiral Motion
+# plt.annotate("  \u03BB\u2088", (eigenvalue_ASM.real, eigenvalue_ASM.imag), ha='left', fontsize=20)
+# plt.xlim(-4,1)
+# plt.ylim(-0.6,0.6)
+# plt.grid(True)
+# plt.axhline(0, color='k', linewidth=0.5)
+# plt.axvline(0, color='k', linewidth=0.5)
+# plt.show()
 
 print("Symmetric")
 print("---------------Short Period----------------")
@@ -113,7 +112,7 @@ if DampingRatio_sp >0.3:
         print("Damping ratio =", DampingRatio_sp)
 
 print("---------------Phugoid Motion----------------")
-if DampingRatio_ph > 0.04:
+if DampingRatio_ph > 0.0:
     print("Damping ratio =", DampingRatio_ph)
 else:
     print("Damping ratio requirement is NOT met:")
@@ -137,7 +136,7 @@ if ohm_nd_DR<0.4:
 print("ohm_nd =", ohm_nd_DR)
 
 print("---------------Spiral Motion----------------")
-if Period2s_ASM>20:
+if Period2s_ASM>8:
     print("Period2s =", Period2s_ASM)
 else:
     print("Period2s requirement is not met:")

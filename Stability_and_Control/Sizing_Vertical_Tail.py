@@ -94,8 +94,8 @@ print("bv/2r1=", bv/2*1.75)
 print("x/cr=", 0.25)
 
 # TODO: read graphs for Cn_beta
-K_N = 0.00175            # Empirical factor     [-]     Fig 10.28 (p.431)
-K_Rl = 1.4               # Factor               [-]     Fig 10.29 (p.432)
+K_N = 0.00155            # Empirical factor     [-]     Fig 10.28 (p.431)
+K_Rl = 1.0               # Factor               [-]     Fig 10.29 (p.432)
 kv = 1.0                 # Empirical factor     [-]     Fig 10.12 (p.417)
 alpha_TO = Alpha_DesTakeOff*np.pi/180      # Angle of attack at TO  [rad]
 
