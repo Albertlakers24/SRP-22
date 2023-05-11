@@ -5,6 +5,7 @@ from Constants.AircraftGeometry import bw, l_f,taperw, S_w, t_c_ratio_w, Sweep_q
 from Constants.Empennage_LandingGear import Sh,A_h,bh, Sv, lh, Av, Sweep_quarter_chord_HT, Sweep_halfchord_VT, lv
 from Constants.Aerodynamics import CL_MaxLand
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 
@@ -191,9 +192,9 @@ print("MTOM", m_mto)
 print('Class II Weight Estimation =', sum(all_masses))
 print('Class I OEM =', m_oem)
 print("---------------------------------")
-print(W_fus/m_mto)
-print(W_nacelle/m_mto)
-print(sum(empennage_system)/m_mto)
-print(sum(system_masses)/m_mto)
-print(W_wing/m_mto)
-print(sum(hydrogen_system)/m_mto)
+
+all_masses_label = ["LH2 System", " Fuel Cell", "Wing", "Horizontal Tail", "Vertical Tail", "Fuselage", "Main LG", "Nose LG", "Engine and Nacelle", " Engine Control"," Pneumatics", "Flight Control", " Instrument", "Hydraulics", "Electrical", "Avionics","Furnishing","Air Conditioning","Anti Ice", "Handling Gear"]
+labels = [f'{l}, {s:1.0f}kg' for l, s in zip(all_masses_label, all_masses)]
+plt.pie(all_masses)
+plt.legend(labels = labels,bbox_to_anchor=(1, 0.9), fontsize="15")
+plt.show()

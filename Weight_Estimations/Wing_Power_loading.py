@@ -129,5 +129,3 @@ plt.plot(W_S[281960], W_P_TOP_OEI[281960], 'o',label = "Design Point SRP-22", ma
 plt.legend(loc = "upper right")
 plt.grid()
 plt.show()
-print(W_S[281960])
-print(W_P_TOP_OEI[281960])
