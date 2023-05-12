@@ -11,8 +11,8 @@ from Constants.Aerodynamics import Cl_Alpha_HT_Airfoil, R_HT, CL_Alpha_Wing, dow
 #LE sweep of VT -> 30deg
 #Current HT: Sh=15, Sv=11
 
-# To be imported from somewhere todo to be determined
-V_max = 178                                 # Maximum operational speed
+# To be imported from somewhere
+V_max = 165                                 # Maximum operational speed
 AlphaCL0_CR = 2*np.pi/180                   # Angle of attack at CL0        [rad]
 i_h = -2*np.pi/180                          # Indince angle                 [rad]
 
@@ -29,7 +29,7 @@ outboard_elevator = bh/2                    # Outboard location elevator    [m]
 cb_over_cf = 0.3                            # Hinge line position elevator  [-]
 cf_over_c = 0.3                             # Relative elevator chord       [-]
 delta_f_elevator = 30                       # Elevator flap deflection      [deg]
-Sweep_hl = 11*np.pi/180                     # Sweep at the hingline         [rad] todo determine with drawing
+Sweep_hl = 11*np.pi/180                     # Sweep at the hingline         [rad]
 tc_over_two_cf = 0.2485                     # tc = thickness chord at hingeline and cf = chord of flap (p. 509)
 
 # SIZING ELEVATOR
@@ -38,7 +38,7 @@ root_H = c_rh-inboard_elevator*np.tan(angle)            # Chord of H at start el
 y = np.tan(angle)*(bh/2 - outboard_elevator)            # Difference change                     [m]
 Ct_e = (c_th+y)*cf_over_c                                                                               # Tip chord elevator        [m]
 Cr_e = root_H*cf_over_c                                                                                 # Root chord elevator       [m]
-MACe = Cr_e*0.55                                                                                         # MAC elevator              [m] todo estimated
+MACe = Cr_e*0.55                                                                                        # MAC elevator              [m]
 Se = Ct_e*(outboard_elevator-inboard_elevator)+0.5*(Cr_e-Ct_e)*(outboard_elevator-inboard_elevator)     # Elevator surface area     [m^2]
 Eta_i= inboard_elevator/(bh/2)
 Eta_o= outboard_elevator/(bh/2)
@@ -55,15 +55,15 @@ print("cf/c =", cf_over_c)
 print("t/c_HT =", t_over_c_HT)
 
 # Determined values from Graphs for Hingemoment_Coefficients 3D:
-DeltaCha_over_clalphaBK = 0.01              # Graph 10.77a (p. 515)
+DeltaCha_over_clalphaBK = 0.007             # Graph 10.77a (p. 515)
 Kalpha_i = 1.1                              # Graph 10.77b (p. 515)
-Kalpha_o = 4.2                              # Graph 10.77b (p. 515)
-B2 = 1.25                                   # Graph 10.77c (p. 515)
-DeltaChd_cldBKd = 0.016                     # Graph 10.78a (p. 517)
+Kalpha_o = 4.25                             # Graph 10.77b (p. 515)
+B2 = 1.1                                    # Graph 10.77c (p. 515)
+DeltaChd_cldBKd = 0.015                     # Graph 10.78a (p. 517)
 Kdelta_i = 1.05                             # Graph 10.78b (p. 517)
 Kdelta_o = 4.2                              # Graph 10.78b (p. 517)
 alpha_d = 0.51                              # Graph 8.17   (p. 262)
-cl_delta = 5.4                              # Graph 8.14   (p. 260)
+cl_delta = 4.5                              # Graph 8.14   (p. 260)
 
 # Determined values from Graphs for Hingemoment_Coefficients Airfoil:
 cla_over_cla_theory_HT = 0.76               # Graph 10.64a (p. 501)
@@ -83,13 +83,13 @@ print("cla_over_cla_theory_HT=",cla_over_cla_theory_HT)
 print("cf/c =", cf_over_c)
 print("t/c =", t_over_c_HT)
 
-cf_c_tab = 0.1                              # ct/cf, compared to flap
+cf_c_tab = 0.3                              # ct/cf, compared to flap
 
 print("Needed for Airfoil hingemoment claculation of the TRIMTAB")
 print("cf/c_tab = ", cf_c_tab)
 print("cf/c =", cf_over_c)
 
-chdeltat = -0.009                           # Graph 10.72   (p.511)
+chdeltat = -0.014                           # Graph 10.72   (p.511)
 ch_cl_t = -0.058                            # Graph 10.73   (p.511)
 cla_dt = Cl_Alpha_HT_Airfoil                # 8.1.1.2
 alpha_dt = -0.6                             # Graph 10.74   (p.512)
@@ -176,7 +176,7 @@ Chalpha_Chdelta = Hingemoment_Coefficients_elevator()[1]/Hingemoment_Coefficient
 CNhalpha_free= CL_Alpha_HT - CNh_delta*Chalpha_Chdelta                                                              # Normal force gradient eq. 7.5 Sam1                [rad^-1]
 xnfree = ((CNhalpha_free/CL_Alpha_Wing)*(1-downwash)*(Vh_V**2)*((Sh*lh)/(S_w*c_mac_w))*c_mac_w) + x_ac_w_meters
 Cmdelta = -CNh_delta*(Vh_V**2)*(Sh*lh/(S_w*c_mac_w))                                                            # eq. 5.21 Sam1                                     [rad^-1]
-
+print("xnfree=",xnfree)
 def ControlForce_HT(V,delta_te):
     """ For Cruise Conditions
     Control Force should be between the following values: XX < Fe < XX
@@ -191,8 +191,8 @@ def ControlForce_HT(V,delta_te):
     F_velocity_independent_horn = (MTOW/S_w)*(Ch_delta/Cmdelta_e())*((xcg_aft_potato -xnfree)/c_mac_w)
     F_velocity_independent_nohorn = (MTOW/S_w)*(Ch_delta_nohorn/(Cmdelta_e()*0.8))*((xcg_aft_potato -xnfree)/c_mac_w)
 
-    F_velocity_dependent_horn= 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0()[1])
-    F_velocity_dependent_nohorn = 0.5*rho*V**2*Chdelta_t*(delta_te-trimtab_0()[0])
+    F_velocity_dependent_horn= 0.5*rho*V**2*Chdelta_t*(trimtab_0()[1]-delta_te)
+    F_velocity_dependent_nohorn = 0.5*rho*V**2*Chdelta_t*(trimtab_0()[0]-delta_te)
 
     a_nohorn = deriv_deltae_se*Se*MACe*(Vh_V)**2
     a_horn = deriv_deltae_se_horn*Se*MACe*(Vh_V)**2
@@ -251,3 +251,7 @@ if Hingemoment_Coefficients_elevator()[0] < 0:
 else:
     print("Hinge moment derivative NOT met:")
     print("Chdelta =", Hingemoment_Coefficients_elevator()[0], ">0")
+
+Ch =Hingemoment_Coefficients_elevator()[0]
+Fe_V = -2*deriv_deltae_se_horn*Se*MACe*(Vh_V**2)*(m_mto/S_w)*(Ch/Cmdelta_e())*(1/149)*(xcg_aft_potato-xnfree)/c_mac_w
+print("Fe/V at Vtrim =", Fe_V)

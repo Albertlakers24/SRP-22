@@ -95,7 +95,7 @@ for j in np.arange(0, V_S, 0.1):
 
 # FLAPS
 V_max_flaps = np.sqrt(2 * W_S_design / (0.5 * rho_0 * 2.4))
-V_intersect = 82.19371
+V_intersect = 79.6987
 V_A_flaps = []
 n_A_list_flaps = []
 V_A_fin_flaps = V_S * np.sqrt(n_max)
@@ -119,40 +119,40 @@ y_values_DE = [point_D[1], point_E[1]]
 x_values_AD = [point_A[0], point_D[0]]
 y_values_AD = [point_A[1], point_D[1]]
 
-fig, ax = plt.subplots()
-#plt.tick_params(labelbottom = False)
-plt.plot(V_A, n_A_list, "black")
-plt.plot(V_H, n_H_list, "black")
-plt.plot(V_A_flaps, n_A_list_flaps, "black")
-plt.plot(x_values_AD, y_values_AD, "black", marker="o")
-plt.plot(x_values_FE, y_values_FE, 'black', marker="o")
-plt.plot(x_values_DE, y_values_DE, "black", marker="o")
-plt.plot([point_H[0], point_F[0]], [point_H[1], point_F[1]], "black", marker="o")
-plt.plot([V_max_flaps, V_intersect], [2, 2], "black")
-plt.plot([0, V_D], [1, 1], 'black', linestyle="--")
-plt.plot([V_A_fin, point_A[0]], [0, point_A[1]], 'black', linestyle="--")
-plt.plot([V_S, V_S], [0, 1], "black", linestyle="--")
-plt.plot([point_F[0], V_C], [point_F[1], 0], "black", linestyle="--")
-plt.plot([0,0],[0,0],"black",marker="o")
-plt.text(0-0.015, 0+0.25, "")
-plt.text(point_A[0]-2, point_A[1]+0.2, "A")
-plt.text(point_D[0]-2, point_D[1]+0.25, "D")
-plt.text(point_E[0]+2, point_E[1]+0.25, "E")
-plt.text(point_F[0]-1, point_F[1]-0.25, "F")
-plt.text(point_H[0]-2, point_H[1]-0.25, "H")
-plt.text(V_S-2,0-0.2, r'$V_{S}$')
-plt.text(V_A_fin-2,0-0.2, r'$V_{A}$')
-plt.text(V_C-2,0+0.1, r'$V_{C}$')
-plt.text(V_D-2,0-0.25, r'$V_{D}$')
-plt.xlim(left=0, right=(V_D+20))
-plt.ylim(top=3,bottom=-1.5)
-# plt.xlabel("V")
-ax.set_xlabel("V", weight = "bold")
-ax.xaxis.set_label_coords(0.96, 0.3)
-plt.ylabel("n", weight = "bold")
-ax.spines['bottom'].set_position(('data',0))
-plt.grid()
-plt.show()
+# fig, ax = plt.subplots()
+# plt.tick_params(labelbottom = False)
+# plt.plot(V_A, n_A_list, "black")
+# plt.plot(V_H, n_H_list, "black")
+# plt.plot(V_A_flaps, n_A_list_flaps, "black")
+# plt.plot(x_values_AD, y_values_AD, "black", marker="o")
+# plt.plot(x_values_FE, y_values_FE, 'black', marker="o")
+# plt.plot(x_values_DE, y_values_DE, "black", marker="o")
+# plt.plot([point_H[0], point_F[0]], [point_H[1], point_F[1]], "black", marker="o")
+# plt.plot([V_max_flaps, V_intersect], [2, 2], "black")
+# plt.plot([0, V_D], [1, 1], 'black', linestyle="--")
+# plt.plot([V_A_fin, point_A[0]], [0, point_A[1]], 'black', linestyle="--")
+# plt.plot([V_S, V_S], [0, 1], "black", linestyle="--")
+# plt.plot([point_F[0], V_C], [point_F[1], 0], "black", linestyle="--")
+# plt.plot([0,0],[0,0],"black",marker="o")
+# plt.text(0-0.015, 0+0.25, "")
+# plt.text(point_A[0]-2, point_A[1]+0.2, "A")
+# plt.text(point_D[0]-2, point_D[1]+0.25, "D")
+# plt.text(point_E[0]+2, point_E[1]+0.25, "E")
+# plt.text(point_F[0]-1, point_F[1]-0.25, "F")
+# plt.text(point_H[0]-2, point_H[1]-0.25, "H")
+# plt.text(V_S-2,0-0.2, r'$V_{S}$')
+# plt.text(V_A_fin-2,0-0.2, r'$V_{A}$')
+# plt.text(V_C-2,0+0.1, r'$V_{C}$')
+# plt.text(V_D-2,0-0.25, r'$V_{D}$')
+# plt.xlim(left=0, right=(V_D+20))
+# plt.ylim(top=3,bottom=-1.5)
+# # plt.xlabel("V")
+# ax.set_xlabel("V", weight = "bold")
+# ax.xaxis.set_label_coords(0.96, 0.3)
+# plt.ylabel("n", weight = "bold")
+# ax.spines['bottom'].set_position(('data',0))
+# plt.grid()
+# plt.show()
 #------------------------------------------GUST DIAGRAM DESIGN---------------------------------------------------------
 #Constants
 CL_alpha = CL_Alpha_Wing
@@ -224,14 +224,14 @@ while H <= 107:
     max_gust.append(nmax)
 
 #print("position of max delta n=", np.argmax(max_gust))
-print("delta n =", max_gust[18])
+# print("delta n =", max_gust[18])
 
 
 
 #Velocity values at OEM
-V_B_max_dn = 1.86407823 #1.3285
-V_C_max_dn = 2.24796708 #1.9775
-V_D_max_dn = 1.26166518 #1.1094
+V_B_max_dn = 1.86407823
+V_C_max_dn = 2.24796708
+V_D_max_dn = 1.26166518
 
 
 #Coordinates for Gust Diagram
@@ -247,10 +247,13 @@ pt8 = [0, 1]
 
 x_values = [pt1[0], pt2[0], pt3[0], pt4[0], pt5[0], pt6[0], pt7[0], pt8[0]]
 y_values = [pt1[1], pt2[1], pt3[1], pt4[1], pt5[1], pt6[1], pt7[1], pt8[1]]
-print(min(y_values))
-#plt.plot(x_values, y_values, 'bo', linestyle="--")
-#plt.axhline(y = 1, color = 'r', linestyle = '-')
-#plt.show()
+# print(min(y_values))
+# print(max(y_values))
+# plt.plot(x_values, y_values, 'bo', linestyle="--")
+# plt.axhline(y = 1, color = 'r', linestyle = '-')
+# plt.show()
+
+#Find intersections
 
 #------------------------------FINAL COMBINED PLOT---------------------------------------------------------------------
 fig, ax = plt.subplots()
@@ -272,20 +275,17 @@ plt.plot([V_B, V_B], [1+V_B_max_dn, 1-V_B_max_dn], "black", linestyle=":")
 plt.plot([point_F[0], V_C], [point_F[1], 1+V_C_max_dn], "black", linestyle=":")
 plt.plot([0,0],[0,0],"black",marker="o")
 plt.plot(x_values, y_values, 'black', marker="o", linestyle="--")
-#plt.plot([0, 0], [0, 1], "black", linestyle = '-')
-#plt.text(0-0.015, 0+0.25, "")
-plt.text(V_S-3,0+0.05, r'$V_{S}$')
-plt.text(V_A_fin-3,0+0.05, r'$V_{A}$')
-plt.text(V_C-3,0+0.05, r'$V_{C}$')
-plt.text(V_D-3,0+0.05, r'$V_{D}$')
-plt.text(V_B-3,0+0.05, r'$V_{B}$')
-#plt.xlim(left=0, right=(V_D+20))
-#plt.ylim(top=3,bottom=-1.5)
-# plt.xlabel("V")
-plt.xlabel("Equivalent Airspeed, $V_{EAS}$", weight = "bold")
-#ax.xaxis.set_label_coords(0.5, 0)
+plt.plot([0, 0], [0, 1], "black", linestyle = '-')
+plt.text(0-0.015, 0+0.25, "")
+plt.text(V_S-3,0.5, r'$V_{S}$')
+plt.text(V_A_fin-3,0.5, r'$V_{A}$')
+plt.text(V_C-3,0.5, r'$V_{C}$')
+plt.text(V_D-3,0.5, r'$V_{D}$')
+plt.text(V_B-3,0.5, r'$V_{B}$')
+plt.xlim(left=0, right=(V_D+5))
+plt.ylim(top=3.5,bottom=-1.5)
+plt.xlabel("Equivalent Airspeed, $V_{EAS}$ m/s", weight = "bold")
 plt.ylabel("Load Factor, n", weight = "bold")
-#ax.spines['bottom'].set_position(('data',0))
-#plt.grid()
 ax.set_xlim(xmin=0)
+plt.grid()
 plt.show()

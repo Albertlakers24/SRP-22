@@ -79,7 +79,7 @@ print("cf/c for aileron=", cf_over_c_aileron)
 print("Aw=", Aw)
 print("Clalpha/Clalpha_theory=", Cl_Alpha_WingAirfoil/(2*np.pi))
 
-def Aileron():      #CHECKED
+def Aileron():      
     """Roskam Book:
     Cy_delta_a (p. 474)
     Cl_delta_a (p. 474)
@@ -90,7 +90,9 @@ def Aileron():      #CHECKED
     Cl_delta = Cl_delta_CL_deltatheory*Cl_deltatheory                       # [rad^-1]
     alpha_delta_a = Cl_delta/Cl_alpha_a                                     # [rad]
     CL_delta = alpha_delta_a*Caccent_l_delta                                # [-]
-    Cl_delta_a = (CL_delta/2 + CL_delta/2)*(delta_a_left - delta_a_right)   # [-]
+    delta_a_left_rad = delta_a_left*np.pi/180                               # [rad]
+    delta_a_right_rad= delta_a_right*np.pi/180                              # [rad]
+    Cl_delta_a = (CL_delta/2 + CL_delta/2)*(delta_a_left_rad - delta_a_right_rad) # [-]
     delta_a = 0.5*(delta_a_left+delta_a_right)                              # [rad]
     #Cl_delta_a = Cl_aileron*delta_a                                        # [old formula]
 
@@ -263,7 +265,7 @@ def Rudder():
 
 """Calculation for the LCDP:"""
 LCDP = Cnbeta-Clbeta*(Cn_delta_a/Cl_delta_a)
-
+LCDP = Cnbeta+0.18*(0.0022/-0.35)
 
 print("-------------RESULTS STABILITY AND CONTROL DERIVATIVE--------------")
 print("*Aileron Design")

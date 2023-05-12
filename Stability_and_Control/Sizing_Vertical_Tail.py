@@ -94,8 +94,8 @@ print("bv/2r1=", bv/2*1.75)
 print("x/cr=", 0.25)
 
 # TODO: read graphs for Cn_beta
-K_N = 0.00175            # Empirical factor     [-]     Fig 10.28 (p.431)
-K_Rl = 1.4               # Factor               [-]     Fig 10.29 (p.432)
+K_N = 0.00155            # Empirical factor     [-]     Fig 10.28 (p.431)
+K_Rl = 1.0               # Factor               [-]     Fig 10.29 (p.432)
 kv = 1.0                 # Empirical factor     [-]     Fig 10.12 (p.417)
 alpha_TO = Alpha_DesTakeOff*np.pi/180      # Angle of attack at TO  [rad]
 
@@ -175,7 +175,7 @@ Cnzero = 0                              # Cn0                               [-]
 print("Side slip angle =", beta*180/np.pi, "deg -> should be > 0 for a mean positive rudder deflection")
 
 "ASYMMETRIC THRUST REQUIREMENT OUTPUT"
-delta_r_assym = (T_L*4+T_L*8.5)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
+delta_r_assym = (T_L*7.71+T_L*3.96)/(-0.5*rho*(V_mincont**2)*S_w*bw*Cndelta_r)         # Rudder deflection angle        [rad]         ex.12.1 [716 Mohammed]
 
 "CROSS WIND REQUIREMENT OUTPUT"
 beta_speed = m.atan(Vw/V_approach)            # [rad]

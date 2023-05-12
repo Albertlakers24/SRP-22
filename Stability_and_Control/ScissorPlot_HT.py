@@ -64,6 +64,8 @@ def C_L_alpha(A, lambdahalf):
     C_L_alpha = 2 * np.pi * A / (2 + np.sqrt(4 + ((A * beta / eta)**2 * (1 + ((np.tan(lambdahalf)) ** 2 / beta ** 2)))))
     return C_L_alpha
 
+print("CL_alpha_HT =", C_L_alpha(A_h,lambdahalf_h))
+
 def CL_alpha_Ah():
     """ CHECKED
     :return: CL_alpha_Ah (per rad)

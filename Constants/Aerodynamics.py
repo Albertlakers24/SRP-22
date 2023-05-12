@@ -1,6 +1,8 @@
 ''' AERODYNAMICS OUTPUTS --> MEGHA  ---> Last Update - 02/05/22 '''
 
 '''To Be Added:'''
+Oswald =  0.7612255029167874    # Oswald at cruise              [-]
+Oswald_TO = 0.8002255029167874  # Oswald at TO                  [-]
 R_HT =7.5*10**6                     # Reynolds number of the HT
 Cmac = -0.623988675133655          # Cmac                          [-]             FILE: ScissorPlot_HT
 R_lfus = 111301293.64412345  # Fuselage Reynolds number              [-]

@@ -79,7 +79,8 @@ for l1 in l1_sequence:
                                         "Cl_p":[Cl_p],
                                         "Cl_dA":[Cl_dA]})
                 aileron_DP = aileron_DP.append(choices)
-aileron_DP = aileron_DP[(aileron_DP["dA_upper"] < 26.0) & (aileron_DP['dt'] < 1.39)].sort_values("dA_upper")
+#aileron_DP = aileron_DP[(aileron_DP["dA_upper"] < 26.0) & (aileron_DP['dt'] < 1.39)].sort_values("dA_upper")
+# print(aileron_DP)
 aileron_final_design = aileron_DP.iloc[0]
 aileron_lm = aileron_final_design.iloc[0]
 aileron_l1 = aileron_final_design.iloc[1]
@@ -154,9 +155,9 @@ control_F = -np.radians(aileron_dA)/0.4 * 1/2 * rho_5000 * V_stall * aileron_P *
 control_F_horn = -np.radians(aileron_dA)/0.4 * 1/2 * rho_5000 * V_stall * aileron_P * (bw/2) * S_a * aileron_Ca_c * ((Hingemoment_Coefficients()[1] * (2*y_m/bw)) - (Hingemoment_Coefficients()[0]*aileron_cl_p/(2*aileron_cl_dA)))
 print(control_F)
 print(control_F_horn)
-# # # print(aileron_cl_dA)
-# # # print(aileron_cl_p)
-# #print(-aileron_cl_dA/aileron_cl_p*np.radians(aileron_dA))
-# # print(aileron_l1)
-# # print(b/2)
-# # print(b/2 - 2.15/2)
+# # # # print(aileron_cl_dA)
+# # # # print(aileron_cl_p)
+# # #print(-aileron_cl_dA/aileron_cl_p*np.radians(aileron_dA))
+# # # print(aileron_l1)
+# # # print(b/2)
+# # # print(b/2 - 2.15/2)
