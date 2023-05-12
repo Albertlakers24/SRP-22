@@ -60,7 +60,7 @@ ALpha_Wing_CR = np.append(Alpha_list_CRw, Alpha_list_stallCRw)
 
 #- ----------------------- DRAG ---------------------------
 h_winglet = 2.4
-delta_A = 0#1.9*h_winglet/bw *Aw
+delta_A = 1.9*h_winglet/bw *Aw
 A_eff = Aw + delta_A
 twist_tip = -3
 twist_root = 1
@@ -69,7 +69,7 @@ span_list = np.linspace(0, bw/2)
 twist_mac = np.mean(twist_list[np.isclose(span_list, y_mac, rtol=0.05)]) #-0.74496644
 delta_cd_twist = 0.00004*(twist_tip-twist_mac)
 e_cruise = 1/(np.pi*Aw*Psi+(1/phi))
-
+print(A_eff)
 CD_list_CR = []
 for i in range(len(CL_Wing_CR)):
     CDi_cruise = (CL_Wing_CR[i])**2/(np.pi *A_eff*e_cruise) + delta_cd_twist
@@ -165,6 +165,7 @@ print('----------CRUISE DATA -----------')
 print('CL/CD Cruise', CL_CD_Des_CR)
 print('CL Cruise', CL_Des_CR)
 print('CD Cruise', CD_Des_CR)
+print('drag decrease', (CD_Des_CR - 0.03679805)/0.03679805)
 print('CL/CD Max Cruise', CL_CD_MaxCR)
 
 ''' TAKE-OFF ---------------------'''
@@ -202,17 +203,44 @@ print('CL/CD Max Landing', CL_CD_MaxLD)
 print('Alpha Landing', Alpha_Des_LD)
 
 ''' PLOTTING --------------------- '''
-# plt.plot(Alpha_AF, Cl_AF, color = 'navy', linestyle = '-', label = 'Airfoil')
-# plt.plot(ALpha_Wing_CR, CL_Wing_CR, color = 'coral', linestyle='-', label = 'Wing Clean')
-# plt.plot(Alpha_Wing_TO, CL_list_TO, color = 'goldenrod', linestyle = '-', label = 'Wing @ Take-off')
-# plt.plot(Alpha_Wing_LD, CL_list_LD, color = 'red', linestyle = '-', label = 'Wing @ Landing')
-#
-# plt.axhline(0,0,color = 'black')
-# plt.axvline(0,0, color = 'black')
-# plt.xlabel('Alpha[deg]')
-# plt.ylabel('$C_l$[-]')
-# plt.title('Cl-Alpha curve')
-# plt.legend()
-# plt.grid()
-# plt.show()
+plt.plot(Alpha_AF, Cl_AF, color = 'orange', linestyle = '--', label = 'Airfoil')
+plt.plot(ALpha_Wing_CR, CL_Wing_CR, color = 'blue', linestyle='-', label = 'Wing Clean')
+plt.plot(Alpha_Wing_TO, CL_list_TO, color = 'green', linestyle = '-', label = 'Wing @ Take-off')
+plt.plot(Alpha_Wing_LD, CL_list_LD, color = 'red', linestyle = '-', label = 'Wing @ Landing')
 
+plt.axhline(0,0,color = 'black')
+plt.axvline(0,0, color = 'black')
+plt.xlabel('Alpha[deg]')
+plt.ylabel('$C_L$[-]')
+plt.legend()
+plt.grid()
+plt.show()
+
+## ----------------- CL-CD PLOTS ----------------
+plt.plot(CD_Wing_CR, CL_Wing_CR , color = 'blue', linestyle='-', label = 'Wing - clean')
+plt.plot(CD_list_TO, CL_list_TO, color = 'green', linestyle = '-', label = 'Wing @ Flaps = 15 deg')
+plt.plot(CD_list_LD, CL_list_LD, color = 'red', linestyle = '-', label = 'Wing @ Flaps = 40 deg')
+plt.axhline(0,0,color = 'black')
+plt.axvline(0,0, color = 'black')
+plt.xlabel('$C_D$[-]')
+plt.ylabel('$C_L$[-]')
+plt.legend()
+plt.grid()
+plt.show()
+
+
+labels = Making_labels("Wing_Graph_0twist.txt")
+lift_notwist = Reading_data("Wing_Graph_0twist.txt", labels)
+lift_twist = Reading_data("Wing_Graph_wingtwist.txt", labels)
+
+# =---------- CL Wing Plots ---------------------
+plt.plot(lift_notwist["b"], lift_notwist["CL"], color= 'green', linestyle = '--', label = 'No wing twist')
+plt.plot(lift_twist["b"], lift_twist["CL"], color = 'red', linestyle = '-', label = "Wing twist = 4 [deg]")
+plt.axhline(0,0,color = 'black')
+plt.axvline(0,0, color = 'black')
+plt.xlabel('Span[m]')
+plt.ylabel('$C_L$[-]')
+
+plt.legend()
+plt.grid()
+plt.show()

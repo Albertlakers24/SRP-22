@@ -8,7 +8,13 @@ from Constants.Masses_Locations import m_f, m_oem, m_mto, m_pldes, reserve_fuel,
 
 #LD_crs = 16.787 #CL_CD_Des_CR
 #eta_eng = 0.6 * 0.97 * 0.995 * 0.95
-
+kg_lbs = 2.20462
+m_f= m_f *kg_lbs
+m_oem =m_oem *kg_lbs
+m_mto = m_mto *kg_lbs
+m_pldes = m_pldes*kg_lbs
+reserve_fuel =reserve_fuel *kg_lbs
+trip_fuel = trip_fuel*kg_lbs
 eta_eng = eta_fuelcell * eta_wire * eta_inverter * eta_EM
 pl_increase = 1.04
 m_plmax = m_pldes * pl_increase
@@ -52,13 +58,13 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
     plt.annotate('Ferry Range', xy=(ranges[3] - 60, 7000), rotation='vertical')
     # max take off
     plt.axhline(y=m_mto, color='grey', linestyle='--')
-    plt.annotate('Maximum take off mass', xy=(1600, m_mto + 60))
+    plt.annotate('Maximum take off mass', xy=(1600, m_mto + 150))
     # operational empty mass
     plt.axhline(y = m_oem, color='grey', linestyle = '--')
-    plt.annotate('Operational empty mass', xy=(1500, m_oem + 50))
+    plt.annotate('Operational empty mass', xy=(1600, m_oem + 150))
 
     plt.xlim(0,ranges[-1]+150)
-    plt.ylim(0,m_mto + 1000)
+    plt.ylim(0,m_mto + 2000)
     n = ['A', 'B', 'C', 'D']
     for i, txt in enumerate(n):
         plt.annotate(txt, (ranges[i], plmasses[i]))
@@ -67,7 +73,7 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
     # naming the x axis
     plt.xlabel('Range [nmi]')
     # naming the y axis
-    plt.ylabel('Mass [kg]')
+    plt.ylabel('Mass [lbs]')
     # giving a title to my graph
     #plt.title('Payload range')
     plt.legend()
@@ -75,11 +81,10 @@ def plotting(ranges, plmasses, masses, colour1, colour2):
     plt.show()
 
 # -------------------- POINT A ----------------
-
 massA = m_oem + m_pldes
 plmassA = m_pldes
 rangeA = 0
-reserveA = plmassA+reserve_fuel
+reserveA = plmassA+ reserve_fuel
 # -------------------- POINT B ----------------
 
 R_nom = R_norm*1852
@@ -109,5 +114,6 @@ ranges= [rangeA,rangeB, rangeC, rangeD]
 masses = [massA, massB, massC, massD]
 plmasses = [plmassA, plmassB, plmassC, plmassD]
 
-plotting(ranges, plmasses, masses, 'indianred', 'forestgreen')
+plotting(ranges, plmasses, masses, 'green', 'red')
 
+print(ranges)

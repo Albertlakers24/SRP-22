@@ -2,8 +2,8 @@
 
 ''' Overall system masses '''
 m_f = 636.7765587973576
-trip_fuel = 419.97377851582326
-reserve_fuel = 242.45814995926958
+trip_fuel = 400 #419.97377851582326
+reserve_fuel = m_f - trip_fuel #242.45814995926958
 m_oem = 12634.92498884976
 m_mto = 18777.90521758506
 m_zf = 18141.1286587877
